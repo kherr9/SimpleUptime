@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.Domain", "SimpleUptime.Domain\SimpleUptime.Domain.csproj", "{B232AF76-163C-4116-9A9B-029B703311EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.Infrastructure", "SimpleUptime.Infrastructure\SimpleUptime.Infrastructure.csproj", "{3F79A0C3-681D-46EC-AD00-0C2ADCC8252A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B232AF76-163C-4116-9A9B-029B703311EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B232AF76-163C-4116-9A9B-029B703311EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B232AF76-163C-4116-9A9B-029B703311EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F79A0C3-681D-46EC-AD00-0C2ADCC8252A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F79A0C3-681D-46EC-AD00-0C2ADCC8252A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F79A0C3-681D-46EC-AD00-0C2ADCC8252A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F79A0C3-681D-46EC-AD00-0C2ADCC8252A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
