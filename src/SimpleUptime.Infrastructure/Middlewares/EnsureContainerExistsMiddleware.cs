@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Blob;
 using ToyStorage;
 
-namespace SimpleUptime.Infrastructure.Repositories
+namespace SimpleUptime.Infrastructure.Middlewares
 {
     public class EnsureContainerExistsMiddleware : IMiddlewareComponent
     {

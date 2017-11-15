@@ -7,6 +7,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
+using SimpleUptime.Infrastructure.Middlewares;
 using SimpleUptime.Infrastructure.Repositories;
 using ToyStorage;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
+using SimpleUptime.Infrastructure.Middlewares;
 using SimpleUptime.Infrastructure.Repositories;
 using ToyStorage;
 using Xunit;
