@@ -16,12 +16,7 @@ namespace SimpleUptime.Domain.Models
         }
 
         public Guid Value { get; }
-
-        public string GetString()
-        {
-            return Value.ToString();
-        }
-
+        
         public override string ToString()
         {
             return Value.ToString();
