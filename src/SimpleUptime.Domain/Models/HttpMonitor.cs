@@ -8,7 +8,16 @@ namespace SimpleUptime.Domain.Models
     /// </summary>
     public class HttpMonitor
     {
-        public HttpMonitorId Id { get; set; }
+        public HttpMonitor()
+        {
+        }
+        public HttpMonitor(HttpMonitorId id, Uri url)
+        {
+            Id = id ?? throw new ArgumentNullException(nameof(id));
+            Url = url ?? throw new ArgumentNullException(nameof(url));
+        }
+
+        public HttpMonitorId Id { get; }
 
         public Uri Url { get; set; }
     }

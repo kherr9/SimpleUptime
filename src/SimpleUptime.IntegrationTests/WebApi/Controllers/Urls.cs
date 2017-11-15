@@ -4,7 +4,7 @@
     {
         public struct HttpMonitors
         {
-            private const string BaseUrl = "api/httpmonitors";
+            private const string BaseUrl = "/api/httpmonitors";
 
             public static string Get() => BaseUrl;
 

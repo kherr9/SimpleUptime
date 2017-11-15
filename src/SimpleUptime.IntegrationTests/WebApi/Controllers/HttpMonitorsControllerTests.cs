@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
+using SimpleUptime.Application.Services;
 using SimpleUptime.WebApi;
 using Xunit;
 
@@ -90,10 +91,10 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var postEntity = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+            var postEntity = await response.Content.ReadAsJsonAsync<HttpMonitorDto>();
             Assert.Equal(entity.Url, postEntity.Url);
-            Assert.IsType<Guid>(postEntity.Id);
-            Assert.NotEqual(Guid.Empty, postEntity.Id);
+            Assert.NotNull(postEntity.Id);
+            Assert.NotEmpty(postEntity.Id);
         }
 
         [Fact]
@@ -118,7 +119,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         {
             return new
             {
-                Url = new Uri($"https://{DateTime.UtcNow.Ticks}.example.com")
+                Url = $"https://{DateTime.UtcNow.Ticks}.example.com/"
             };
         }
 
@@ -131,6 +132,16 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         {
             _server?.Dispose();
             _client?.Dispose();
+        }
+    }
+
+    public static class HttpContentExtension
+    {
+        public static async Task<TModel> ReadAsJsonAsync<TModel>(this HttpContent content)
+        {
+            var json = await content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<TModel>(json);
         }
     }
 }

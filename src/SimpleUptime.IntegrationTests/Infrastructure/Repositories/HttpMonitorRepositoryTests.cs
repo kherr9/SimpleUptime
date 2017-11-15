@@ -119,11 +119,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 
         private HttpMonitor GenerateHttpMonitor()
         {
-            return new HttpMonitor()
-            {
-                Id = HttpMonitorId.Create(),
-                Url = new Uri("https://example.com/")
-            };
+            return new HttpMonitor(HttpMonitorId.Create(), new Uri("https://example.com"));
         }
 
         private async Task<HttpMonitor> GenerateAndPersistHttpMonitorAsync()
