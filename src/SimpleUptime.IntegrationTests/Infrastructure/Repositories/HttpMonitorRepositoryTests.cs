@@ -93,7 +93,6 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
         }
 
         [Fact]
-
         public async Task DeleteRemovesEntityWhenFound()
         {
             // Arrange
