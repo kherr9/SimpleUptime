@@ -2,7 +2,7 @@
 using Microsoft.WindowsAzure.Storage;
 using ToyStorage;
 
-namespace SimpleUptime.Infrastructure.Repositories
+namespace SimpleUptime.Infrastructure.Middlewares
 {
     /// <summary>
     /// Middleware component that ignores file not found.

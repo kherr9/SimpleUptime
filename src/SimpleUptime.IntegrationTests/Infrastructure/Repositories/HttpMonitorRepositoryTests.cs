@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
+using SimpleUptime.Infrastructure.Middlewares;
 using SimpleUptime.Infrastructure.Repositories;
 using ToyStorage;
 using Xunit;
@@ -52,11 +53,8 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
         [Fact]
         public async Task PutThrowsExceptionWhenEntityIsNull()
         {
-            // Arrange
-            HttpMonitor entity = null;
-
             // Act
-            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _repository.PutAsync(entity));
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _repository.PutAsync(null));
 
             // Assert
             Assert.Equal("httpMonitor", exception.ParamName);
@@ -119,11 +117,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 
         private HttpMonitor GenerateHttpMonitor()
         {
-            return new HttpMonitor()
-            {
-                Id = HttpMonitorId.Create(),
-                Url = new Uri("https://example.com/")
-            };
+            return new HttpMonitor(HttpMonitorId.Create(), new Uri("https://example.com"));
         }
 
         private async Task<HttpMonitor> GenerateAndPersistHttpMonitorAsync()

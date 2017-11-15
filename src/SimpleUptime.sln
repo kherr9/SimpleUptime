@@ -18,6 +18,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F453CCEA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.IntegrationTests", "SimpleUptime.IntegrationTests\SimpleUptime.IntegrationTests.csproj", "{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.WebApi", "SimpleUptime.WebApi\SimpleUptime.WebApi.csproj", "{8B1F6358-D4B2-4CB0-A412-563EDF683979}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.Application", "SimpleUptime.Application\SimpleUptime.Application.csproj", "{C2DC8963-3FAC-4FA2-97AD-28678562A32D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +44,14 @@ Global
 		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B1F6358-D4B2-4CB0-A412-563EDF683979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B1F6358-D4B2-4CB0-A412-563EDF683979}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B1F6358-D4B2-4CB0-A412-563EDF683979}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B1F6358-D4B2-4CB0-A412-563EDF683979}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2DC8963-3FAC-4FA2-97AD-28678562A32D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2DC8963-3FAC-4FA2-97AD-28678562A32D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2DC8963-3FAC-4FA2-97AD-28678562A32D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2DC8963-3FAC-4FA2-97AD-28678562A32D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
