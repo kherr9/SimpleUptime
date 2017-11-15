@@ -53,11 +53,8 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
         [Fact]
         public async Task PutThrowsExceptionWhenEntityIsNull()
         {
-            // Arrange
-            HttpMonitor entity = null;
-
             // Act
-            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _repository.PutAsync(entity));
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _repository.PutAsync(null));
 
             // Assert
             Assert.Equal("httpMonitor", exception.ParamName);

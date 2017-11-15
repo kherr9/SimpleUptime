@@ -10,6 +10,7 @@ using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Infrastructure.Middlewares;
 using SimpleUptime.Infrastructure.Repositories;
 using ToyStorage;
+// ReSharper disable RedundantTypeArgumentsOfMethod
 
 namespace SimpleUptime.WebApi
 {
