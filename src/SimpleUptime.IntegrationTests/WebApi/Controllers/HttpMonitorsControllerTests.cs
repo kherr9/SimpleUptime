@@ -98,21 +98,37 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         }
 
         [Fact]
-        public async Task Put()
+        public async Task PutUpdatesUrl()
         {
             // Arrange
-            var entity = Generate();
+            var entity = await GenerateAndPersistEntityAsync();
+            var newUrl = new Uri("https://asdfasdf.example.com");
+            entity.Url = newUrl;
 
             // Act
             var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync(Urls.HttpMonitors.Post(), content);
+            var response = await _client.PutAsync(Urls.HttpMonitors.Put(entity.Id), content);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var postEntity = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
-            Assert.Equal(entity.Url, postEntity.Url);
-            Assert.IsType<Guid>(postEntity.Id);
-            Assert.NotEqual(Guid.Empty, postEntity.Id);
+            var postEntity = JsonConvert.DeserializeObject<HttpMonitorDto>(await response.Content.ReadAsStringAsync());
+            Assert.Equal(entity.Id, postEntity.Id);
+            Assert.Equal(newUrl, postEntity.Url);
+        }
+
+        [Fact]
+        public async Task PutReturnsNotFoundWhenEntityDoesNotExist()
+        {
+            // Arrange
+            var entity = Generate();
+            var id = Guid.NewGuid().ToString();
+
+            // Act
+            var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
+            var response = await _client.PutAsync(Urls.HttpMonitors.Put(id), content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         private dynamic Generate()

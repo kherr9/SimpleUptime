@@ -43,9 +43,20 @@ namespace SimpleUptime.WebApi.Controllers
         }
 
         [HttpPut, Route("{id}")]
-        public IActionResult Put(string id)
+        public async Task<IActionResult> Put(string id, [FromBody] UpdateHttpMonitor command)
         {
-            throw new NotImplementedException();
+            command.HttpMonitorId = id;
+
+            try
+            {
+                var httpMonitor = await _service.UpdateHttpMonitorAsync(command);
+
+                return Ok(httpMonitor);
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpDelete, Route("{id}")]

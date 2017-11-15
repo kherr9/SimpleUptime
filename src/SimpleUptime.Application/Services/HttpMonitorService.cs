@@ -30,7 +30,27 @@ namespace SimpleUptime.Application.Services
 
         public async Task<HttpMonitorDto> CreateHttpMonitorAsync(CreateHttpMonitor command)
         {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+
             var httpMonitor = new HttpMonitor(HttpMonitorId.Create(), command.Url);
+
+            await _repository.PutAsync(httpMonitor);
+
+            return HttpMonitorDto.CreateFrom(httpMonitor);
+        }
+
+        public async Task<HttpMonitorDto> UpdateHttpMonitorAsync(UpdateHttpMonitor command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+
+            var httpMonitor = await _repository.GetAsync(Guid.Parse(command.HttpMonitorId));
+
+            if (httpMonitor == null)
+            {
+                throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {command.HttpMonitorId}");
+            }
+
+            httpMonitor.Url = command.Url;
 
             await _repository.PutAsync(httpMonitor);
 

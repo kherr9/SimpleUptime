@@ -7,5 +7,7 @@ namespace SimpleUptime.Application.Services
         Task<HttpMonitorDto> GetHttpMonitorByIdAsync(string id);
 
         Task<HttpMonitorDto> CreateHttpMonitorAsync(CreateHttpMonitor command);
+
+        Task<HttpMonitorDto> UpdateHttpMonitorAsync(UpdateHttpMonitor command);
     }
 }
