@@ -16,6 +16,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.UnitTests", "S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F453CCEA-8797-49BD-9BDE-0B6443490825}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.IntegrationTests", "SimpleUptime.IntegrationTests\SimpleUptime.IntegrationTests.csproj", "{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,12 +36,17 @@ Global
 		{715042CC-220E-437A-BB46-AB018849BCA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{715042CC-220E-437A-BB46-AB018849BCA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{715042CC-220E-437A-BB46-AB018849BCA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{715042CC-220E-437A-BB46-AB018849BCA2} = {F453CCEA-8797-49BD-9BDE-0B6443490825}
+		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA} = {F453CCEA-8797-49BD-9BDE-0B6443490825}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D6427BC1-1AFD-4B80-A13E-77DE4CD54384}

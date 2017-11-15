@@ -4,7 +4,7 @@ using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
 using ToyStorage;
 
-namespace SimpleUptime.Infrastructure
+namespace SimpleUptime.Infrastructure.Repositories
 {
     /// <inheritdoc />
     /// <summary>
@@ -26,13 +26,13 @@ namespace SimpleUptime.Infrastructure
             return _documentCollection.GetAsync<HttpMonitor>(documentId);
         }
 
-        public Task PutAsync(HttpMonitor entity)
+        public Task PutAsync(HttpMonitor httpMonitor)
         {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            if (httpMonitor == null) throw new ArgumentNullException(nameof(httpMonitor));
 
-            var documentId = ToDocumentId(entity.Id);
+            var documentId = ToDocumentId(httpMonitor.Id);
 
-            return _documentCollection.PutAsync(entity, documentId);
+            return _documentCollection.PutAsync(httpMonitor, documentId);
         }
 
         public Task DeleteAsync(HttpMonitorId id)
