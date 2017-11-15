@@ -56,5 +56,19 @@ namespace SimpleUptime.Application.Services
 
             return HttpMonitorDto.CreateFrom(httpMonitor);
         }
+
+        public async Task DeleteHttpMonitorAsync(string id)
+        {
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            var httpMonitor = await _repository.GetAsync(Guid.Parse(id));
+
+            if (httpMonitor == null)
+            {
+                throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {id}");
+            }
+
+            await _repository.DeleteAsync(Guid.Parse(id));
+        }
     }
 }

@@ -60,9 +60,18 @@ namespace SimpleUptime.WebApi.Controllers
         }
 
         [HttpDelete, Route("{id}")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _service.DeleteHttpMonitorAsync(id);
+
+                return NoContent();
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound();
+            }
         }
     }
 }

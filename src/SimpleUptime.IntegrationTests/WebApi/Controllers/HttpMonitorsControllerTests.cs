@@ -131,6 +131,32 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
+        [Fact]
+        public async Task Delete()
+        {
+            // Arrange
+            var entity = await GenerateAndPersistEntityAsync();
+
+            // Act
+            var response = await _client.DeleteAsync(Urls.HttpMonitors.Delete(entity.Id));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteReturnsNotFoundWhenEntityDoesNotExist()
+        {
+            // Arrange
+            var entityId = Guid.NewGuid().ToString();
+
+            // Act
+            var response = await _client.DeleteAsync(Urls.HttpMonitors.Delete(entityId));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
         private dynamic Generate()
         {
             return new
