@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace SimpleUptime.Domain.Models
 {
@@ -7,9 +8,16 @@ namespace SimpleUptime.Domain.Models
     {
         public HttpMonitorId Id { get; set; }
 
-        public Uri Endpoint { get; set; }
+        public Uri Url { get; set; }
+    }
 
-        public int ExpectedStatusCode { get; set; }
+    public class HttpMonitorCheckResult
+    {
+        public HttpMonitorId HttpMonitorId { get; set; }
+
+        public HttpStatusCode HttpStatusCode { get; set; }
+        
+        public DateTime Created { get; set; }
     }
 
     public class HttpMonitorId
