@@ -1,25 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace SimpleUptime.Domain.Models
 {
-    public class HttpMonitor
-    {
-        public HttpMonitorId Id { get; set; }
-
-        public Uri Url { get; set; }
-    }
-
-    public class HttpMonitorCheckResult
-    {
-        public HttpMonitorId HttpMonitorId { get; set; }
-
-        public HttpStatusCode HttpStatusCode { get; set; }
-        
-        public DateTime Created { get; set; }
-    }
-
+    /// <summary>
+    /// Identifier of <see cref="HttpMonitor"/>
+    /// </summary>
     public class HttpMonitorId
     {
         public HttpMonitorId(Guid value)

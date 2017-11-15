@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SimpleUptime.Domain;
 using SimpleUptime.Domain.Models;
+using SimpleUptime.Domain.Repositories;
 using ToyStorage;
 
 namespace SimpleUptime.Infrastructure
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Repository for <see cref="HttpMonitor"/> using <see cref="IDocumentCollection"/>
+    /// </summary>
     public class HttpMonitorRepository : IHttpMonitorRepository
     {
         private readonly IDocumentCollection _documentCollection;
@@ -22,7 +26,7 @@ namespace SimpleUptime.Infrastructure
             return _documentCollection.GetAsync<HttpMonitor>(documentId);
         }
 
-        public Task UpdateAsync(HttpMonitor entity)
+        public Task PutAsync(HttpMonitor entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
