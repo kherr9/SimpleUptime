@@ -1,11 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.Domain", "SimpleUptime.Domain\SimpleUptime.Domain.csproj", "{B232AF76-163C-4116-9A9B-029B703311EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.Domain", "SimpleUptime.Domain\SimpleUptime.Domain.csproj", "{B232AF76-163C-4116-9A9B-029B703311EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.Infrastructure", "SimpleUptime.Infrastructure\SimpleUptime.Infrastructure.csproj", "{3F79A0C3-681D-46EC-AD00-0C2ADCC8252A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.Infrastructure", "SimpleUptime.Infrastructure\SimpleUptime.Infrastructure.csproj", "{3F79A0C3-681D-46EC-AD00-0C2ADCC8252A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{62CBC0F2-677C-4247-A445-834DBFEAD998}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
