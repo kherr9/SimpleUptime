@@ -22,9 +22,16 @@ namespace SimpleUptime.WebApi.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public IActionResult Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
-            throw new NotImplementedException();
+            var httpMonitor = await _service.GetHttpMonitorByIdAsync(id);
+
+            if (httpMonitor != null)
+            {
+                return Ok(httpMonitor);
+            }
+
+            return NotFound();
         }
 
         [HttpPost]

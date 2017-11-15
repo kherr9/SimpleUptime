@@ -55,7 +55,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task GetByIdReturnsNotFound()
         {
             // Arrange
-            var entityId = "some_id";
+            var entityId = Guid.NewGuid().ToString();
 
             // Act
             var response = await _client.GetAsync(Urls.HttpMonitors.Get(entityId));
@@ -75,8 +75,8 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var body = await response.Content.ReadAsStringAsync();
-            Assert.Equal($"{{\"\"Id:\"{entity.Id}\"}}", body);
+            var readEntity = await response.Content.ReadAsJsonAsync<HttpMonitorDto>();
+            Assert.NotNull(readEntity);
         }
 
         [Fact]
@@ -119,13 +119,22 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         {
             return new
             {
-                Url = $"https://{DateTime.UtcNow.Ticks}.example.com/"
+                Url = new Uri($"https://{DateTime.UtcNow.Ticks}.example.com/")
             };
         }
 
-        private Task<dynamic> GenerateAndPersistEntityAsync()
+        private async Task<HttpMonitorDto> GenerateAndPersistEntityAsync()
         {
-            throw new NotImplementedException();
+            var entity = Generate();
+
+            var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
+
+            using (var response = await _client.PostAsync(Urls.HttpMonitors.Post(), content))
+            {
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsJsonAsync<HttpMonitorDto>();
+            }
         }
 
         public void Dispose()

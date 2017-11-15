@@ -17,7 +17,7 @@ namespace SimpleUptime.Domain.Models
             Url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
-        public HttpMonitorId Id { get; }
+        public HttpMonitorId Id { get; set; }
 
         public Uri Url { get; set; }
     }

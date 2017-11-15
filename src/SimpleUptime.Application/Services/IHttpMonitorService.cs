@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
-using SimpleUptime.Domain.Models;
 
 namespace SimpleUptime.Application.Services
 {
     public interface IHttpMonitorService
     {
+        Task<HttpMonitorDto> GetHttpMonitorByIdAsync(string id);
+
         Task<HttpMonitorDto> CreateHttpMonitorAsync(CreateHttpMonitor command);
     }
 }

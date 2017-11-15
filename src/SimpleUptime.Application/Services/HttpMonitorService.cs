@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
@@ -13,17 +14,27 @@ namespace SimpleUptime.Application.Services
             _repository = repository;
         }
 
+        public async Task<HttpMonitorDto> GetHttpMonitorByIdAsync(string id)
+        {
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            var httpMonitor = await _repository.GetAsync(Guid.Parse(id));
+
+            if (httpMonitor != null)
+            {
+                return HttpMonitorDto.CreateFrom(httpMonitor);
+            }
+
+            return null;
+        }
+
         public async Task<HttpMonitorDto> CreateHttpMonitorAsync(CreateHttpMonitor command)
         {
             var httpMonitor = new HttpMonitor(HttpMonitorId.Create(), command.Url);
 
             await _repository.PutAsync(httpMonitor);
 
-            return new HttpMonitorDto()
-            {
-                Id = httpMonitor.Id.Value.ToString(),
-                Url = httpMonitor.Url.ToString()
-            };
+            return HttpMonitorDto.CreateFrom(httpMonitor);
         }
     }
 }
