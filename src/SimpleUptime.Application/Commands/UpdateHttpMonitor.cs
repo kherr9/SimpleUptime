@@ -1,6 +1,6 @@
 using System;
 
-namespace SimpleUptime.Application.Services
+namespace SimpleUptime.Application.Commands
 {
     public class UpdateHttpMonitor
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
-using SimpleUptime.Application.Services;
+using SimpleUptime.Application.Models;
 using SimpleUptime.WebApi;
 using Xunit;
 
@@ -183,16 +183,6 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         {
             _server?.Dispose();
             _client?.Dispose();
-        }
-    }
-
-    public static class HttpContentExtension
-    {
-        public static async Task<TModel> ReadAsJsonAsync<TModel>(this HttpContent content)
-        {
-            var json = await content.ReadAsStringAsync();
-
-            return JsonConvert.DeserializeObject<TModel>(json);
         }
     }
 }
