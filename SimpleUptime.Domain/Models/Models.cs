@@ -32,7 +32,7 @@ namespace SimpleUptime.Domain.Models
         {
             return Value.ToString();
         }
-        
+
         public static HttpMonitorId Create()
         {
             return new HttpMonitorId(Guid.NewGuid());
@@ -40,9 +40,8 @@ namespace SimpleUptime.Domain.Models
 
         public override bool Equals(object obj)
         {
-            var id = obj as HttpMonitorId;
-            return id != null &&
-                   Value.Equals(id.Value);
+            return obj is HttpMonitorId id
+                && Value.Equals(id.Value);
         }
 
         public override int GetHashCode()
