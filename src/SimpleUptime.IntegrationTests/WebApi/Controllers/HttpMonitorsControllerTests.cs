@@ -23,32 +23,32 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             _client = _server.CreateClient();
         }
 
-        [Fact]
-        public async Task GetWhenNoneReturnsEmpty()
-        {
-            // Act
-            var result = await _client.GetAsync(Urls.HttpMonitors.Get());
+        ////[Fact]
+        ////public async Task GetWhenNoneReturnsEmpty()
+        ////{
+        ////    // Act
+        ////    var result = await _client.GetAsync(Urls.HttpMonitors.Get());
 
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            var body = await result.Content.ReadAsStringAsync();
-            Assert.Equal("[]", body);
-        }
+        ////    // Assert
+        ////    Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        ////    var body = await result.Content.ReadAsStringAsync();
+        ////    Assert.Equal("[]", body);
+        ////}
 
-        [Fact]
-        public async Task GetWhenSingle()
-        {
-            // Arrange
-            var entity = await GenerateAndPersistEntityAsync();
+        ////[Fact]
+        ////public async Task GetWhenSingle()
+        ////{
+        ////    // Arrange
+        ////    var entity = await GenerateAndPersistEntityAsync();
 
-            // Act
-            var response = await _client.GetAsync(Urls.HttpMonitors.Get());
+        ////    // Act
+        ////    var response = await _client.GetAsync(Urls.HttpMonitors.Get());
 
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var body = await response.Content.ReadAsStringAsync();
-            Assert.Equal($"[{{\"\"Id:\"{entity.Id}\"}}]", body);
-        }
+        ////    // Assert
+        ////    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        ////    var body = await response.Content.ReadAsStringAsync();
+        ////    Assert.Equal($"[{{\"\"Id:\"{entity.Id}\"}}]", body);
+        ////}
 
         [Fact]
         public async Task GetByIdReturnsNotFound()

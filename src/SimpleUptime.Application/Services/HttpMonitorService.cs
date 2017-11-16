@@ -11,23 +11,16 @@ namespace SimpleUptime.Application.Services
     {
         private readonly IHttpMonitorRepository _repository;
 
-        private static readonly Task<HttpMonitor> NullHttpMonitorTask = Task.FromResult<HttpMonitor>(null);
-
         public HttpMonitorService(IHttpMonitorRepository repository)
         {
             _repository = repository;
         }
 
-        public Task<HttpMonitor> GetHttpMonitorByIdAsync(string id)
+        public Task<HttpMonitor> GetHttpMonitorByIdAsync(HttpMonitorId httpMonitorId)
         {
-            if (id == null) throw new ArgumentNullException(nameof(id));
+            if (httpMonitorId == null) throw new ArgumentNullException(nameof(httpMonitorId));
 
-            if (Guid.TryParse(id, out var guid))
-            {
-                return _repository.GetAsync(guid);
-            }
-
-            return NullHttpMonitorTask;
+            return _repository.GetAsync(httpMonitorId);
         }
 
         public async Task<HttpMonitor> CreateHttpMonitorAsync(CreateHttpMonitor command)
@@ -45,44 +38,32 @@ namespace SimpleUptime.Application.Services
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
 
-            if (Guid.TryParse(command.HttpMonitorId, out var guid))
+            var httpMonitor = await _repository.GetAsync(command.HttpMonitorId);
+
+            if (httpMonitor == null)
             {
-                var httpMonitor = await _repository.GetAsync(guid);
-
-                if (httpMonitor == null)
-                {
-                    throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {command.HttpMonitorId}");
-                }
-
-                httpMonitor.Url = command.Url;
-
-                await _repository.PutAsync(httpMonitor);
-
-                return httpMonitor;
+                throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {command.HttpMonitorId}");
             }
 
-            throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {command.HttpMonitorId}");
+            httpMonitor.Url = command.Url;
+
+            await _repository.PutAsync(httpMonitor);
+
+            return httpMonitor;
         }
 
-        public async Task DeleteHttpMonitorAsync(string id)
+        public async Task DeleteHttpMonitorAsync(HttpMonitorId httpMonitorId)
         {
-            if (id == null) throw new ArgumentNullException(nameof(id));
+            if (httpMonitorId == null) throw new ArgumentNullException(nameof(httpMonitorId));
 
-            if (Guid.TryParse(id, out var guid))
+            var httpMonitor = await _repository.GetAsync(httpMonitorId);
+
+            if (httpMonitor == null)
             {
-                var httpMonitor = await _repository.GetAsync(guid);
-
-                if (httpMonitor == null)
-                {
-                    throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {id}");
-                }
-
-                await _repository.DeleteAsync(guid);
+                throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {httpMonitorId}");
             }
-            else
-            {
-                throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {id}");
-            }
+
+            await _repository.DeleteAsync(httpMonitorId);
         }
     }
 }

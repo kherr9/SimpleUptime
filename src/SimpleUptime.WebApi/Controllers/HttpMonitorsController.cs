@@ -25,15 +25,15 @@ namespace SimpleUptime.WebApi.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpGet, Route("{id}")]
-        public async Task<IActionResult> Get([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId id)
+        [HttpGet, Route("{httpMonitorId}")]
+        public async Task<IActionResult> Get([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId httpMonitorId)
         {
-            if (id == null)
+            if (httpMonitorId == null)
             {
                 return NotFound();
             }
 
-            var httpMonitor = await _service.GetHttpMonitorByIdAsync(id.Value.ToString());
+            var httpMonitor = await _service.GetHttpMonitorByIdAsync(httpMonitorId);
 
             if (httpMonitor != null)
             {
@@ -51,15 +51,15 @@ namespace SimpleUptime.WebApi.Controllers
             return Ok(httpMonitor);
         }
 
-        [HttpPut, Route("{id}")]
-        public async Task<IActionResult> Put([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId id, [FromBody] UpdateHttpMonitor command)
+        [HttpPut, Route("{httpMonitorId}")]
+        public async Task<IActionResult> Put([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId httpMonitorId, [FromBody] UpdateHttpMonitor command)
         {
-            if (id == null)
+            if (httpMonitorId == null)
             {
                 return NotFound();
             }
 
-            command.HttpMonitorId = id.ToString();
+            command.HttpMonitorId = httpMonitorId;
 
             try
             {
@@ -73,17 +73,17 @@ namespace SimpleUptime.WebApi.Controllers
             }
         }
 
-        [HttpDelete, Route("{id}")]
-        public async Task<IActionResult> Delete([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId id)
+        [HttpDelete, Route("{httpMonitorId}")]
+        public async Task<IActionResult> Delete([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId httpMonitorId)
         {
-            if (id == null)
+            if (httpMonitorId == null)
             {
                 return NotFound();
             }
 
             try
             {
-                await _service.DeleteHttpMonitorAsync(id.ToString());
+                await _service.DeleteHttpMonitorAsync(httpMonitorId);
 
                 return NoContent();
             }

@@ -6,12 +6,12 @@ namespace SimpleUptime.Application.Services
 {
     public interface IHttpMonitorService
     {
-        Task<HttpMonitor> GetHttpMonitorByIdAsync(string id);
+        Task<HttpMonitor> GetHttpMonitorByIdAsync(HttpMonitorId httpMonitorId);
 
         Task<HttpMonitor> CreateHttpMonitorAsync(CreateHttpMonitor command);
 
         Task<HttpMonitor> UpdateHttpMonitorAsync(UpdateHttpMonitor command);
 
-        Task DeleteHttpMonitorAsync(string id);
+        Task DeleteHttpMonitorAsync(HttpMonitorId httpMonitorId);
     }
 }

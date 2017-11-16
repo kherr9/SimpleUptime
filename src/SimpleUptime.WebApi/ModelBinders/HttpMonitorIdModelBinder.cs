@@ -14,7 +14,7 @@ namespace SimpleUptime.WebApi.ModelBinders
             var modelName = bindingContext.BinderModelName;
             if (string.IsNullOrEmpty(modelName))
             {
-                modelName = "id";
+                modelName = nameof(HttpMonitorId);
             }
 
             var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
