@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SimpleUptime.Application.Commands;
 using SimpleUptime.Application.Exceptions;
 using SimpleUptime.Application.Services;
+using SimpleUptime.Domain.Models;
 
 namespace SimpleUptime.WebApi.Controllers
 {

@@ -64,6 +64,19 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         }
 
         [Fact]
+        public async Task GetByIdWhenIdIsIntegerReturnsNotFound()
+        {
+            // Arrange
+            var entityId = 15674;
+
+            // Act
+            var response = await _client.GetAsync(Urls.HttpMonitors.Get(entityId.ToString()));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
         public async Task GetById()
         {
             // Arrange
@@ -131,6 +144,21 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         }
 
         [Fact]
+        public async Task PutWhenIdIsIntegerReturnsNotFound()
+        {
+            // Arrange
+            var entity = Generate();
+            var id = 13543;
+
+            // Act
+            var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
+            var response = await _client.PutAsync(Urls.HttpMonitors.Put(id.ToString()), content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
         public async Task Delete()
         {
             // Arrange
@@ -151,6 +179,19 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 
             // Act
             var response = await _client.DeleteAsync(Urls.HttpMonitors.Delete(entityId));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteWhenIdIsIntegerReturnsNotFound()
+        {
+            // Arrange
+            var entityId = 15264;
+
+            // Act
+            var response = await _client.DeleteAsync(Urls.HttpMonitors.Delete(entityId.ToString()));
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
