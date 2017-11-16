@@ -25,26 +25,26 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
         }
 
         [Fact]
-        public async Task GetReturnsEntity()
+        public async Task GetByIdReturnsEntity()
         {
             // Arrange
             var existingEntity = await GenerateAndPersistHttpMonitorAsync();
 
             // Act
-            var entity = await _repository.GetAsync(existingEntity.Id);
+            var entity = await _repository.GetByIdAsync(existingEntity.Id);
 
             // Assert
             Assert.Equal(existingEntity.Id, entity.Id);
         }
 
         [Fact]
-        public async Task GetReturnsNullWhenNotFound()
+        public async Task GetByIdReturnsNullWhenNotFound()
         {
             // Arrange
             var id = HttpMonitorId.Create();
 
             // Act
-            var entity = await _repository.GetAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
 
             // Assert
             Assert.Null(entity);
@@ -70,7 +70,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
             await _repository.PutAsync(entity);
 
             // Assert
-            var readEntity = await _repository.GetAsync(entity.Id);
+            var readEntity = await _repository.GetByIdAsync(entity.Id);
             Assert.Equal(readEntity.Id, entity.Id);
         }
 
@@ -86,7 +86,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
             await _repository.PutAsync(entity);
 
             // Assert
-            var readEntity = await _repository.GetAsync(entity.Id);
+            var readEntity = await _repository.GetByIdAsync(entity.Id);
             Assert.Equal(newUrl, readEntity.Url);
         }
 
@@ -100,7 +100,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
             await _repository.DeleteAsync(entity.Id);
 
             // Assert
-            var readEntity = await _repository.GetAsync(entity.Id);
+            var readEntity = await _repository.GetByIdAsync(entity.Id);
             Assert.Null(readEntity);
         }
 

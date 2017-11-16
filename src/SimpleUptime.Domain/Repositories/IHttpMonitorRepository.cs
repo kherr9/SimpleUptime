@@ -13,7 +13,7 @@ namespace SimpleUptime.Domain.Repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<HttpMonitor> GetAsync(HttpMonitorId id);
+        Task<HttpMonitor> GetByIdAsync(HttpMonitorId id);
 
         /// <summary>
         /// Create or update <see cref="HttpMonitor"/>

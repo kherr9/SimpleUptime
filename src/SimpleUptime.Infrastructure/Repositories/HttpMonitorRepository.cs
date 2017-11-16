@@ -19,7 +19,7 @@ namespace SimpleUptime.Infrastructure.Repositories
             _documentCollection = documentCollection;
         }
 
-        public Task<HttpMonitor> GetAsync(HttpMonitorId id)
+        public Task<HttpMonitor> GetByIdAsync(HttpMonitorId id)
         {
             var documentId = ToDocumentId(id);
 

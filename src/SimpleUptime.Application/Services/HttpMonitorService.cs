@@ -20,7 +20,7 @@ namespace SimpleUptime.Application.Services
         {
             if (httpMonitorId == null) throw new ArgumentNullException(nameof(httpMonitorId));
 
-            return _repository.GetAsync(httpMonitorId);
+            return _repository.GetByIdAsync(httpMonitorId);
         }
 
         public async Task<HttpMonitor> CreateHttpMonitorAsync(CreateHttpMonitor command)
@@ -38,7 +38,7 @@ namespace SimpleUptime.Application.Services
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
 
-            var httpMonitor = await _repository.GetAsync(command.HttpMonitorId);
+            var httpMonitor = await _repository.GetByIdAsync(command.HttpMonitorId);
 
             if (httpMonitor == null)
             {
@@ -56,7 +56,7 @@ namespace SimpleUptime.Application.Services
         {
             if (httpMonitorId == null) throw new ArgumentNullException(nameof(httpMonitorId));
 
-            var httpMonitor = await _repository.GetAsync(httpMonitorId);
+            var httpMonitor = await _repository.GetByIdAsync(httpMonitorId);
 
             if (httpMonitor == null)
             {
