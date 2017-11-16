@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -64,10 +65,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         }
 
         [Theory]
-        [InlineData("foo")]
-        [InlineData(1)]
-        [InlineData(-1)]
-        [InlineData("00000000-0000-0000-0000-000000000000")]
+        [MemberData(nameof(InvalidHttpMonitorIds))]
         public async Task GetByIdReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Act
@@ -145,10 +143,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         }
 
         [Theory]
-        [InlineData("foo")]
-        [InlineData(1)]
-        [InlineData(-1)]
-        [InlineData("00000000-0000-0000-0000-000000000000")]
+        [MemberData(nameof(InvalidHttpMonitorIds))]
         public async Task PutReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Arrange
@@ -189,10 +184,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         }
 
         [Theory]
-        [InlineData("foo")]
-        [InlineData(1)]
-        [InlineData(-1)]
-        [InlineData("00000000-0000-0000-0000-000000000000")]
+        [MemberData(nameof(InvalidHttpMonitorIds))]
         public async Task DeleteReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Act
@@ -222,6 +214,18 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 
                 return await response.Content.ReadAsJsonAsync<HttpMonitorDto>();
             }
+        }
+
+        private static IEnumerable<object[]> InvalidHttpMonitorIds()
+        {
+            yield return new object[] { "foo" };
+            yield return new object[] { 1 };
+            yield return new object[] { 0 };
+            yield return new object[] { -1 };
+            yield return new object[] { int.MaxValue };
+            yield return new object[] { long.MaxValue };
+            yield return new object[] { DateTime.UtcNow };
+            yield return new object[] { Guid.Empty.ToString() };
         }
 
         public void Dispose()
