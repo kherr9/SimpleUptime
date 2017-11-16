@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using SimpleUptime.Application.Commands;
 using SimpleUptime.Application.Exceptions;
-using SimpleUptime.Application.Models;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
 
@@ -17,21 +16,14 @@ namespace SimpleUptime.Application.Services
             _repository = repository;
         }
 
-        public async Task<HttpMonitorDto> GetHttpMonitorByIdAsync(string id)
+        public Task<HttpMonitor> GetHttpMonitorByIdAsync(string id)
         {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
-            var httpMonitor = await _repository.GetAsync(Guid.Parse(id));
-
-            if (httpMonitor != null)
-            {
-                return HttpMonitorDto.CreateFrom(httpMonitor);
-            }
-
-            return null;
+            return _repository.GetAsync(Guid.Parse(id));
         }
 
-        public async Task<HttpMonitorDto> CreateHttpMonitorAsync(CreateHttpMonitor command)
+        public async Task<HttpMonitor> CreateHttpMonitorAsync(CreateHttpMonitor command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
 
@@ -39,10 +31,10 @@ namespace SimpleUptime.Application.Services
 
             await _repository.PutAsync(httpMonitor);
 
-            return HttpMonitorDto.CreateFrom(httpMonitor);
+            return httpMonitor;
         }
 
-        public async Task<HttpMonitorDto> UpdateHttpMonitorAsync(UpdateHttpMonitor command)
+        public async Task<HttpMonitor> UpdateHttpMonitorAsync(UpdateHttpMonitor command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
 
@@ -57,7 +49,7 @@ namespace SimpleUptime.Application.Services
 
             await _repository.PutAsync(httpMonitor);
 
-            return HttpMonitorDto.CreateFrom(httpMonitor);
+            return httpMonitor;
         }
 
         public async Task DeleteHttpMonitorAsync(string id)

@@ -7,6 +7,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
+using SimpleUptime.Infrastructure.JsonConverters;
 using SimpleUptime.Infrastructure.Middlewares;
 using SimpleUptime.Infrastructure.Repositories;
 using ToyStorage;
@@ -26,7 +27,8 @@ namespace SimpleUptime.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(opt => opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter()));
 
             services.AddTransient<IHttpMonitorService, HttpMonitorService>();
             services.AddTransient<IHttpMonitorRepository, HttpMonitorRepository>();
