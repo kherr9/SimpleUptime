@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using SimpleUptime.Application.Commands;
 using SimpleUptime.Application.Exceptions;
 using SimpleUptime.Application.Services;
+using SimpleUptime.Domain.Models;
+using SimpleUptime.WebApi.ModelBinders;
 
 namespace SimpleUptime.WebApi.Controllers
 {
@@ -23,10 +25,10 @@ namespace SimpleUptime.WebApi.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpGet, Route("{id}")]
-        public async Task<IActionResult> Get(string id)
+        [HttpGet, Route("{httpMonitorId:HttpMonitorId}")]
+        public async Task<IActionResult> Get(HttpMonitorId httpMonitorId)
         {
-            var httpMonitor = await _service.GetHttpMonitorByIdAsync(id);
+            var httpMonitor = await _service.GetHttpMonitorByIdAsync(httpMonitorId);
 
             if (httpMonitor != null)
             {
@@ -44,10 +46,10 @@ namespace SimpleUptime.WebApi.Controllers
             return Ok(httpMonitor);
         }
 
-        [HttpPut, Route("{id}")]
-        public async Task<IActionResult> Put(string id, [FromBody] UpdateHttpMonitor command)
+        [HttpPut, Route("{httpMonitorId:HttpMonitorId}")]
+        public async Task<IActionResult> Put(HttpMonitorId httpMonitorId, [FromBody] UpdateHttpMonitor command)
         {
-            command.HttpMonitorId = id;
+            command.HttpMonitorId = httpMonitorId;
 
             try
             {
@@ -61,12 +63,12 @@ namespace SimpleUptime.WebApi.Controllers
             }
         }
 
-        [HttpDelete, Route("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete, Route("{httpMonitorId:HttpMonitorId}")]
+        public async Task<IActionResult> Delete(HttpMonitorId httpMonitorId)
         {
             try
             {
-                await _service.DeleteHttpMonitorAsync(id);
+                await _service.DeleteHttpMonitorAsync(httpMonitorId);
 
                 return NoContent();
             }

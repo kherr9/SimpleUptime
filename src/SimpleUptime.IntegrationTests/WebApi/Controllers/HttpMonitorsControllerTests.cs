@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -6,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
-using SimpleUptime.Application.Models;
 using SimpleUptime.WebApi;
 using Xunit;
 
@@ -24,32 +24,32 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             _client = _server.CreateClient();
         }
 
-        [Fact]
-        public async Task GetWhenNoneReturnsEmpty()
-        {
-            // Act
-            var result = await _client.GetAsync(Urls.HttpMonitors.Get());
+        ////[Fact]
+        ////public async Task GetWhenNoneReturnsEmpty()
+        ////{
+        ////    // Act
+        ////    var result = await _client.GetAsync(Urls.HttpMonitors.Get());
 
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            var body = await result.Content.ReadAsStringAsync();
-            Assert.Equal("[]", body);
-        }
+        ////    // Assert
+        ////    Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        ////    var body = await result.Content.ReadAsStringAsync();
+        ////    Assert.Equal("[]", body);
+        ////}
 
-        [Fact]
-        public async Task GetWhenSingle()
-        {
-            // Arrange
-            var entity = await GenerateAndPersistEntityAsync();
+        ////[Fact]
+        ////public async Task GetWhenSingle()
+        ////{
+        ////    // Arrange
+        ////    var entity = await GenerateAndPersistEntityAsync();
 
-            // Act
-            var response = await _client.GetAsync(Urls.HttpMonitors.Get());
+        ////    // Act
+        ////    var response = await _client.GetAsync(Urls.HttpMonitors.Get());
 
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var body = await response.Content.ReadAsStringAsync();
-            Assert.Equal($"[{{\"\"Id:\"{entity.Id}\"}}]", body);
-        }
+        ////    // Assert
+        ////    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        ////    var body = await response.Content.ReadAsStringAsync();
+        ////    Assert.Equal($"[{{\"\"Id:\"{entity.Id}\"}}]", body);
+        ////}
 
         [Fact]
         public async Task GetByIdReturnsNotFound()
@@ -59,6 +59,17 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 
             // Act
             var response = await _client.GetAsync(Urls.HttpMonitors.Get(entityId));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidHttpMonitorIds))]
+        public async Task GetByIdReturnsNotFoundWhenIdNotValidFormat(object id)
+        {
+            // Act
+            var response = await _client.GetAsync(Urls.HttpMonitors.Get(id.ToString()));
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -131,6 +142,21 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
+        [Theory]
+        [MemberData(nameof(InvalidHttpMonitorIds))]
+        public async Task PutReturnsNotFoundWhenIdNotValidFormat(object id)
+        {
+            // Arrange
+            var entity = Generate();
+
+            // Act
+            var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
+            var response = await _client.PutAsync(Urls.HttpMonitors.Put(id.ToString()), content);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
         [Fact]
         public async Task Delete()
         {
@@ -157,6 +183,17 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
+        [Theory]
+        [MemberData(nameof(InvalidHttpMonitorIds))]
+        public async Task DeleteReturnsNotFoundWhenIdNotValidFormat(object id)
+        {
+            // Act
+            var response = await _client.DeleteAsync(Urls.HttpMonitors.Delete(id.ToString()));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
         private dynamic Generate()
         {
             return new
@@ -177,6 +214,18 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 
                 return await response.Content.ReadAsJsonAsync<HttpMonitorDto>();
             }
+        }
+
+        private static IEnumerable<object[]> InvalidHttpMonitorIds()
+        {
+            yield return new object[] { "foo" };
+            yield return new object[] { 1 };
+            yield return new object[] { 0 };
+            yield return new object[] { -1 };
+            yield return new object[] { int.MaxValue };
+            yield return new object[] { long.MaxValue };
+            yield return new object[] { DateTime.UtcNow };
+            yield return new object[] { Guid.Empty.ToString() };
         }
 
         public void Dispose()

@@ -1,17 +1,17 @@
 ﻿using System.Threading.Tasks;
 using SimpleUptime.Application.Commands;
-using SimpleUptime.Application.Models;
+using SimpleUptime.Domain.Models;
 
 namespace SimpleUptime.Application.Services
 {
     public interface IHttpMonitorService
     {
-        Task<HttpMonitorDto> GetHttpMonitorByIdAsync(string id);
+        Task<HttpMonitor> GetHttpMonitorByIdAsync(HttpMonitorId httpMonitorId);
 
-        Task<HttpMonitorDto> CreateHttpMonitorAsync(CreateHttpMonitor command);
+        Task<HttpMonitor> CreateHttpMonitorAsync(CreateHttpMonitor command);
 
-        Task<HttpMonitorDto> UpdateHttpMonitorAsync(UpdateHttpMonitor command);
+        Task<HttpMonitor> UpdateHttpMonitorAsync(UpdateHttpMonitor command);
 
-        Task DeleteHttpMonitorAsync(string id);
+        Task DeleteHttpMonitorAsync(HttpMonitorId httpMonitorId);
     }
 }

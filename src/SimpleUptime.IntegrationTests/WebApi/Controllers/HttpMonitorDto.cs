@@ -1,7 +1,7 @@
 using System;
 using SimpleUptime.Domain.Models;
 
-namespace SimpleUptime.Application.Models
+namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 {
     public class HttpMonitorDto
     {
