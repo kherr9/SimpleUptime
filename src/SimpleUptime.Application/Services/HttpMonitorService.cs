@@ -45,7 +45,7 @@ namespace SimpleUptime.Application.Services
                 throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {command.HttpMonitorId}");
             }
 
-            httpMonitor.Url = command.Url;
+            httpMonitor.Update(command.Url);
 
             await _repository.PutAsync(httpMonitor);
 
