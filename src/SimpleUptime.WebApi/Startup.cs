@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
@@ -10,6 +11,7 @@ using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Infrastructure.JsonConverters;
 using SimpleUptime.Infrastructure.Middlewares;
 using SimpleUptime.Infrastructure.Repositories;
+using SimpleUptime.WebApi.RouteConstraints;
 using ToyStorage;
 // ReSharper disable RedundantTypeArgumentsOfMethod
 
@@ -29,6 +31,11 @@ namespace SimpleUptime.WebApi
         {
             services.AddMvc()
                 .AddJsonOptions(opt => opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter()));
+
+            services.Configure<RouteOptions>(options =>
+            {
+                options.ConstraintMap.Add(HttpMonitorIdRouteConstraint.RouteLabel, typeof(HttpMonitorIdRouteConstraint));
+            });
 
             services.AddTransient<IHttpMonitorService, HttpMonitorService>();
             services.AddTransient<IHttpMonitorRepository, HttpMonitorRepository>();

@@ -25,14 +25,9 @@ namespace SimpleUptime.WebApi.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpGet, Route("{httpMonitorId}")]
+        [HttpGet, Route("{httpMonitorId:HttpMonitorId}")]
         public async Task<IActionResult> Get([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId httpMonitorId)
         {
-            if (httpMonitorId == null)
-            {
-                return NotFound();
-            }
-
             var httpMonitor = await _service.GetHttpMonitorByIdAsync(httpMonitorId);
 
             if (httpMonitor != null)
@@ -51,14 +46,9 @@ namespace SimpleUptime.WebApi.Controllers
             return Ok(httpMonitor);
         }
 
-        [HttpPut, Route("{httpMonitorId}")]
+        [HttpPut, Route("{httpMonitorId:HttpMonitorId}")]
         public async Task<IActionResult> Put([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId httpMonitorId, [FromBody] UpdateHttpMonitor command)
         {
-            if (httpMonitorId == null)
-            {
-                return NotFound();
-            }
-
             command.HttpMonitorId = httpMonitorId;
 
             try
@@ -73,14 +63,9 @@ namespace SimpleUptime.WebApi.Controllers
             }
         }
 
-        [HttpDelete, Route("{httpMonitorId}")]
+        [HttpDelete, Route("{httpMonitorId:HttpMonitorId}")]
         public async Task<IActionResult> Delete([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId httpMonitorId)
         {
-            if (httpMonitorId == null)
-            {
-                return NotFound();
-            }
-
             try
             {
                 await _service.DeleteHttpMonitorAsync(httpMonitorId);
