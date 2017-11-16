@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
 
 namespace SimpleUptime.Domain.Repositories
@@ -8,6 +9,12 @@ namespace SimpleUptime.Domain.Repositories
     /// </summary>
     public interface IHttpMonitorRepository
     {
+        /// <summary>
+        /// Fetch all <see cref="HttpMonitor"/>
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<HttpMonitor>> GetAsync();
+
         /// <summary>
         /// Fetch <see cref="HttpMonitor"/> by id
         /// </summary>

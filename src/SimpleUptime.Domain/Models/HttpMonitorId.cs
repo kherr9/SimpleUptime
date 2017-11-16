@@ -47,5 +47,29 @@ namespace SimpleUptime.Domain.Models
         {
             return new HttpMonitorId(value);
         }
+
+        public static bool operator ==(HttpMonitorId x, HttpMonitorId y)
+        {
+            // Check for null on left side.
+            if (ReferenceEquals(x, null))
+            {
+                if (ReferenceEquals(y, null))
+                {
+                    // null == null = true.
+                    return true;
+                }
+
+                // Only the left side is null.
+                return false;
+            }
+
+            // Equals handles case of null on right side.
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(HttpMonitorId x, HttpMonitorId y)
+        {
+            return !(x == y);
+        }
     }
 }

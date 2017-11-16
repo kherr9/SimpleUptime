@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
@@ -13,38 +15,62 @@ namespace SimpleUptime.Infrastructure.Repositories
     public class HttpMonitorRepository : IHttpMonitorRepository
     {
         private readonly IDocumentCollection _documentCollection;
+        private static readonly string DocumentId = nameof(HttpMonitor).ToLowerInvariant();
 
         public HttpMonitorRepository(IDocumentCollection documentCollection)
         {
             _documentCollection = documentCollection;
         }
 
-        public Task<HttpMonitor> GetByIdAsync(HttpMonitorId id)
+        public async Task<IEnumerable<HttpMonitor>> GetAsync()
         {
-            var documentId = ToDocumentId(id);
+            var dict = await InnerGetAsync();
 
-            return _documentCollection.GetAsync<HttpMonitor>(documentId);
+            return dict.Values;
         }
 
-        public Task PutAsync(HttpMonitor httpMonitor)
+        public async Task<HttpMonitor> GetByIdAsync(HttpMonitorId id)
+        {
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            var dict = await InnerGetAsync();
+
+            return dict.Values.FirstOrDefault(x => x.Id == id);
+        }
+
+        public async Task PutAsync(HttpMonitor httpMonitor)
         {
             if (httpMonitor == null) throw new ArgumentNullException(nameof(httpMonitor));
 
-            var documentId = ToDocumentId(httpMonitor.Id);
+            var dict = await InnerGetAsync();
 
-            return _documentCollection.PutAsync(httpMonitor, documentId);
+            dict[httpMonitor.Id] = httpMonitor;
+
+            await InnerWriteAsync(dict);
         }
 
-        public Task DeleteAsync(HttpMonitorId id)
+        public async Task DeleteAsync(HttpMonitorId id)
         {
-            var documentId = ToDocumentId(id);
+            if (id == null) throw new ArgumentNullException(nameof(id));
 
-            return _documentCollection.DeleteAsync(documentId);
+            var dict = await InnerGetAsync();
+
+            if (dict.Remove(id))
+            {
+                await InnerWriteAsync(dict);
+            }
         }
 
-        private static string ToDocumentId(HttpMonitorId id)
+        private async Task<Dictionary<HttpMonitorId, HttpMonitor>> InnerGetAsync()
         {
-            return id.Value.ToString();
+            return ((await _documentCollection.GetAsync<KeyValuePair<HttpMonitorId, HttpMonitor>[]>(DocumentId)) ?? new KeyValuePair<HttpMonitorId, HttpMonitor>[0]).ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        private Task InnerWriteAsync(Dictionary<HttpMonitorId, HttpMonitor> dict)
+        {
+            if (dict == null) throw new ArgumentNullException(nameof(dict));
+
+            return _documentCollection.PutAsync(dict.ToArray(), DocumentId);
         }
     }
 }
