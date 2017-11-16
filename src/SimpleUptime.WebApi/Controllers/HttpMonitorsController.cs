@@ -5,6 +5,7 @@ using SimpleUptime.Application.Commands;
 using SimpleUptime.Application.Exceptions;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Models;
+using SimpleUptime.WebApi.ModelBinders;
 
 namespace SimpleUptime.WebApi.Controllers
 {
@@ -25,9 +26,14 @@ namespace SimpleUptime.WebApi.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId id)
         {
-            var httpMonitor = await _service.GetHttpMonitorByIdAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var httpMonitor = await _service.GetHttpMonitorByIdAsync(id.Value.ToString());
 
             if (httpMonitor != null)
             {
@@ -46,9 +52,14 @@ namespace SimpleUptime.WebApi.Controllers
         }
 
         [HttpPut, Route("{id}")]
-        public async Task<IActionResult> Put(string id, [FromBody] UpdateHttpMonitor command)
+        public async Task<IActionResult> Put([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId id, [FromBody] UpdateHttpMonitor command)
         {
-            command.HttpMonitorId = id;
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            command.HttpMonitorId = id.ToString();
 
             try
             {
@@ -63,11 +74,16 @@ namespace SimpleUptime.WebApi.Controllers
         }
 
         [HttpDelete, Route("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             try
             {
-                await _service.DeleteHttpMonitorAsync(id);
+                await _service.DeleteHttpMonitorAsync(id.ToString());
 
                 return NoContent();
             }

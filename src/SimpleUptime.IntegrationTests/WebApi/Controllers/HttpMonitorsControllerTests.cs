@@ -63,14 +63,15 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [Fact]
-        public async Task GetByIdWhenIdIsIntegerReturnsNotFound()
+        [Theory]
+        [InlineData("foo")]
+        [InlineData(1)]
+        [InlineData(-1)]
+        [InlineData("00000000-0000-0000-0000-000000000000")]
+        public async Task GetByIdReturnsNotFoundWhenIdNotValidFormat(object id)
         {
-            // Arrange
-            var entityId = 15674;
-
             // Act
-            var response = await _client.GetAsync(Urls.HttpMonitors.Get(entityId.ToString()));
+            var response = await _client.GetAsync(Urls.HttpMonitors.Get(id.ToString()));
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -143,12 +144,15 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [Fact]
-        public async Task PutWhenIdIsIntegerReturnsNotFound()
+        [Theory]
+        [InlineData("foo")]
+        [InlineData(1)]
+        [InlineData(-1)]
+        [InlineData("00000000-0000-0000-0000-000000000000")]
+        public async Task PutReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Arrange
             var entity = Generate();
-            var id = 13543;
 
             // Act
             var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
@@ -184,14 +188,15 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [Fact]
-        public async Task DeleteWhenIdIsIntegerReturnsNotFound()
+        [Theory]
+        [InlineData("foo")]
+        [InlineData(1)]
+        [InlineData(-1)]
+        [InlineData("00000000-0000-0000-0000-000000000000")]
+        public async Task DeleteReturnsNotFoundWhenIdNotValidFormat(object id)
         {
-            // Arrange
-            var entityId = 15264;
-
             // Act
-            var response = await _client.DeleteAsync(Urls.HttpMonitors.Delete(entityId.ToString()));
+            var response = await _client.DeleteAsync(Urls.HttpMonitors.Delete(id.ToString()));
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
