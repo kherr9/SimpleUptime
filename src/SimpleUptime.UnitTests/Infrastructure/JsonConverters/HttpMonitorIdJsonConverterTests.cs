@@ -38,6 +38,7 @@ namespace SimpleUptime.UnitTests.Infrastructure.JsonConverters
 
         private class Entity
         {
+            // ReSharper disable once MemberCanBePrivate.Local
             public HttpMonitorId Id { get; set; }
 
             public static Entity GeneratEntity()
