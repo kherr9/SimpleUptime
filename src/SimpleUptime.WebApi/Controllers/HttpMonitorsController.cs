@@ -26,7 +26,7 @@ namespace SimpleUptime.WebApi.Controllers
         }
 
         [HttpGet, Route("{httpMonitorId:HttpMonitorId}")]
-        public async Task<IActionResult> Get([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId httpMonitorId)
+        public async Task<IActionResult> Get(HttpMonitorId httpMonitorId)
         {
             var httpMonitor = await _service.GetHttpMonitorByIdAsync(httpMonitorId);
 
@@ -47,7 +47,7 @@ namespace SimpleUptime.WebApi.Controllers
         }
 
         [HttpPut, Route("{httpMonitorId:HttpMonitorId}")]
-        public async Task<IActionResult> Put([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId httpMonitorId, [FromBody] UpdateHttpMonitor command)
+        public async Task<IActionResult> Put(HttpMonitorId httpMonitorId, [FromBody] UpdateHttpMonitor command)
         {
             command.HttpMonitorId = httpMonitorId;
 
@@ -64,7 +64,7 @@ namespace SimpleUptime.WebApi.Controllers
         }
 
         [HttpDelete, Route("{httpMonitorId:HttpMonitorId}")]
-        public async Task<IActionResult> Delete([ModelBinder(typeof(HttpMonitorIdModelBinder))]HttpMonitorId httpMonitorId)
+        public async Task<IActionResult> Delete(HttpMonitorId httpMonitorId)
         {
             try
             {
