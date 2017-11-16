@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
-using SimpleUptime.Application.Models;
 using SimpleUptime.WebApi;
 using Xunit;
 
