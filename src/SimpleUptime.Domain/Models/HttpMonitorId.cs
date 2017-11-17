@@ -6,7 +6,7 @@ namespace SimpleUptime.Domain.Models
     /// <summary>
     /// Identifier of <see cref="HttpMonitor"/>
     /// </summary>
-    public class HttpMonitorId
+    public class HttpMonitorId: IComparable<HttpMonitorId>
     {
         public HttpMonitorId(Guid value)
         {
@@ -70,6 +70,13 @@ namespace SimpleUptime.Domain.Models
         public static bool operator !=(HttpMonitorId x, HttpMonitorId y)
         {
             return !(x == y);
+        }
+
+        public int CompareTo(HttpMonitorId other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return Value.CompareTo(other.Value);
         }
     }
 }
