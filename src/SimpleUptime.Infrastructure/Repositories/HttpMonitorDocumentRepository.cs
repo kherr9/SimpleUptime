@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
@@ -14,6 +14,7 @@ namespace SimpleUptime.Infrastructure.Repositories
     {
         private const string DatabaseId = "SimpleUptimeDb";
         private const string CollectionId = "Entities";
+
         private readonly IDocumentClient _client;
 
         public HttpMonitorDocumentRepository(IDocumentClient client)
@@ -24,41 +25,63 @@ namespace SimpleUptime.Infrastructure.Repositories
         public Task<IEnumerable<HttpMonitor>> GetAsync()
         {
             var uri = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
-            var options = new FeedOptions()
-            {
-                PartitionKey = new PartitionKey(nameof(HttpMonitor))
-            };
 
-            var query = _client.CreateDocumentQuery<HttpMonitor>(uri, options)
-                .AsDocumentQuery();
-
-            return query.ToEnumerableAsync();
+            return _client.CreateDocumentQuery<HttpMonitor>(uri)
+                .AsDocumentQuery()
+                .ToEnumerableAsync();
         }
 
         public Task<HttpMonitor> GetByIdAsync(HttpMonitorId id)
         {
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
             var uri = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
             var options = new FeedOptions()
             {
-                PartitionKey = new PartitionKey(nameof(HttpMonitor)),
                 MaxItemCount = 1
             };
 
-            var query = _client.CreateDocumentQuery<HttpMonitor>(uri, options)
-                .Where(x => x.Id == id)
-                .AsDocumentQuery();
+            var querySpec = new SqlQuerySpec
+            {
+                QueryText = "select * from root r where (r.id = @id)",
+                Parameters = new SqlParameterCollection
+                {
+                    new SqlParameter("@id", id.ToString())
+                }
+            };
 
-            return query.FirstOrDefaultAsync();
+            return _client.CreateDocumentQuery<HttpMonitor>(uri, querySpec, options)
+                .AsDocumentQuery()
+                .FirstOrDefaultAsync();
         }
 
         public Task PutAsync(HttpMonitor httpMonitor)
         {
-            throw new NotImplementedException();
+            if (httpMonitor == null) throw new ArgumentNullException(nameof(httpMonitor));
+
+            var documentCollectionUri = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
+
+            return _client.UpsertDocumentAsync(documentCollectionUri, httpMonitor, null, true);
         }
 
-        public Task DeleteAsync(HttpMonitorId id)
+        public async Task DeleteAsync(HttpMonitorId id)
         {
-            throw new NotImplementedException();
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            var uri = UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id.ToString());
+
+            try
+            {
+                await _client.DeleteDocumentAsync(uri);
+            }
+            catch (DocumentClientException ex)
+            {
+                // don't throw if document not found
+                if (ex.StatusCode != HttpStatusCode.NotFound)
+                {
+                    throw;
+                }
+            }
         }
     }
 }
