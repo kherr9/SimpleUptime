@@ -2,6 +2,7 @@
 using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Azure.Documents;
 using SimpleUptime.WebApi;
 
 namespace SimpleUptime.IntegrationTests.Fixtures
@@ -9,11 +10,13 @@ namespace SimpleUptime.IntegrationTests.Fixtures
     public class WebApiAppFixture : IDisposable
     {
         private readonly TestServer _server;
+        private readonly DocumentHelper _documentHelper;
 
         public WebApiAppFixture()
         {
             _server = new TestServer(new WebHostBuilder()
                 .UseStartup<Startup>());
+            _documentHelper = DocumentHelper.Create();
 
             HttpClient = _server.CreateClient();
         }
@@ -24,6 +27,11 @@ namespace SimpleUptime.IntegrationTests.Fixtures
         {
             _server?.Dispose();
             HttpClient?.Dispose();
+        }
+
+        public void Reset()
+        {
+            _documentHelper.DeleteAllDocumentsAsync().Wait();
         }
     }
 }
