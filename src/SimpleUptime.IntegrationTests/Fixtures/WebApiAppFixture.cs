@@ -2,7 +2,6 @@
 using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Azure.Documents;
 using SimpleUptime.WebApi;
 
 namespace SimpleUptime.IntegrationTests.Fixtures

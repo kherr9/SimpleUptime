@@ -1,11 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SimpleUptime.Application.Commands;
 using SimpleUptime.Application.Exceptions;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Models;
-using SimpleUptime.WebApi.ModelBinders;
 
 namespace SimpleUptime.WebApi.Controllers
 {
