@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Infrastructure.Repositories;
 using Xunit;

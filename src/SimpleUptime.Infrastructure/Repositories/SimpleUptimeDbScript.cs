@@ -18,9 +18,9 @@ namespace SimpleUptime.Infrastructure.Repositories
 
         public async Task ExecuteAsync()
         {
-            await CreateDatabaseAsync();
+            await EnsureDatabaseAsync();
 
-            await CreateCollectionAsync();
+            await EnsureDocumentCollectionAsync();
         }
 
         public async Task DropDatabaseAsync()
@@ -44,17 +44,17 @@ namespace SimpleUptime.Infrastructure.Repositories
         {
             await DeleteCollectionAsync();
 
-            await CreateCollectionAsync();
+            await EnsureDocumentCollectionAsync();
         }
 
-        private Task CreateDatabaseAsync()
+        private async Task EnsureDatabaseAsync()
         {
             var database = new Database
             {
                 Id = DatabaseId
             };
 
-            return _client.CreateDatabaseAsync(database);
+            await _client.CreateDatabaseIfNotExistsAsync(database);
         }
 
         private Task DeleteCollectionAsync()
@@ -64,7 +64,7 @@ namespace SimpleUptime.Infrastructure.Repositories
             return _client.DeleteDocumentCollectionAsync(documentCollectionUri);
         }
 
-        private Task CreateCollectionAsync()
+        private Task EnsureDocumentCollectionAsync()
         {
             var databaseUri = UriFactory.CreateDatabaseUri(DatabaseId);
 
@@ -73,7 +73,7 @@ namespace SimpleUptime.Infrastructure.Repositories
                 Id = DocumentCollectionId
             };
 
-            return _client.CreateDocumentCollectionAsync(databaseUri, documentCollection);
+            return _client.CreateDocumentCollectionIfNotExistsAsync(databaseUri, documentCollection);
         }
     }
 }

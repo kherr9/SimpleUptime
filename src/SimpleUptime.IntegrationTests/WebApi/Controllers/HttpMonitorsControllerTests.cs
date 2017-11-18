@@ -7,21 +7,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
+using SimpleUptime.IntegrationTests.Fixtures;
 using SimpleUptime.WebApi;
 using Xunit;
 
 namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 {
-    public class HttpMonitorsControllerTests : IDisposable
+    public class HttpMonitorsControllerTests : IClassFixture<WebApiAppFixture>
     {
-        private readonly TestServer _server;
         private readonly HttpClient _client;
 
-        public HttpMonitorsControllerTests()
+        public HttpMonitorsControllerTests(WebApiAppFixture fixture)
         {
-            _server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>());
-            _client = _server.CreateClient();
+            _client = fixture.HttpClient;
         }
 
         ////[Fact]
@@ -226,12 +224,6 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             yield return new object[] { long.MaxValue };
             yield return new object[] { DateTime.UtcNow };
             yield return new object[] { Guid.Empty.ToString() };
-        }
-
-        public void Dispose()
-        {
-            _server?.Dispose();
-            _client?.Dispose();
         }
     }
 }

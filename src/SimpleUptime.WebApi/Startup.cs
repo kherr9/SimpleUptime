@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SimpleUptime.Application.Services;
-using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Infrastructure.JsonConverters;
-using SimpleUptime.Infrastructure.Middlewares;
 using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.WebApi.ModelBinders;
 using SimpleUptime.WebApi.RouteConstraints;
-using ToyStorage;
+
 // ReSharper disable RedundantTypeArgumentsOfMethod
 
 namespace SimpleUptime.WebApi
@@ -40,20 +41,33 @@ namespace SimpleUptime.WebApi
             {
                 options.ConstraintMap.Add(HttpMonitorIdRouteConstraint.RouteLabel, typeof(HttpMonitorIdRouteConstraint));
             });
-            
+
             services.AddTransient<IHttpMonitorService, HttpMonitorService>();
-            services.AddTransient<IHttpMonitorRepository, HttpMonitorRepository>();
-            services.AddTransient<IDocumentCollection, DocumentCollection>();
-            services.AddTransient<CloudStorageAccount>(_ => CloudStorageAccount.Parse("UseDevelopmentStorage=true;"));
-            services.AddTransient<CloudBlobClient>(provider => provider.GetService<CloudStorageAccount>().CreateCloudBlobClient());
-            services.AddTransient<CloudBlobContainer>(provider => provider.GetService<CloudBlobClient>().GetContainerReference(nameof(HttpMonitor).ToLowerInvariant() + "s"));
-            services.AddSingleton<EnsureContainerExistsMiddleware>(_ => new EnsureContainerExistsMiddleware(BlobContainerPublicAccessType.Off));
-            services.AddTransient<IMiddlewarePipeline>(provider => new MiddlewarePipeline()
-                .Use(provider.GetService<EnsureContainerExistsMiddleware>())
-                .Use<IgnoreNotFoundExceptionMiddleware>()
-                .UseJsonFormatter()
-                .Use<BlobStorageMiddleware>());
-            services.AddTransient<IDocumentCollection, DocumentCollection>();
+
+            services.AddTransient<IHttpMonitorRepository, HttpMonitorDocumentRepository>();
+            services.AddSingleton<IDocumentClient>(provider =>
+            {
+                var endpointUrl = "https://localhost:8081";
+                var primaryKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+
+                var settings = new JsonSerializerSettings()
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                settings.Converters.Add(new HttpMonitorIdJsonConverter());
+
+                var connectionPolicy = new ConnectionPolicy()
+                {
+                    ConnectionMode = ConnectionMode.Direct,
+                    ConnectionProtocol = Protocol.Tcp
+                };
+
+                var client = new DocumentClient(new Uri(endpointUrl), primaryKey, settings, connectionPolicy);
+
+                client.OpenAsync().Wait();
+
+                return client;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +79,8 @@ namespace SimpleUptime.WebApi
             }
 
             app.UseMvc();
+
+            app.EnsureDocumentDatabase();
         }
     }
 }
