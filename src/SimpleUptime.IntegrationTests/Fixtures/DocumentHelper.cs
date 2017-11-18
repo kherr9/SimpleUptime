@@ -16,14 +16,12 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
         public async Task DeleteAllDocumentsAsync()
         {
-            var db = _client.CreateDatabaseQuery().ToList().First();
-            var coll = _client.CreateDocumentCollectionQuery(db.CollectionsLink).ToList().First();
-            var docs = _client.CreateDocumentQuery(coll.DocumentsLink);
-
-            foreach (var doc in docs)
-            {
-                await _client.DeleteDocumentAsync(doc.SelfLink);
-            }
+            foreach (var db in _client.CreateDatabaseQuery().ToList())
+                foreach (var coll in _client.CreateDocumentCollectionQuery(db.CollectionsLink).ToList())
+                    foreach (var doc in _client.CreateDocumentQuery(coll.DocumentsLink).ToList())
+                    {
+                        await _client.DeleteDocumentAsync(doc.SelfLink);
+                    }
         }
 
         public void Dispose()
