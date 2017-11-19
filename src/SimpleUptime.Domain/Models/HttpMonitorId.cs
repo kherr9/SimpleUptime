@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace SimpleUptime.Domain.Models
 {
+    /// <inheritdoc />
     /// <summary>
-    /// Identifier of <see cref="HttpMonitor"/>
+    /// Identifier of <see cref="T:SimpleUptime.Domain.Models.HttpMonitor" />
     /// </summary>
     public class HttpMonitorId: IComparable<HttpMonitorId>
     {

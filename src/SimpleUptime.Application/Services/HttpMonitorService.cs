@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SimpleUptime.Application.Commands;
 using SimpleUptime.Application.Exceptions;
@@ -14,6 +15,11 @@ namespace SimpleUptime.Application.Services
         public HttpMonitorService(IHttpMonitorRepository repository)
         {
             _repository = repository;
+        }
+
+        public Task<IEnumerable<HttpMonitor>> GetHttpMonitorsAsync()
+        {
+            return _repository.GetAsync();
         }
 
         public Task<HttpMonitor> GetHttpMonitorByIdAsync(HttpMonitorId httpMonitorId)
