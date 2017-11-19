@@ -15,7 +15,7 @@ namespace SimpleUptime.Infrastructure.Repositories
             _configs = configs;
         }
 
-        public async Task ExecuteMigrationScript()
+        public async Task ExecuteMigration()
         {
             await EnsureDatabaseAsync();
 

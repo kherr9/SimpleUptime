@@ -17,7 +17,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
             var script = new SimpleUptimeDbScript(_client, DatabaseConfigurations.Create());
 
             script.DropDatabaseAsync().Wait();
-            script.ExecuteMigrationScript().Wait();
+            script.ExecuteMigration().Wait();
 
             _documentHelper = new DocumentHelper(_client);
         }

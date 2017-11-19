@@ -10,7 +10,7 @@ namespace SimpleUptime.WebApi
         {
             var script = app.ApplicationServices.GetService<SimpleUptimeDbScript>();
 
-            script.ExecuteMigrationScript().Wait();
+            script.ExecuteMigration().Wait();
 
             return app;
         }
