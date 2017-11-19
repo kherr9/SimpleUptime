@@ -1,4 +1,4 @@
-﻿namespace SimpleUptime.IntegrationTests.WebApi.Controllers
+﻿namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
 {
     public struct Urls
     {
