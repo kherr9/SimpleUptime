@@ -9,6 +9,11 @@ namespace SimpleUptime.Infrastructure.Repositories
 {
     public static class DocumentClientFactory
     {
+        public static Task<DocumentClient> CreateDocumentClientAsync(DocumentClientSettings settings)
+        {
+            return CreateDocumentClientAsync(settings.ServiceEndpoint, settings.AuthKey);
+        }
+
         /// <summary>
         /// Creates instance of <see cref="DocumentClient"/>
         /// </summary>
@@ -37,16 +42,6 @@ namespace SimpleUptime.Infrastructure.Repositories
             await client.OpenAsync();
 
             return client;
-        }
-
-        public static Task<DocumentClient> CreateDocumentClientForEmulatorAsync()
-        {
-            const string emulatorServiceEndpoint = "https://localhost:8081";
-
-            const string emulatorAuthKey =
-                "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-
-            return CreateDocumentClientAsync(new Uri(emulatorServiceEndpoint), emulatorAuthKey);
         }
     }
 }

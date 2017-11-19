@@ -32,7 +32,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
         public static DocumentHelper Create()
         {
-            return new DocumentHelper(DocumentClientFactory.CreateDocumentClientForEmulatorAsync().Result);
+            return new DocumentHelper(DocumentClientFactory.CreateDocumentClientAsync(DocumentClientSettings.Emulator).Result);
         }
     }
 }
