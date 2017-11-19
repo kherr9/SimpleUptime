@@ -19,7 +19,6 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public HttpMonitorsControllerTests(WebApiAppFixture fixture)
         {
             _fixture = fixture;
-            _fixture.Reset();
 
             _client = fixture.HttpClient;
         }

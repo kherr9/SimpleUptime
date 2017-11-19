@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Infrastructure.Middlewares;
 using SimpleUptime.Infrastructure.Repositories;
+using SimpleUptime.IntegrationTests.Fixtures;
 using ToyStorage;
 using Xunit;
 

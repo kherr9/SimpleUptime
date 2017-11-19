@@ -2,7 +2,7 @@
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
+namespace SimpleUptime.IntegrationTests.Fixtures
 {
     public class CloudStorageFixture : IDisposable
     {

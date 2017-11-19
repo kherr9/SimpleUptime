@@ -2,9 +2,8 @@
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using SimpleUptime.Infrastructure.Repositories;
-using SimpleUptime.IntegrationTests.Fixtures;
 
-namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
+namespace SimpleUptime.IntegrationTests.Fixtures
 {
     public class DocumentDbFixture : IDisposable
     {
@@ -17,23 +16,24 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 
             var script = new SimpleUptimeDbScript(_client);
 
+            script.DropDatabaseAsync().Wait();
             script.ExecuteAsync().Wait();
 
-            _documentHelper = DocumentHelper.Create();
+            _documentHelper = new DocumentHelper(_client);
         }
 
         public IDocumentClient DocumentClient => _client;
 
+        public void Dispose()
+        {
+            Reset();
+
+            _client?.Dispose();
+        }
+
         public void Reset()
         {
             _documentHelper.DeleteAllDocumentsAsync().Wait();
-        }
-
-        public void Dispose()
-        {
-            _documentHelper.DeleteAllDocumentsAsync().Wait();
-
-            _client.Dispose();
         }
     }
 }

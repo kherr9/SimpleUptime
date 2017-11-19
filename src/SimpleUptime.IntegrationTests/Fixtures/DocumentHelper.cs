@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents.Client;
-using SimpleUptime.Infrastructure.Repositories;
 
 namespace SimpleUptime.IntegrationTests.Fixtures
 {
@@ -10,9 +9,9 @@ namespace SimpleUptime.IntegrationTests.Fixtures
     {
         private readonly DocumentClient _client;
 
-        private DocumentHelper(DocumentClient client)
+        public DocumentHelper(DocumentClient client)
         {
-            _client = client;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         public async Task DeleteAllDocumentsAsync()
@@ -28,11 +27,6 @@ namespace SimpleUptime.IntegrationTests.Fixtures
         public void Dispose()
         {
             _client.Dispose();
-        }
-
-        public static DocumentHelper Create()
-        {
-            return new DocumentHelper(DocumentClientFactory.CreateDocumentClientAsync(DocumentClientSettings.Emulator).Result);
         }
     }
 }
