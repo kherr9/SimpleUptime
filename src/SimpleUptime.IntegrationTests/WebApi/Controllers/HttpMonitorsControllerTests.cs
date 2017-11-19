@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using SimpleUptime.Domain.Models;
 using SimpleUptime.IntegrationTests.Fixtures;
 using SimpleUptime.IntegrationTests.WebApi.Controllers.Client;
 using Xunit;
@@ -36,12 +37,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task Get(int count)
         {
             // Arrange
-            var entities = new List<HttpMonitorDto>();
-            for (var i = 0; i < count; i++)
-            {
-                var entity = await GenerateAndPersistEntityAsync();
-                entities.Add(entity);
-            }
+            var entities = await GenerateAndPostHttpMonitorAsync(count);
 
             // Act
             (var response, var model) = await _client.GetAsync();
@@ -60,7 +56,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task GetById()
         {
             // Arrange
-            var entity = await GenerateAndPersistEntityAsync();
+            var entity = await GenerateAndPostHttpMonitorAsync();
 
             // Act
             (var response, var model) = await _client.GetAsync(entity.Id);
@@ -74,7 +70,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task GetByIdReturnsNotFound()
         {
             // Arrange
-            var entityId = Guid.NewGuid().ToString();
+            var entityId = HttpMonitorId.Create().ToString();
 
             // Act
             (var response, _) = await _client.GetAsync(entityId);
@@ -136,7 +132,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task Put()
         {
             // Arrange
-            var entity = await GenerateAndPersistEntityAsync();
+            var entity = await GenerateAndPostHttpMonitorAsync();
             var newUrl = new Uri("https://asdfasdf.example.com");
             entity.Url = newUrl;
 
@@ -154,7 +150,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         {
             // Arrange
             var entity = Generate();
-            var id = Guid.NewGuid().ToString();
+            var id = HttpMonitorId.Create().ToString();
 
             // Act
             (var response, _) = await _client.PutAsync(id, entity);
@@ -185,7 +181,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task Delete()
         {
             // Arrange
-            var entity = await GenerateAndPersistEntityAsync();
+            var entity = await GenerateAndPostHttpMonitorAsync();
 
             // Act
             var response = await _client.DeleteAsync(entity.Id);
@@ -198,7 +194,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task DeleteReturnsNotFoundWhenEntityDoesNotExist()
         {
             // Arrange
-            var entityId = Guid.NewGuid().ToString();
+            var entityId = HttpMonitorId.Create().ToString();
 
             // Act
             var response = await _client.DeleteAsync(entityId);
@@ -228,11 +224,23 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             };
         }
 
-        private async Task<HttpMonitorDto> GenerateAndPersistEntityAsync()
+        private async Task<HttpMonitorDto> GenerateAndPostHttpMonitorAsync()
         {
             var entity = Generate();
 
             return (await _client.PostAsync(entity)).Item2;
+        }
+
+        private async Task<HttpMonitorDto[]> GenerateAndPostHttpMonitorAsync(int count)
+        {
+            var entities = new List<HttpMonitorDto>();
+            for (var i = 0; i < count; i++)
+            {
+                var entity = await GenerateAndPostHttpMonitorAsync();
+                entities.Add(entity);
+            }
+
+            return entities.ToArray();
         }
 
         private static IEnumerable<object[]> InvalidHttpMonitorIds()
