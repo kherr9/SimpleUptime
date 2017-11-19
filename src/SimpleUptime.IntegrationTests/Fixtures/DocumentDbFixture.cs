@@ -14,10 +14,10 @@ namespace SimpleUptime.IntegrationTests.Fixtures
         {
             _client = DocumentClientFactory.CreateDocumentClientAsync(DocumentClientSettings.Emulator).Result;
 
-            var script = new SimpleUptimeDbScript(_client);
+            var script = new SimpleUptimeDbScript(_client, DatabaseConfigurations.Create());
 
             script.DropDatabaseAsync().Wait();
-            script.ExecuteAsync().Wait();
+            script.ExecuteMigration().Wait();
 
             _documentHelper = new DocumentHelper(_client);
         }

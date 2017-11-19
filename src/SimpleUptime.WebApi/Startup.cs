@@ -11,6 +11,7 @@ using SimpleUptime.Infrastructure.JsonConverters;
 using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.WebApi.ModelBinders;
 using SimpleUptime.WebApi.RouteConstraints;
+// ReSharper disable RedundantTypeArgumentsOfMethod
 
 namespace SimpleUptime.WebApi
 {
@@ -53,6 +54,8 @@ namespace SimpleUptime.WebApi
             services.AddTransient<IHttpMonitorService, HttpMonitorService>();
             services.AddTransient<IHttpMonitorRepository, HttpMonitorDocumentRepository>();
             services.AddSingleton<IDocumentClient>(provider => DocumentClientFactory.CreateDocumentClientAsync(provider.GetService<IOptions<DocumentClientSettings>>().Value).Result);
+            services.AddTransient<DatabaseConfigurations>(_ => DatabaseConfigurations.Create());
+            services.AddTransient<SimpleUptimeDbScript>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

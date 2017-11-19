@@ -1,22 +1,21 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
 
 namespace SimpleUptime.Infrastructure.Repositories
 {
     public class SimpleUptimeDbScript
     {
         private readonly IDocumentClient _client;
-        private const string DatabaseId = "SimpleUptimeDb";
-        private const string DocumentCollectionId = "Entities";
+        private readonly DatabaseConfigurations _configs;
 
-        public SimpleUptimeDbScript(IDocumentClient client)
+        public SimpleUptimeDbScript(IDocumentClient client, DatabaseConfigurations configs)
         {
             _client = client;
+            _configs = configs;
         }
 
-        public async Task ExecuteAsync()
+        public async Task ExecuteMigration()
         {
             await EnsureDatabaseAsync();
 
@@ -25,7 +24,7 @@ namespace SimpleUptime.Infrastructure.Repositories
 
         public async Task DropDatabaseAsync()
         {
-            var databaseUri = UriFactory.CreateDatabaseUri(DatabaseId);
+            var databaseUri = _configs.DatabaseUri;
 
             try
             {
@@ -39,12 +38,12 @@ namespace SimpleUptime.Infrastructure.Repositories
                 }
             }
         }
-        
+
         private async Task EnsureDatabaseAsync()
         {
             var database = new Database
             {
-                Id = DatabaseId
+                Id = _configs.DatabaseId
             };
 
             await _client.CreateDatabaseIfNotExistsAsync(database);
@@ -52,11 +51,11 @@ namespace SimpleUptime.Infrastructure.Repositories
 
         private Task EnsureDocumentCollectionAsync()
         {
-            var databaseUri = UriFactory.CreateDatabaseUri(DatabaseId);
+            var databaseUri = _configs.DatabaseUri;
 
             var documentCollection = new DocumentCollection
             {
-                Id = DocumentCollectionId
+                Id = _configs.DocumentCollectionId
             };
 
             return _client.CreateDocumentCollectionIfNotExistsAsync(databaseUri, documentCollection);
