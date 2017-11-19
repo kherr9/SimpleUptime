@@ -12,19 +12,18 @@ namespace SimpleUptime.Infrastructure.Repositories
 {
     public class HttpMonitorDocumentRepository : IHttpMonitorRepository
     {
-        private const string DatabaseId = "SimpleUptimeDb";
-        private const string CollectionId = "Entities";
-
         private readonly IDocumentClient _client;
+        private readonly DatabaseConfigurations _configs;
 
-        public HttpMonitorDocumentRepository(IDocumentClient client)
+        public HttpMonitorDocumentRepository(IDocumentClient client, DatabaseConfigurations configs)
         {
             _client = client;
+            _configs = configs;
         }
 
         public Task<IEnumerable<HttpMonitor>> GetAsync()
         {
-            var uri = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
+            var uri = _configs.DocumentCollectionUri;
 
             return _client.CreateDocumentQuery<HttpMonitor>(uri)
                 .AsDocumentQuery()
@@ -35,7 +34,7 @@ namespace SimpleUptime.Infrastructure.Repositories
         {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
-            var uri = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
+            var uri = _configs.DocumentCollectionUri;
             var options = new FeedOptions()
             {
                 MaxItemCount = 1
@@ -59,7 +58,7 @@ namespace SimpleUptime.Infrastructure.Repositories
         {
             if (httpMonitor == null) throw new ArgumentNullException(nameof(httpMonitor));
 
-            var documentCollectionUri = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
+            var documentCollectionUri = _configs.DocumentCollectionUri;
 
             return _client.UpsertDocumentAsync(documentCollectionUri, httpMonitor, null, true);
         }
@@ -68,7 +67,7 @@ namespace SimpleUptime.Infrastructure.Repositories
         {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
-            var uri = UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id.ToString());
+            var uri = _configs.DocumentUri(id.ToString());
 
             try
             {

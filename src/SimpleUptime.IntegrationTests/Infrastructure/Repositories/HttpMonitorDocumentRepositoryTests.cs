@@ -16,7 +16,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
         public HttpMonitorDocumentRepositoryTests(DocumentDbFixture fixture)
         {
             _fixture = fixture;
-            _repository = new HttpMonitorDocumentRepository(fixture.DocumentClient);
+            _repository = new HttpMonitorDocumentRepository(fixture.DocumentClient, DatabaseConfigurations.Create());
         }
 
         public void Dispose()

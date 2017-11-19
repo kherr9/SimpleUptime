@@ -20,7 +20,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
             _documentHelper = new DocumentHelper(_client);
 
-            new SimpleUptimeDbScript(_client).DropDatabaseAsync().Wait();
+            new SimpleUptimeDbScript(_client, DatabaseConfigurations.Create()).DropDatabaseAsync().Wait();
 
             _server = new TestServer(new WebHostBuilder()
                 .UseStartup<Startup>());
