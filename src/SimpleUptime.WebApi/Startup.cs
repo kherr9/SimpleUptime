@@ -11,6 +11,7 @@ using SimpleUptime.Infrastructure.JsonConverters;
 using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.WebApi.ModelBinders;
 using SimpleUptime.WebApi.RouteConstraints;
+// ReSharper disable RedundantTypeArgumentsOfMethod
 
 namespace SimpleUptime.WebApi
 {
