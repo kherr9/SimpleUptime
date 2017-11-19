@@ -32,21 +32,25 @@ namespace SimpleUptime.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(options =>
-                {
-                    options.ModelBinderProviders.Insert(0, new HttpMonitorIdBinder());
-                })
-                .AddJsonOptions(opt => opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter()));
+            {
+                // model binders
+                options.ModelBinderProviders.Insert(0, new HttpMonitorIdBinder());
+            })
+            // mvc json settings
+            .AddJsonOptions(opt => opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter()));
 
             services.Configure<RouteOptions>(options =>
             {
+                // route constraints
                 options.ConstraintMap.Add(HttpMonitorIdRouteConstraint.RouteLabel, typeof(HttpMonitorIdRouteConstraint));
             });
 
+            // settings
             services.AddOptions();
             services.Configure<DocumentClientSettings>(Configuration.GetSection("DocumentClientSettings"));
 
+            // serivces
             services.AddTransient<IHttpMonitorService, HttpMonitorService>();
-
             services.AddTransient<IHttpMonitorRepository, HttpMonitorDocumentRepository>();
             services.AddSingleton<IDocumentClient>(provider => DocumentClientFactory.CreateDocumentClientAsync(provider.GetService<IOptions<DocumentClientSettings>>().Value).Result);
         }
