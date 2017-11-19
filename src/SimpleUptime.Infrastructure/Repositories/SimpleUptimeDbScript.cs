@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 
@@ -23,29 +22,29 @@ namespace SimpleUptime.Infrastructure.Repositories
             await EnsureDocumentCollectionAsync();
         }
 
-        public async Task DropDatabaseAsync()
-        {
-            var databaseUri = UriFactory.CreateDatabaseUri(DatabaseId);
+        ////public async Task DropDatabaseAsync()
+        ////{
+        ////    var databaseUri = UriFactory.CreateDatabaseUri(DatabaseId);
 
-            try
-            {
-                await _client.DeleteDatabaseAsync(databaseUri);
-            }
-            catch (DocumentClientException ex)
-            {
-                if (ex.StatusCode != HttpStatusCode.NotFound)
-                {
-                    throw;
-                }
-            }
-        }
+        ////    try
+        ////    {
+        ////        await _client.DeleteDatabaseAsync(databaseUri);
+        ////    }
+        ////    catch (DocumentClientException ex)
+        ////    {
+        ////        if (ex.StatusCode != HttpStatusCode.NotFound)
+        ////        {
+        ////            throw;
+        ////        }
+        ////    }
+        ////}
 
-        public async Task RecreateDocumentCollectionsAsync()
-        {
-            await DeleteCollectionAsync();
+        ////public async Task RecreateDocumentCollectionsAsync()
+        ////{
+        ////    await DeleteCollectionAsync();
 
-            await EnsureDocumentCollectionAsync();
-        }
+        ////    await EnsureDocumentCollectionAsync();
+        ////}
 
         private async Task EnsureDatabaseAsync()
         {
@@ -57,12 +56,12 @@ namespace SimpleUptime.Infrastructure.Repositories
             await _client.CreateDatabaseIfNotExistsAsync(database);
         }
 
-        private Task DeleteCollectionAsync()
-        {
-            var documentCollectionUri = UriFactory.CreateDocumentCollectionUri(DatabaseId, DocumentCollectionId);
+        ////private Task DeleteCollectionAsync()
+        ////{
+        ////    var documentCollectionUri = UriFactory.CreateDocumentCollectionUri(DatabaseId, DocumentCollectionId);
 
-            return _client.DeleteDocumentCollectionAsync(documentCollectionUri);
-        }
+        ////    return _client.DeleteDocumentCollectionAsync(documentCollectionUri);
+        ////}
 
         private Task EnsureDocumentCollectionAsync()
         {
