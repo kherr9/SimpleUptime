@@ -77,7 +77,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             var entityId = Guid.NewGuid().ToString();
 
             // Act
-            (var response, var _) = await _client.GetAsync(entityId);
+            (var response, _) = await _client.GetAsync(entityId);
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -88,7 +88,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task GetByIdReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Act
-            (var response, var _) = await _client.GetAsync(id.ToString());
+            (var response, _) = await _client.GetAsync(id.ToString());
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -121,8 +121,8 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             var entity = Generate();
 
             // Act
-            (var _, var postEntity1) = await _client.PostAsync(entity);
-            (var _, var postEntity2) = await _client.PostAsync(entity);
+            (_, var postEntity1) = await _client.PostAsync(entity);
+            (_, var postEntity2) = await _client.PostAsync(entity);
 
             // Assert
             Assert.NotEqual(postEntity1.Id, postEntity2.Id);
@@ -157,7 +157,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             var id = Guid.NewGuid().ToString();
 
             // Act
-            (var response, var _) = await _client.PutAsync(id, entity);
+            (var response, _) = await _client.PutAsync(id, entity);
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -171,7 +171,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             var entity = Generate();
 
             // Act
-            (var response, var _) = await _client.PutAsync(id.ToString(), entity);
+            (var response, _) = await _client.PutAsync(id.ToString(), entity);
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
