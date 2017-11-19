@@ -3,18 +3,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Infrastructure.Repositories;
+using SimpleUptime.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 {
-    public class HttpMonitorDocumentRepositoryTests : IClassFixture<DocumentDbFixture>
+    public class HttpMonitorDocumentRepositoryTests : IClassFixture<DocumentDbFixture>, IDisposable
     {
+        private readonly DocumentDbFixture _fixture;
         private readonly HttpMonitorDocumentRepository _repository;
 
         public HttpMonitorDocumentRepositoryTests(DocumentDbFixture fixture)
         {
-            fixture.Reset();
+            _fixture = fixture;
             _repository = new HttpMonitorDocumentRepository(fixture.DocumentClient);
+        }
+
+        public void Dispose()
+        {
+            _fixture.Reset();
         }
 
         #region Get

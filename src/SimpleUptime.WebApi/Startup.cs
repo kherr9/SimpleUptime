@@ -1,13 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using Microsoft.Extensions.Options;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Infrastructure.JsonConverters;
@@ -15,15 +12,18 @@ using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.WebApi.ModelBinders;
 using SimpleUptime.WebApi.RouteConstraints;
 
-// ReSharper disable RedundantTypeArgumentsOfMethod
-
 namespace SimpleUptime.WebApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            // Set up configuration sources.
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -32,42 +32,27 @@ namespace SimpleUptime.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(options =>
-                {
-                    options.ModelBinderProviders.Insert(0, new HttpMonitorIdBinder());
-                })
-                .AddJsonOptions(opt => opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter()));
+            {
+                // model binders
+                options.ModelBinderProviders.Insert(0, new HttpMonitorIdBinder());
+            })
+            // mvc json settings
+            .AddJsonOptions(opt => opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter()));
 
             services.Configure<RouteOptions>(options =>
             {
+                // route constraints
                 options.ConstraintMap.Add(HttpMonitorIdRouteConstraint.RouteLabel, typeof(HttpMonitorIdRouteConstraint));
             });
 
+            // settings
+            services.AddOptions();
+            services.Configure<DocumentClientSettings>(Configuration.GetSection("DocumentClientSettings"));
+
+            // serivces
             services.AddTransient<IHttpMonitorService, HttpMonitorService>();
-
             services.AddTransient<IHttpMonitorRepository, HttpMonitorDocumentRepository>();
-            services.AddSingleton<IDocumentClient>(provider =>
-            {
-                var endpointUrl = "https://localhost:8081";
-                var primaryKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-
-                var settings = new JsonSerializerSettings()
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                };
-                settings.Converters.Add(new HttpMonitorIdJsonConverter());
-
-                var connectionPolicy = new ConnectionPolicy()
-                {
-                    ConnectionMode = ConnectionMode.Direct,
-                    ConnectionProtocol = Protocol.Tcp
-                };
-
-                var client = new DocumentClient(new Uri(endpointUrl), primaryKey, settings, connectionPolicy);
-
-                client.OpenAsync().Wait();
-
-                return client;
-            });
+            services.AddSingleton<IDocumentClient>(provider => DocumentClientFactory.CreateDocumentClientAsync(provider.GetService<IOptions<DocumentClientSettings>>().Value).Result);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

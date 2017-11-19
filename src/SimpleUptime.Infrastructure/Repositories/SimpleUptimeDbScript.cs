@@ -39,14 +39,7 @@ namespace SimpleUptime.Infrastructure.Repositories
                 }
             }
         }
-
-        public async Task RecreateDocumentCollectionsAsync()
-        {
-            await DeleteCollectionAsync();
-
-            await EnsureDocumentCollectionAsync();
-        }
-
+        
         private async Task EnsureDatabaseAsync()
         {
             var database = new Database
@@ -55,13 +48,6 @@ namespace SimpleUptime.Infrastructure.Repositories
             };
 
             await _client.CreateDatabaseIfNotExistsAsync(database);
-        }
-
-        private Task DeleteCollectionAsync()
-        {
-            var documentCollectionUri = UriFactory.CreateDocumentCollectionUri(DatabaseId, DocumentCollectionId);
-
-            return _client.DeleteDocumentCollectionAsync(documentCollectionUri);
         }
 
         private Task EnsureDocumentCollectionAsync()

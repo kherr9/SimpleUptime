@@ -9,9 +9,9 @@ namespace SimpleUptime.IntegrationTests.Fixtures
     {
         private readonly DocumentClient _client;
 
-        private DocumentHelper(DocumentClient client)
+        public DocumentHelper(DocumentClient client)
         {
-            _client = client;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         public async Task DeleteAllDocumentsAsync()
@@ -27,18 +27,6 @@ namespace SimpleUptime.IntegrationTests.Fixtures
         public void Dispose()
         {
             _client.Dispose();
-        }
-
-        public static DocumentHelper Create()
-        {
-            var endpointUrl = "https://localhost:8081";
-            var primaryKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-
-            var client = new DocumentClient(new Uri(endpointUrl), primaryKey);
-
-            client.OpenAsync().Wait();
-
-            return new DocumentHelper(client);
         }
     }
 }
