@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace SimpleUptime.IntegrationTests.WebApi.Controllers
+namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
 {
     public static class HttpContentExtension
     {

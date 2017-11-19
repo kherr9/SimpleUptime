@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SimpleUptime.IntegrationTests.Fixtures;
+using SimpleUptime.IntegrationTests.WebApi.Controllers.Client;
 using Xunit;
 
 namespace SimpleUptime.IntegrationTests.WebApi.Controllers
@@ -14,13 +12,13 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
     public class HttpMonitorsControllerTests : IClassFixture<WebApiAppFixture>, IDisposable
     {
         private readonly WebApiAppFixture _fixture;
-        private readonly HttpClient _client;
+        private readonly HttpMonitorClient _client;
 
         public HttpMonitorsControllerTests(WebApiAppFixture fixture)
         {
             _fixture = fixture;
 
-            _client = fixture.HttpClient;
+            _client = new HttpMonitorClient(fixture.HttpClient);
         }
 
         public void Dispose()
@@ -46,12 +44,12 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             }
 
             // Act
-            var result = await GetAsync();
+            (var response, var model) = await _client.GetAsync();
 
             // Assert
-            Assert.Equal(HttpStatusCode.OK, result.HttpResponseMessage.StatusCode);
-            Assert.Equal(count, result.Model.Length);
-            Assert.Equal(entities.OrderBy(x => x.Id), result.Model.OrderBy(x => x.Id));
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(count, model.Length);
+            Assert.Equal(entities.OrderBy(x => x.Id), model.OrderBy(x => x.Id));
         }
 
         #endregion
@@ -65,11 +63,11 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             var entity = await GenerateAndPersistEntityAsync();
 
             // Act
-            var result = await GetAsync(entity.Id);
+            (var response, var model) = await _client.GetAsync(entity.Id);
 
             // Assert
-            Assert.Equal(HttpStatusCode.OK, result.HttpResponseMessage.StatusCode);
-            Assert.Equal(entity, result.Model);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(entity, model);
         }
 
         [Fact]
@@ -79,10 +77,10 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             var entityId = Guid.NewGuid().ToString();
 
             // Act
-            var result = await GetAsync(entityId);
+            (var response, var _) = await _client.GetAsync(entityId);
 
             // Assert
-            Assert.Equal(HttpStatusCode.NotFound, result.HttpResponseMessage.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Theory]
@@ -90,10 +88,10 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task GetByIdReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Act
-            var result = await GetAsync(id.ToString());
+            (var response, var _) = await _client.GetAsync(id.ToString());
 
             // Assert
-            Assert.Equal(HttpStatusCode.NotFound, result.HttpResponseMessage.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         #endregion
@@ -104,30 +102,30 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task Post()
         {
             // Arrange
-            var entity = Generate();
+            var entity = (dynamic)Generate();
 
             // Act
-            var postEntity1 = await PostAsync((object)entity);
+            (var response, var postEntity) = await _client.PostAsync((object)entity);
 
             // Assert
-            Assert.Equal(HttpStatusCode.OK, postEntity1.HttpResponseMessage.StatusCode);
-            Assert.Equal(entity.Url, postEntity1.Model.Url);
-            Assert.NotNull(postEntity1.Model.Id);
-            Assert.NotEmpty(postEntity1.Model.Id);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(entity.Url, postEntity.Url);
+            Assert.NotNull(postEntity.Id);
+            Assert.NotEmpty(postEntity.Id);
         }
 
         [Fact]
         public async Task PostGeneratesUniqueId()
         {
             // Arrange
-            var entity = (object)Generate();
+            var entity = Generate();
 
             // Act
-            var postEntity1 = await PostAsync(entity);
-            var postEntity2 = await PostAsync(entity);
+            (var _, var postEntity1) = await _client.PostAsync(entity);
+            (var _, var postEntity2) = await _client.PostAsync(entity);
 
             // Assert
-            Assert.NotEqual(postEntity1.Model.Id, postEntity2.Model.Id);
+            Assert.NotEqual(postEntity1.Id, postEntity2.Id);
         }
 
         #endregion
@@ -143,26 +141,26 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             entity.Url = newUrl;
 
             // Act
-            var result = await PutAsync(entity.Id, entity);
+            (var response, var model) = await _client.PutAsync(entity.Id, entity);
 
             // Assert
-            Assert.Equal(HttpStatusCode.OK, result.HttpResponseMessage.StatusCode);
-            Assert.Equal(entity.Id, result.Model.Id);
-            Assert.Equal(newUrl, result.Model.Url);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(entity.Id, model.Id);
+            Assert.Equal(newUrl, model.Url);
         }
 
         [Fact]
         public async Task PutReturnsNotFoundWhenEntityDoesNotExist()
         {
             // Arrange
-            var entity = (object)Generate();
+            var entity = Generate();
             var id = Guid.NewGuid().ToString();
 
             // Act
-            var result = await PutAsync(id, entity);
+            (var response, var _) = await _client.PutAsync(id, entity);
 
             // Assert
-            Assert.Equal(HttpStatusCode.NotFound, result.HttpResponseMessage.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Theory]
@@ -170,13 +168,13 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task PutReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Arrange
-            var entity = (object)Generate();
+            var entity = Generate();
 
             // Act
-            var result = await PutAsync(id.ToString(), entity);
+            (var response, var _) = await _client.PutAsync(id.ToString(), entity);
 
             // Assert
-            Assert.Equal(HttpStatusCode.NotFound, result.HttpResponseMessage.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         #endregion
@@ -190,10 +188,10 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             var entity = await GenerateAndPersistEntityAsync();
 
             // Act
-            var result = await DeleteAsync(entity.Id);
+            var response = await _client.DeleteAsync(entity.Id);
 
             // Assert
-            Assert.Equal(HttpStatusCode.NoContent, result.HttpResponseMessage.StatusCode);
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Fact]
@@ -203,10 +201,10 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             var entityId = Guid.NewGuid().ToString();
 
             // Act
-            var result = await DeleteAsync(entityId);
+            var response = await _client.DeleteAsync(entityId);
 
             // Assert
-            Assert.Equal(HttpStatusCode.NotFound, result.HttpResponseMessage.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Theory]
@@ -214,7 +212,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task DeleteReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Act
-            var response = await _client.DeleteAsync(Urls.HttpMonitors.Delete(id.ToString()));
+            var response = await _client.DeleteAsync(id.ToString());
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -222,7 +220,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 
         #endregion
 
-        private dynamic Generate()
+        private object Generate()
         {
             return new
             {
@@ -234,7 +232,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         {
             var entity = Generate();
 
-            return (await PostAsync((object)entity)).Model;
+            return (await _client.PostAsync(entity)).Item2;
         }
 
         private static IEnumerable<object[]> InvalidHttpMonitorIds()
@@ -247,72 +245,6 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             yield return new object[] { long.MaxValue };
             yield return new object[] { DateTime.UtcNow };
             yield return new object[] { Guid.Empty.ToString() };
-        }
-
-        private async Task<ResponseEnvelope<HttpMonitorDto[]>> GetAsync()
-        {
-            var response = await _client.GetAsync(Urls.HttpMonitors.Get());
-
-            return await ResponseEnvelope<HttpMonitorDto[]>.CreateAsync(response);
-        }
-
-        private async Task<ResponseEnvelope<HttpMonitorDto>> GetAsync(string id)
-        {
-            var response = await _client.GetAsync(Urls.HttpMonitors.Get(id));
-
-            return await ResponseEnvelope<HttpMonitorDto>.CreateAsync(response);
-        }
-
-        private async Task<ResponseEnvelope<HttpMonitorDto>> PostAsync(object entity)
-        {
-            var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync(Urls.HttpMonitors.Post(), content);
-
-            return await ResponseEnvelope<HttpMonitorDto>.CreateAsync(response);
-        }
-
-        private async Task<ResponseEnvelope<HttpMonitorDto>> PutAsync(string id, object entity)
-        {
-            var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync(Urls.HttpMonitors.Put(id), content);
-
-            return await ResponseEnvelope<HttpMonitorDto>.CreateAsync(response);
-        }
-
-        private async Task<ResponseEnvelope> DeleteAsync(string id)
-        {
-            var response = await _client.DeleteAsync(Urls.HttpMonitors.Delete(id));
-
-            return await ResponseEnvelope.CreateAsync(response);
-        }
-
-        private class ResponseEnvelope
-        {
-            public HttpResponseMessage HttpResponseMessage { get; private set; }
-
-            public static Task<ResponseEnvelope> CreateAsync(HttpResponseMessage httpResponseMessage)
-            {
-                return Task.FromResult(new ResponseEnvelope()
-                {
-                    HttpResponseMessage = httpResponseMessage
-                });
-            }
-        }
-
-        private class ResponseEnvelope<TModel>
-        {
-            public HttpResponseMessage HttpResponseMessage { get; private set; }
-
-            public TModel Model { get; private set; }
-
-            public static async Task<ResponseEnvelope<TModel>> CreateAsync(HttpResponseMessage httpResponseMessage)
-            {
-                return new ResponseEnvelope<TModel>()
-                {
-                    HttpResponseMessage = httpResponseMessage,
-                    Model = httpResponseMessage.StatusCode == HttpStatusCode.OK ? await httpResponseMessage.Content.ReadAsJsonAsync<TModel>() : default(TModel)
-                };
-            }
         }
     }
 }

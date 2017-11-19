@@ -1,9 +1,10 @@
 using System;
-using SimpleUptime.Domain.Models;
 using System.Collections.Generic;
+using SimpleUptime.Domain.Models;
+
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
-namespace SimpleUptime.IntegrationTests.WebApi.Controllers
+namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
 {
     public class HttpMonitorDto
     {
