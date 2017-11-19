@@ -11,21 +11,12 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 {
     public class DocumentDbFixture : IDisposable
     {
-        private const string EndpointUrl = "https://localhost:8081";
-        private const string PrimaryKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
         private readonly DocumentClient _client;
         private readonly DocumentHelper _documentHelper;
 
         public DocumentDbFixture()
         {
-            var settings = new JsonSerializerSettings()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
-
-            settings.Converters.Add(new HttpMonitorIdJsonConverter());
-
-            _client = new DocumentClient(new Uri(EndpointUrl), PrimaryKey, settings);
+            _client = DocumentClientFactory.CreateDocumentClientForEmulatorAsync().Result;
 
             var script = new SimpleUptimeDbScript(_client);
 

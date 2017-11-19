@@ -1,13 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Infrastructure.JsonConverters;
@@ -45,29 +41,7 @@ namespace SimpleUptime.WebApi
             services.AddTransient<IHttpMonitorService, HttpMonitorService>();
 
             services.AddTransient<IHttpMonitorRepository, HttpMonitorDocumentRepository>();
-            services.AddSingleton<IDocumentClient>(provider =>
-            {
-                var endpointUrl = "https://localhost:8081";
-                var primaryKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-
-                var settings = new JsonSerializerSettings()
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                };
-                settings.Converters.Add(new HttpMonitorIdJsonConverter());
-
-                var connectionPolicy = new ConnectionPolicy()
-                {
-                    ConnectionMode = ConnectionMode.Direct,
-                    ConnectionProtocol = Protocol.Tcp
-                };
-
-                var client = new DocumentClient(new Uri(endpointUrl), primaryKey, settings, connectionPolicy);
-
-                client.OpenAsync().Wait();
-
-                return client;
-            });
+            services.AddSingleton<IDocumentClient>(provider => DocumentClientFactory.CreateDocumentClientForEmulatorAsync().Result);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

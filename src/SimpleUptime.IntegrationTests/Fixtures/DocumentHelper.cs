@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents.Client;
+using SimpleUptime.Infrastructure.Repositories;
 
 namespace SimpleUptime.IntegrationTests.Fixtures
 {
@@ -31,14 +32,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
         public static DocumentHelper Create()
         {
-            var endpointUrl = "https://localhost:8081";
-            var primaryKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-
-            var client = new DocumentClient(new Uri(endpointUrl), primaryKey);
-
-            client.OpenAsync().Wait();
-
-            return new DocumentHelper(client);
+            return new DocumentHelper(DocumentClientFactory.CreateDocumentClientForEmulatorAsync().Result);
         }
     }
 }
