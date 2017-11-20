@@ -1,7 +1,7 @@
 ﻿using System;
 using SimpleUptime.Domain.Models;
 
-namespace SimpleUptime.Application.Services
+namespace SimpleUptime.Application.Commands
 {
     public class CheckHttpEndpoint
     {

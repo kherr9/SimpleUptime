@@ -13,7 +13,7 @@ namespace SimpleUptime.Domain.Models
 
         public void SetStartTime()
         {
-            if (StartTime == default(DateTime))
+            if (!StartTime.IsEmpty())
             {
                 throw new InvalidOperationException($"Property {nameof(StartTime)} already set.");
             }
@@ -23,12 +23,20 @@ namespace SimpleUptime.Domain.Models
 
         public void SetEndTime()
         {
-            if (EndTime == default(DateTime))
+            if (!EndTime.IsEmpty())
             {
                 throw new InvalidOperationException($"Property {nameof(EndTime)} already set.");
             }
 
             EndTime = DateTime.UtcNow;
+        }
+    }
+
+    internal static class DateTimeExtension
+    {
+        public static bool IsEmpty(this DateTime value)
+        {
+            return value == default(DateTime);
         }
     }
 }

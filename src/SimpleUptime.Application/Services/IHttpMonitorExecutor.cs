@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using SimpleUptime.Application.Commands;
 
 namespace SimpleUptime.Application.Services
 {

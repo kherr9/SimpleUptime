@@ -1,5 +1,4 @@
 ﻿using SimpleUptime.Domain.Models;
-using SimpleUptime.Domain.Services;
 
 namespace SimpleUptime.Domain.Events
 {
