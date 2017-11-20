@@ -56,6 +56,14 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
             return await _client.DeleteAsync(Urls.HttpMonitors.Delete(id));
         }
 
+        public async Task<(HttpResponseMessage, dynamic)> TestAsync(string id)
+        {
+            var response = await _client.PostAsync(Urls.HttpMonitors.Test(id), null);
+            var model = await DeserializeOrDefaultAsync<dynamic>(response);
+
+            return (response, model);
+        }
+
         private static async Task<T> DeserializeOrDefaultAsync<T>(HttpResponseMessage httpResponseMessage)
         {
             try

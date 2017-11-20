@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.IntegrationTests.Fixtures;
 using SimpleUptime.IntegrationTests.WebApi.Controllers.Client;
+using SimpleUptime.IntegrationTests.WebApi.Controllers.Helpers;
 using Xunit;
 
 namespace SimpleUptime.IntegrationTests.WebApi.Controllers
@@ -80,7 +81,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         }
 
         [Theory]
-        [MemberData(nameof(InvalidHttpMonitorIds))]
+        [MemberData(nameof(HttpMonitorIdHelper.InvalidHttpMonitorIds), MemberType = typeof(HttpMonitorIdHelper))]
         public async Task GetByIdReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Act
@@ -98,7 +99,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task Post()
         {
             // Arrange
-            var entity = (dynamic)Generate();
+            var entity = (dynamic)EntityGenerator.GenerateHttpMonitor();
 
             // Act
             (var response, var postEntity) = await _client.PostAsync((object)entity);
@@ -114,7 +115,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task PostGeneratesUniqueId()
         {
             // Arrange
-            var entity = Generate();
+            var entity = EntityGenerator.GenerateHttpMonitor();
 
             // Act
             (_, var postEntity1) = await _client.PostAsync(entity);
@@ -149,7 +150,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         public async Task PutReturnsNotFoundWhenEntityDoesNotExist()
         {
             // Arrange
-            var entity = Generate();
+            var entity = EntityGenerator.GenerateHttpMonitor();
             var id = HttpMonitorId.Create().ToString();
 
             // Act
@@ -160,11 +161,11 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         }
 
         [Theory]
-        [MemberData(nameof(InvalidHttpMonitorIds))]
+        [MemberData(nameof(HttpMonitorIdHelper.InvalidHttpMonitorIds), MemberType = typeof(HttpMonitorIdHelper))]
         public async Task PutReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Arrange
-            var entity = Generate();
+            var entity = EntityGenerator.GenerateHttpMonitor();
 
             // Act
             (var response, _) = await _client.PutAsync(id.ToString(), entity);
@@ -204,7 +205,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         }
 
         [Theory]
-        [MemberData(nameof(InvalidHttpMonitorIds))]
+        [MemberData(nameof(HttpMonitorIdHelper.InvalidHttpMonitorIds), MemberType = typeof(HttpMonitorIdHelper))]
         public async Task DeleteReturnsNotFoundWhenIdNotValidFormat(object id)
         {
             // Act
@@ -216,17 +217,9 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 
         #endregion
 
-        private object Generate()
-        {
-            return new
-            {
-                Url = new Uri($"https://{DateTime.UtcNow.Ticks}.example.com/")
-            };
-        }
-
         private async Task<HttpMonitorDto> GenerateAndPostHttpMonitorAsync()
         {
-            var entity = Generate();
+            var entity = EntityGenerator.GenerateHttpMonitor();
 
             return (await _client.PostAsync(entity)).Item2;
         }
@@ -241,18 +234,6 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             }
 
             return entities.ToArray();
-        }
-
-        private static IEnumerable<object[]> InvalidHttpMonitorIds()
-        {
-            yield return new object[] { "foo" };
-            yield return new object[] { 1 };
-            yield return new object[] { 0 };
-            yield return new object[] { -1 };
-            yield return new object[] { int.MaxValue };
-            yield return new object[] { long.MaxValue };
-            yield return new object[] { DateTime.UtcNow };
-            yield return new object[] { Guid.Empty.ToString() };
         }
     }
 }

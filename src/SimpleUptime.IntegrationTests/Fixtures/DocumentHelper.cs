@@ -5,7 +5,7 @@ using Microsoft.Azure.Documents.Client;
 
 namespace SimpleUptime.IntegrationTests.Fixtures
 {
-    public class DocumentHelper : IDisposable
+    public class DocumentHelper
     {
         private readonly DocumentClient _client;
 
@@ -20,13 +20,16 @@ namespace SimpleUptime.IntegrationTests.Fixtures
                 foreach (var coll in _client.CreateDocumentCollectionQuery(db.CollectionsLink).ToList())
                     foreach (var doc in _client.CreateDocumentQuery(coll.DocumentsLink).ToList())
                     {
-                        await _client.DeleteDocumentAsync(doc.SelfLink);
+                        try
+                        {
+                            await _client.DeleteDocumentAsync(doc.SelfLink);
+                        }
+                        catch (Exception ex)
+                        {
+                            // FileNotFound
+                            Console.WriteLine(ex.ToString());
+                        }
                     }
-        }
-
-        public void Dispose()
-        {
-            _client.Dispose();
         }
     }
 }
