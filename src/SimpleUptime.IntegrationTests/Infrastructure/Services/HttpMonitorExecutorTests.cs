@@ -4,13 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using SimpleUptime.Domain.Commands;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Infrastructure.Services;
+using SimpleUptime.IntegrationTests.Fixtures;
 using Xunit;
 
 using HttpRequest = SimpleUptime.Domain.Models.HttpRequest;
@@ -25,8 +24,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
 
         public HttpMonitorExecutorTests()
         {
-            _testServer = new TestServer(new WebHostBuilder()
-                .UseStartup<AnonymousStartup>());
+            _testServer = DummyHttpTestServer.CreateTestServer();
 
             _executor = new HttpMonitorExecutor(_testServer.CreateClient());
         }
@@ -49,7 +47,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             string actualHttpMethod = null;
             string actualRelativePath = null;
             string actualQueryString = null;
-            AnonymousStartup.RequestDelegate = ctx =>
+            DummyHttpTestServer.Handler = ctx =>
             {
                 // capture request data
                 actualHttpMethod = ctx.Request.Method;
@@ -83,7 +81,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                 }
             };
 
-            AnonymousStartup.RequestDelegate = ctx =>
+            DummyHttpTestServer.Handler = ctx =>
             {
                 // set response status code
                 ctx.Response.StatusCode = (int)statusCode;
@@ -115,7 +113,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                 }
             };
 
-            AnonymousStartup.RequestDelegate = async ctx =>
+            DummyHttpTestServer.Handler = async ctx =>
             {
                 await Task.Delay(millisecondsDelay);
             };
@@ -130,19 +128,6 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             var endTimeDiff = Math.Abs(expectedEndTime.Subtract(@event.RequestTiming.EndTime).TotalMilliseconds);
             Assert.True(startTimeDiff < 5);
             Assert.True(endTimeDiff < 5);
-        }
-
-        private class AnonymousStartup
-        {
-            public static RequestDelegate RequestDelegate;
-
-            public void Configure(IApplicationBuilder applicationBuilder)
-            {
-                applicationBuilder.Run(ctx =>
-                {
-                    return RequestDelegate?.Invoke(ctx) ?? Task.CompletedTask;
-                });
-            }
         }
 
         private static IEnumerable<object[]> HttpRequestMethods()
