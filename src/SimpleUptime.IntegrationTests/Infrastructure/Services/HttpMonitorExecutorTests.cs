@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -29,13 +32,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         }
 
         [Theory]
-        [InlineData("Delete")]
-        [InlineData("Get")]
-        [InlineData("Head")]
-        [InlineData("Options")]
-        [InlineData("Post")]
-        [InlineData("Put")]
-        [InlineData("Trace")]
+        [MemberData(nameof(HttpRequestMethods))]
         public async Task RequestHttpMethodAndPathCalled(string httpMethod)
         {
             // Arrange
@@ -48,13 +45,13 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                     Method = new HttpMethod(httpMethod)
                 }
             };
-            
+
             string actualHttpMethod = null;
             string actualRelativePath = null;
             string actualQueryString = null;
             AnonymousStartup.RequestDelegate = ctx =>
             {
-                // capture incoming http method
+                // capture request data
                 actualHttpMethod = ctx.Request.Method;
                 actualRelativePath = ctx.Request.Path.Value;
                 actualQueryString = ctx.Request.QueryString.Value;
@@ -71,6 +68,36 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             Assert.Equal(command.Request.Url.Query, actualQueryString);
         }
 
+        [Theory]
+        [MemberData(nameof(HttpStatusCodes))]
+        public async Task ResponseCatpured(HttpStatusCode statusCode)
+        {
+            // Arrange
+            var command = new CheckHttpEndpoint()
+            {
+                HttpMonitorId = HttpMonitorId.Create(),
+                Request = new HttpRequest()
+                {
+                    Url = new Uri(_testServer.BaseAddress, $"/api/{DateTime.UtcNow.Ticks}/index.html?q={DateTime.UtcNow.Ticks}"),
+                    Method = HttpMethod.Get
+                }
+            };
+
+            AnonymousStartup.RequestDelegate = ctx =>
+            {
+                // set response status code
+                ctx.Response.StatusCode = (int)statusCode;
+
+                return Task.CompletedTask;
+            };
+
+            // Act
+            var @event = await _executor.CheckHttpEndpointAsync(command);
+
+            // Assert
+            Assert.Equal(statusCode, @event.Response.StatusCode);
+        }
+
         public class AnonymousStartup
         {
             public static RequestDelegate RequestDelegate;
@@ -81,6 +108,27 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                 {
                     return RequestDelegate?.Invoke(ctx) ?? Task.CompletedTask;
                 });
+            }
+        }
+
+        private static IEnumerable<object[]> HttpRequestMethods()
+        {
+            yield return new object[] { HttpMethods.Connect };
+            yield return new object[] { HttpMethods.Put };
+            yield return new object[] { HttpMethods.Post };
+            yield return new object[] { HttpMethods.Patch };
+            yield return new object[] { HttpMethods.Trace };
+            yield return new object[] { HttpMethods.Head };
+            yield return new object[] { HttpMethods.Get };
+            yield return new object[] { HttpMethods.Delete };
+            yield return new object[] { HttpMethods.Options };
+        }
+
+        private static IEnumerable<object[]> HttpStatusCodes()
+        {
+            foreach (var value in Enum.GetValues(typeof(HttpStatusCode)).Cast<HttpStatusCode>())
+            {
+                yield return new object[] { value };
             }
         }
 
