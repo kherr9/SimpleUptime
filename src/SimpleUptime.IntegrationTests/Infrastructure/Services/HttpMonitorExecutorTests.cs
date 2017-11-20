@@ -78,7 +78,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                 HttpMonitorId = HttpMonitorId.Create(),
                 Request = new HttpRequest()
                 {
-                    Url = new Uri(_testServer.BaseAddress, $"/api/{DateTime.UtcNow.Ticks}/index.html?q={DateTime.UtcNow.Ticks}"),
+                    Url = _testServer.BaseAddress,
                     Method = HttpMethod.Get
                 }
             };
@@ -98,7 +98,41 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             Assert.Equal(statusCode, @event.Response.StatusCode);
         }
 
-        public class AnonymousStartup
+        [Theory]
+        [InlineData(0)]
+        [InlineData(100)]
+        [InlineData(1000)]
+        public async Task RequestTiming(int millisecondsDelay)
+        {
+            // Arrange
+            var command = new CheckHttpEndpoint()
+            {
+                HttpMonitorId = HttpMonitorId.Create(),
+                Request = new HttpRequest()
+                {
+                    Url = _testServer.BaseAddress,
+                    Method = HttpMethod.Get
+                }
+            };
+
+            AnonymousStartup.RequestDelegate = async ctx =>
+            {
+                await Task.Delay(millisecondsDelay);
+            };
+
+            // Act
+            var expectedStartTime = DateTime.UtcNow;
+            var @event = await _executor.CheckHttpEndpointAsync(command);
+            var expectedEndTime = DateTime.UtcNow;
+
+            // Assert
+            var startTimeDiff = Math.Abs(expectedStartTime.Subtract(@event.RequestTiming.StartTime).TotalMilliseconds);
+            var endTimeDiff = Math.Abs(expectedEndTime.Subtract(@event.RequestTiming.EndTime).TotalMilliseconds);
+            Assert.True(startTimeDiff < 5);
+            Assert.True(endTimeDiff < 5);
+        }
+
+        private class AnonymousStartup
         {
             public static RequestDelegate RequestDelegate;
 

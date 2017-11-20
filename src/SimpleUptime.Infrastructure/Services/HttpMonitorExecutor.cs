@@ -23,18 +23,18 @@ namespace SimpleUptime.Infrastructure.Services
                 HttpMonitorId = command.HttpMonitorId,
                 Request = command.Request,
                 Response = null,
-                RequestTime = new HttpRequestTime()
+                RequestTiming = new HttpRequestTiming()
             };
 
             using (var requestMessage = BuildRequestMessage(command))
             {
-                @event.RequestTime.SetStartTime();
+                @event.RequestTiming.SetStartTime();
 
                 using (var responseMessage = await SendMessageAsync(requestMessage))
                 {
                     await ReadResponseAsync(responseMessage);
 
-                    @event.RequestTime.SetEndTime();
+                    @event.RequestTiming.SetEndTime();
 
                     @event.Response = new HttpResponse(responseMessage);
                 }

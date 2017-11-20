@@ -5,7 +5,7 @@ namespace SimpleUptime.Domain.Models
     /// <summary>
     /// Detail timing information.
     /// </summary>
-    public class HttpRequestTime
+    public class HttpRequestTiming
     {
         public DateTime StartTime { get; set; }
 
@@ -29,14 +29,6 @@ namespace SimpleUptime.Domain.Models
             }
 
             EndTime = DateTime.UtcNow;
-        }
-    }
-
-    internal static class DateTimeExtension
-    {
-        public static bool IsEmpty(this DateTime value)
-        {
-            return value == default(DateTime);
         }
     }
 }

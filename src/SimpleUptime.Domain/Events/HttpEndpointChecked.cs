@@ -10,6 +10,6 @@ namespace SimpleUptime.Domain.Events
 
         public HttpResponse Response { get; set; }
 
-        public HttpRequestTime RequestTime { get; set; }
+        public HttpRequestTiming RequestTiming { get; set; }
     }
 }
