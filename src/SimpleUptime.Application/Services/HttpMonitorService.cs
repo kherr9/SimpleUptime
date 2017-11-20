@@ -48,7 +48,7 @@ namespace SimpleUptime.Application.Services
 
             if (httpMonitor == null)
             {
-                throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {command.HttpMonitorId}");
+                throw new EntityNotFoundException(command.HttpMonitorId);
             }
 
             httpMonitor.Update(command.Url);
@@ -66,7 +66,7 @@ namespace SimpleUptime.Application.Services
 
             if (httpMonitor == null)
             {
-                throw new EntityNotFoundException($"Unknown {nameof(HttpMonitor)} with id {httpMonitorId}");
+                throw new EntityNotFoundException(httpMonitorId);
             }
 
             await _repository.DeleteAsync(httpMonitorId);
