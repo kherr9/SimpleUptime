@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
@@ -8,12 +9,24 @@ using Microsoft.AspNetCore.Http;
 
 namespace SimpleUptime.IntegrationTests.Fixtures
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Test http server with configurable request handler
+    /// </summary>
     public class OpenHttpServer : IDisposable
     {
         private static readonly Uri DefaultBaseAddress = new Uri("http://localhost:5051");
-        private static readonly RequestDelegate NullRequestDelegate = ctx => Task.CompletedTask;
+        private static readonly RequestDelegate NullRequestDelegate = ctx =>
+        {
+            ctx.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return Task.CompletedTask;
+        };
 
         private readonly List<HttpClient> _clients = new List<HttpClient>();
+
+        private OpenHttpServer()
+        {
+        }
 
         public IWebHost Host { get; private set; }
 
