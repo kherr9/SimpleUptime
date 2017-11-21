@@ -33,7 +33,8 @@ namespace SimpleUptime.Infrastructure.Repositories
 
             var connectionPolicy = new ConnectionPolicy()
             {
-                ConnectionMode = ConnectionMode.Direct,
+                // Direct connect does not work with emulator
+                ////ConnectionMode = ConnectionMode.Direct,
                 ConnectionProtocol = Protocol.Tcp
             };
 
