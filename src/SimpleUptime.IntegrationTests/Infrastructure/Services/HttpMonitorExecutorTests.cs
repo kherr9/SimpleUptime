@@ -19,6 +19,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
 {
     public class HttpMonitorExecutorTests : IDisposable
     {
+        // todo switch to other service IWebHost
         private readonly TestServer _testServer;
         private readonly HttpMonitorExecutor _executor;
 
@@ -129,6 +130,8 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             Assert.True(startTimeDiff < 5);
             Assert.True(endTimeDiff < 5);
         }
+
+        // todo: TestWhenServiceIsDown
 
         private static IEnumerable<object[]> HttpRequestMethods()
         {

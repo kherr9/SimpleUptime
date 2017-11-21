@@ -30,6 +30,7 @@ namespace SimpleUptime.Infrastructure.Repositories
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
             settings.Converters.Add(new HttpMonitorIdJsonConverter());
+            settings.Converters.Add(new HttpMethodJsonConverter());
 
             var connectionPolicy = new ConnectionPolicy()
             {

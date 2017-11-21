@@ -41,7 +41,11 @@ namespace SimpleUptime.WebApi
                 options.ModelBinderProviders.Insert(0, new HttpMonitorIdBinder());
             })
             // mvc json settings
-            .AddJsonOptions(opt => opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter()));
+            .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter());
+                    opt.SerializerSettings.Converters.Add(new HttpMethodJsonConverter());
+                });
 
             services.Configure<RouteOptions>(options =>
             {

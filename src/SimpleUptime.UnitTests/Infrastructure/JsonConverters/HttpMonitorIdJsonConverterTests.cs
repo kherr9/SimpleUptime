@@ -49,6 +49,5 @@ namespace SimpleUptime.UnitTests.Infrastructure.JsonConverters
                 };
             }
         }
-
     }
 }

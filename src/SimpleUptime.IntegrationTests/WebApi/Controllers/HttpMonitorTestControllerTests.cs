@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Newtonsoft.Json;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.IntegrationTests.Fixtures;
 using SimpleUptime.IntegrationTests.WebApi.Controllers.Client;
@@ -17,13 +16,14 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
         private readonly WebApiAppFixture _webApiAppFixture;
         private readonly HttpMonitorClient _client;
         private readonly IWebHost _testServer;
+        private readonly Uri _baseUrl = new Uri("http://localhost:5000");
 
         public HttpMonitorTestControllerTests(WebApiAppFixture webApiAppFixture)
         {
             _webApiAppFixture = webApiAppFixture;
             _client = new HttpMonitorClient(webApiAppFixture.HttpClient);
 
-            _testServer = DummyHttpTestServer.CreateAndRunWebHost("http://localhost:5000");
+            _testServer = DummyHttpTestServer.CreateAndRunWebHost(_baseUrl.ToString());
         }
 
         public void Dispose()
@@ -62,7 +62,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             // Arrange
             (_, var entity) = await _client.PostAsync(new
             {
-                Url = "http://localhost:5000/"// _testServer.BaseAddress
+                Url = new Uri(_baseUrl, "foo/bar?q=123")
             });
 
             string actualMethod = null;
@@ -78,20 +78,25 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             };
 
             // Act
-            (var response, var testResult) = await _client.TestAsync(entity.Id);
+             (var response, var testResult) = await _client.TestAsync(entity.Id);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            Assert.Equal("GET", actualMethod, StringComparer.InvariantCultureIgnoreCase);
+            Assert.Equal(entity.Url.AbsolutePath, actualPath);
+            Assert.Equal(entity.Url.Query, actualQueryString);
+
             var expectedResult = new HttpMonitorCheckedDto()
             {
                 HttpMonitorId = entity.Id,
-                Request = new HttpRequestDto()
+                Request = new HttpRequestDto()                                 
                 {
                     Url = entity.Url,
                     Method = HttpMethod.Get.ToString()
                 },
                 Response = new HttpResponseDto()
-                {
+                {                              
                     StatusCode = (int)HttpStatusCode.OK
                 },
                 RequestTiming = new HttpRequestTimingDto()
@@ -104,13 +109,9 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             Assert.Equal(expectedResult.HttpMonitorId, testResult.HttpMonitorId);
             Assert.Equal(expectedResult.Request, testResult.Request);
             Assert.Equal(expectedResult.Response, testResult.Response);
-        }
 
-        private async Task<HttpMonitorDto> GenerateAndPostHttpMonitorAsync()
-        {
-            var entity = EntityGenerator.GenerateHttpMonitor();
-
-            return (await _client.PostAsync(entity)).Item2;
+            AssertDateTime.Equal(expectedResult.RequestTiming.StartTime, testResult.RequestTiming.StartTime, TimeSpanComparer.DefaultTolerance);
+            AssertDateTime.Equal(expectedResult.RequestTiming.EndTime, testResult.RequestTiming.EndTime, TimeSpanComparer.DefaultTolerance);
         }
     }
 }
