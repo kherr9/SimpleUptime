@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Newtonsoft.Json;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.IntegrationTests.Fixtures;
 using SimpleUptime.IntegrationTests.WebApi.Controllers.Client;
@@ -76,10 +78,32 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             };
 
             // Act
-            (var response, var thing) = await _client.TestAsync(entity.Id);
+            (var response, var testResult) = await _client.TestAsync(entity.Id);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var expectedResult = new HttpMonitorCheckedDto()
+            {
+                HttpMonitorId = entity.Id,
+                Request = new HttpRequestDto()
+                {
+                    Url = entity.Url,
+                    Method = HttpMethod.Get.ToString()
+                },
+                Response = new HttpResponseDto()
+                {
+                    StatusCode = (int)HttpStatusCode.OK
+                },
+                RequestTiming = new HttpRequestTimingDto()
+                {
+                    StartTime = DateTime.UtcNow,
+                    EndTime = DateTime.UtcNow
+                }
+            };
+
+            Assert.Equal(expectedResult.HttpMonitorId, testResult.HttpMonitorId);
+            Assert.Equal(expectedResult.Request, testResult.Request);
+            Assert.Equal(expectedResult.Response, testResult.Response);
         }
 
         private async Task<HttpMonitorDto> GenerateAndPostHttpMonitorAsync()
