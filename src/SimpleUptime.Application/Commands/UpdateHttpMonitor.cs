@@ -1,4 +1,3 @@
-using System;
 using SimpleUptime.Domain.Models;
 
 namespace SimpleUptime.Application.Commands

@@ -43,6 +43,7 @@ namespace SimpleUptime.UnitTests.Infrastructure.JsonConverters
             }
 
             // ReSharper disable once MemberCanBePrivate.Local
+            // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
             public HttpMethod Method { get; set; }
         }
     }

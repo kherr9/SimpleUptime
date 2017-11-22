@@ -70,7 +70,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
             {
                 return await httpResponseMessage.Content.ReadAsJsonAsync<T>();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return default(T);
             }
