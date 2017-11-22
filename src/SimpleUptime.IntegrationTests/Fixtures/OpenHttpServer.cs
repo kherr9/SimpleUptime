@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
 
 namespace SimpleUptime.IntegrationTests.Fixtures
 {
@@ -15,7 +17,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
     /// </summary>
     public class OpenHttpServer : IDisposable
     {
-        private static readonly Uri DefaultBaseAddress = new Uri("http://localhost:5051");
+        private static int DefaultPort = 5050;
         private static readonly RequestDelegate NullRequestDelegate = ctx =>
         {
             ctx.Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -32,7 +34,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
         public RequestDelegate Handler { get; set; } = NullRequestDelegate;
 
-        public Uri BaseAddress { get; } = DefaultBaseAddress;
+        public Uri BaseAddress { get; private set; }
 
         public HttpClient CreateClient()
         {
@@ -61,11 +63,35 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
         public static OpenHttpServer CreateAndRun()
         {
-            var server = new OpenHttpServer();
+            var currentPort = DefaultPort;
 
-            server.Host = WebHost.Start(server.BaseAddress.ToString(), ctx => server.Handler(ctx));
+            while (true)
+            {
+                OpenHttpServer server = null;
+                try
+                {
+                    server = new OpenHttpServer();
 
-            return server;
+                    var baseAddress = new Uri($"http://localhost:{currentPort}");
+                    var webHost = WebHost.Start(baseAddress.ToString(), ctx => server.Handler(ctx));
+
+                    server.Host = webHost;
+                    server.BaseAddress = baseAddress;
+
+                    return server;
+                }
+                catch (IOException ex)
+                {
+                    server?.Dispose();
+
+                    if (!(ex.InnerException is AddressInUseException))
+                    {
+                        throw;
+                    }
+                }
+
+                currentPort++;
+            }
         }
 
         public void Dispose()
