@@ -31,7 +31,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
         {
             return obj is HttpMonitorDto dto &&
                    Id == dto.Id &&
-                   Request.Equals(dto.Request);
+                   EqualityComparer<HttpRequestDto>.Default.Equals(Request, dto.Request);
         }
 
         public override int GetHashCode()

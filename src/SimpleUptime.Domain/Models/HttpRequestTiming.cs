@@ -1,4 +1,5 @@
 using System;
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SimpleUptime.Domain.Models
 {
@@ -29,6 +30,21 @@ namespace SimpleUptime.Domain.Models
             }
 
             EndTime = DateTime.UtcNow;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is HttpRequestTiming timing &&
+                   StartTime == timing.StartTime &&
+                   EndTime == timing.EndTime;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -445957783;
+            hashCode = hashCode * -1521134295 + StartTime.GetHashCode();
+            hashCode = hashCode * -1521134295 + EndTime.GetHashCode();
+            return hashCode;
         }
     }
 }
