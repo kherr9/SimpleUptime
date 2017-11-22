@@ -52,6 +52,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
             };
             client.DefaultRequestHeaders.ExpectContinue = false;
             client.DefaultRequestHeaders.ConnectionClose = true;
+            client.Timeout = TimeSpan.FromSeconds(15);
 
             _clients.Add(client);
 

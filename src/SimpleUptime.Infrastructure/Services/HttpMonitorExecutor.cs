@@ -35,17 +35,11 @@ namespace SimpleUptime.Infrastructure.Services
                 {
                     using (var responseMessage = await SendMessageAsync(requestMessage))
                     {
-                        ////await ReadResponseAsync(responseMessage);
-
-                        @event.RequestTiming.SetEndTime();
-
                         @event.Response = new HttpResponse(responseMessage);
                     }
                 }
                 catch (HttpRequestException ex)
                 {
-                    @event.RequestTiming.SetEndTime();
-
                     if (ex.InnerException is Win32Exception win32Exception)
                     {
                         // A connection with the server could not be established
@@ -55,6 +49,14 @@ namespace SimpleUptime.Infrastructure.Services
                     {
                         @event.ErrorMessage = ex.Message;
                     }
+                }
+                catch (TaskCanceledException)
+                {
+                    @event.ErrorMessage = "Request timed out";
+                }
+                finally
+                {
+                    @event.RequestTiming.SetEndTime();
                 }
             }
 

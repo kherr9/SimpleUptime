@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using SimpleUptime.Domain.Commands;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Infrastructure.Services;
@@ -16,6 +17,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
     public class HttpMonitorExecutorTests : IDisposable
     {
         private readonly HttpMonitorExecutor _executor;
+        private readonly HttpClient _httpClient;
         private readonly OpenHttpServer _httpServer;
 
         public HttpMonitorExecutorTests()
@@ -23,7 +25,8 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             _httpServer = OpenHttpServer.CreateAndRun();
 
             // todo configure client with custom logic since it needs to be configured per rules of executor
-            _executor = new HttpMonitorExecutor(_httpServer.CreateClient());
+            _httpClient = _httpServer.CreateClient();
+            _executor = new HttpMonitorExecutor(_httpClient);
         }
 
         public void Dispose()
@@ -126,10 +129,8 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             var expectedEndTime = DateTime.UtcNow;
 
             // Assert
-            var startTimeDiff = Math.Abs(expectedStartTime.Subtract(@event.RequestTiming.StartTime).TotalMilliseconds);
-            var endTimeDiff = Math.Abs(expectedEndTime.Subtract(@event.RequestTiming.EndTime).TotalMilliseconds);
-            Assert.True(startTimeDiff < 5);
-            Assert.True(endTimeDiff < 5);
+            AssertDateTime.Equal(expectedStartTime, @event.RequestTiming.StartTime, TimeSpanComparer.DefaultTolerance);
+            AssertDateTime.Equal(expectedEndTime, @event.RequestTiming.EndTime, TimeSpanComparer.DefaultTolerance);
         }
 
         [Fact]
@@ -181,9 +182,67 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             Assert.Equal("The server returned an invalid or unrecognized response", @event.ErrorMessage);
         }
 
-        // todo
-        // set request timeout
-        // write infinte response body
-        // write slow response body
+        [Fact]
+        public async Task HangRequestReturnsTimeoutError()
+        {
+            // Arrange
+            var command = new CheckHttpEndpoint()
+            {
+                HttpMonitorId = HttpMonitorId.Create(),
+                Request = new HttpRequest()
+                {
+                    Url = _httpServer.BaseAddress,
+                    Method = HttpMethod.Get
+                }
+            };
+
+            // set timeout on client level
+            _httpClient.Timeout = TimeSpan.FromMilliseconds(100);
+
+            _httpServer.Handler = async ctx =>
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(1000));
+            };
+
+            // Act
+            var @event = await _executor.CheckHttpEndpointAsync(command);
+
+            // Assert
+            Assert.Null(@event.Response);
+            Assert.Equal("Request timed out", @event.ErrorMessage);
+        }
+
+        [Fact]
+        public async Task DoNotReadEntireResponseBody()
+        {
+            // Arrange
+            var command = new CheckHttpEndpoint()
+            {
+                HttpMonitorId = HttpMonitorId.Create(),
+                Request = new HttpRequest()
+                {
+                    Url = _httpServer.BaseAddress,
+                    Method = HttpMethod.Get
+                }
+            };
+
+            _httpServer.Handler = async ctx =>
+            {
+                ctx.Response.StatusCode = (int)HttpStatusCode.Accepted;
+
+                // write infinitely to the response stream
+                while (true)
+                {
+                    await ctx.Response.WriteAsync(Guid.NewGuid().ToString());
+                }
+            };
+
+            // Act
+            var @event = await _executor.CheckHttpEndpointAsync(command);
+
+            // Assert
+            Assert.Null(@event.ErrorMessage);
+            Assert.Equal(HttpStatusCode.Accepted, @event.Response.StatusCode);
+        }
     }
 }
