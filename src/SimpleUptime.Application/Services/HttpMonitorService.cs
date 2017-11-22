@@ -33,7 +33,7 @@ namespace SimpleUptime.Application.Services
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
 
-            var httpMonitor = new HttpMonitor(HttpMonitorId.Create(), command.Url);
+            var httpMonitor = new HttpMonitor(HttpMonitorId.Create(), command.Request);
 
             await _repository.PutAsync(httpMonitor);
 
@@ -51,7 +51,7 @@ namespace SimpleUptime.Application.Services
                 throw new EntityNotFoundException(command.HttpMonitorId);
             }
 
-            httpMonitor.Update(command.Url);
+            httpMonitor.UpdateRequest(command.Request);
 
             await _repository.PutAsync(httpMonitor);
 

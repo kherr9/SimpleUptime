@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Infrastructure.Middlewares;
@@ -81,14 +82,14 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
             // Arrange
             var entity = await GenerateAndPersistHttpMonitorAsync();
             var newUrl = new Uri("http://foo-bar.com/");
-            entity.Url = newUrl;
+            entity.Request.Url = newUrl;
 
             // Act
             await _repository.PutAsync(entity);
 
             // Assert
             var readEntity = await _repository.GetByIdAsync(entity.Id);
-            Assert.Equal(newUrl, readEntity.Url);
+            Assert.Equal(newUrl, readEntity.Request.Url);
         }
 
         [Fact]
@@ -118,7 +119,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 
         private HttpMonitor GenerateHttpMonitor()
         {
-            return new HttpMonitor(HttpMonitorId.Create(), new Uri("https://example.com"));
+            return new HttpMonitor(HttpMonitorId.Create(), new HttpRequest() { Method = HttpMethod.Get, Url = new Uri("https://example.com") });
         }
 
         private async Task<HttpMonitor> GenerateAndPersistHttpMonitorAsync()

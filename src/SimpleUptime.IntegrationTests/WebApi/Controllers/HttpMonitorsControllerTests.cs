@@ -106,7 +106,8 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(entity.Url, postEntity.Url);
+            Assert.Equal(entity.Request.Url, postEntity.Request.Url);
+            Assert.Equal(entity.Request.Method, postEntity.Request.Method);
             Assert.NotNull(postEntity.Id);
             Assert.NotEmpty(postEntity.Id);
         }
@@ -135,7 +136,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             // Arrange
             var entity = await GenerateAndPostHttpMonitorAsync();
             var newUrl = new Uri("https://asdfasdf.example.com");
-            entity.Url = newUrl;
+            entity.Request.Url = newUrl;
 
             // Act
             (var response, var model) = await _client.PutAsync(entity.Id, entity);
@@ -143,7 +144,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(entity.Id, model.Id);
-            Assert.Equal(newUrl, model.Url);
+            Assert.Equal(newUrl, model.Request.Url);
         }
 
         [Fact]

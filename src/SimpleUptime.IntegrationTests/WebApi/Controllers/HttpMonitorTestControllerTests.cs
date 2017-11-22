@@ -60,7 +60,11 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             // Arrange
             (_, var entity) = await _client.PostAsync(new
             {
-                Url = new Uri(_httpServer.BaseAddress, "foo/bar?q=123")
+                Request = new
+                {
+                    Url = new Uri(_httpServer.BaseAddress, "foo/bar?q=123"),
+                    Method = "GET"
+                }
             });
 
             string actualMethod = null;
@@ -81,16 +85,16 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-            Assert.Equal("GET", actualMethod, StringComparer.InvariantCultureIgnoreCase);
-            Assert.Equal(entity.Url.AbsolutePath, actualPath);
-            Assert.Equal(entity.Url.Query, actualQueryString);
+            Assert.Equal(entity.Request.Method, actualMethod, StringComparer.InvariantCultureIgnoreCase);
+            Assert.Equal(entity.Request.Url.AbsolutePath, actualPath);
+            Assert.Equal(entity.Request.Url.Query, actualQueryString);
 
             var expectedResult = new HttpMonitorCheckedDto()
             {
                 HttpMonitorId = entity.Id,
                 Request = new HttpRequestDto()
                 {
-                    Url = entity.Url,
+                    Url = entity.Request.Url,
                     Method = HttpMethod.Get.ToString()
                 },
                 Response = new HttpResponseDto()

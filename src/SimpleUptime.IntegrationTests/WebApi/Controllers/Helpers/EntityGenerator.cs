@@ -8,7 +8,11 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Helpers
         {
             return new
             {
-                Url = new Uri($"https://{DateTime.UtcNow.Ticks}.example.com/")
+                Request = new
+                {
+                    Url = new Uri($"https://{DateTime.UtcNow.Ticks}.example.com/"),
+                    Method = "GET"
+                }
             };
         }
     }

@@ -7,6 +7,6 @@ namespace SimpleUptime.Application.Commands
     {
         public HttpMonitorId HttpMonitorId { get; set; }
 
-        public Uri Url { get; set; }
+        public HttpRequest Request { get; set; }
     }
 }

@@ -32,11 +32,7 @@ namespace SimpleUptime.Application.Services
             var cmd = new CheckHttpEndpoint()
             {
                 HttpMonitorId = httpMonitorId,
-                Request = new HttpRequest()
-                {
-                    Method = HttpMethod.Get,
-                    Url = httpMonitor.Url
-                }
+                Request = httpMonitor.Request
             };
 
             return await _executor.CheckHttpEndpointAsync(cmd);
