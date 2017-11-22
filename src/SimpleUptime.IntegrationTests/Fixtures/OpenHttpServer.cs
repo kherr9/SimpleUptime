@@ -39,11 +39,11 @@ namespace SimpleUptime.IntegrationTests.Fixtures
             var handler = new HttpClientHandler()
             {
                 AllowAutoRedirect = false,
-                AutomaticDecompression = DecompressionMethods.None,
+                //AutomaticDecompression = DecompressionMethods.None,
                 UseCookies = false,
                 //ClientCertificateOptions = ClientCertificateOption.Manual,
                 //PreAuthenticate = false,
-                UseProxy = false
+                //UseProxy = false
             };
 
             var client = new HttpClient(handler, true)
