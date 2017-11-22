@@ -141,7 +141,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                 HttpMonitorId = HttpMonitorId.Create(),
                 Request = new HttpRequest()
                 {
-                    Url = new Uri("http://localhost:9485/"),
+                    Url = new Uri("http://localhost:9485/"), // nothing should be open on port
                     Method = HttpMethod.Get
                 }
             };
@@ -180,5 +180,10 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             Assert.Null(@event.Response);
             Assert.Equal("The server returned an invalid or unrecognized response", @event.ErrorMessage);
         }
+
+        // todo
+        // set request timeout
+        // write infinte response body
+        // write slow response body
     }
 }
