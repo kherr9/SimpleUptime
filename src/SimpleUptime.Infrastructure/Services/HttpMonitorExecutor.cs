@@ -35,7 +35,7 @@ namespace SimpleUptime.Infrastructure.Services
                 {
                     using (var responseMessage = await SendMessageAsync(requestMessage))
                     {
-                        await ReadResponseAsync(responseMessage);
+                        ////await ReadResponseAsync(responseMessage);
 
                         @event.RequestTiming.SetEndTime();
 
@@ -68,12 +68,12 @@ namespace SimpleUptime.Infrastructure.Services
 
         private Task<HttpResponseMessage> SendMessageAsync(HttpRequestMessage requestMessage)
         {
-            return _httpClient.SendAsync(requestMessage);
+            return _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
         }
 
-        private Task ReadResponseAsync(HttpResponseMessage responseMessage)
-        {
-            return responseMessage.Content.ReadAsByteArrayAsync();
-        }
+        ////private Task ReadResponseAsync(HttpResponseMessage responseMessage)
+        ////{
+        ////    return responseMessage.Content.ReadAsByteArrayAsync();
+        ////}
     }
 }
