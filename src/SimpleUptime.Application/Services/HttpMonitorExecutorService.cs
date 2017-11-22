@@ -1,4 +1,3 @@
-using System.Net.Http;
 using System.Threading.Tasks;
 using SimpleUptime.Application.Exceptions;
 using SimpleUptime.Domain.Commands;

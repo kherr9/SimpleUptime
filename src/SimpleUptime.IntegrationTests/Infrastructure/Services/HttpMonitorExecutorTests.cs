@@ -10,7 +10,6 @@ using SimpleUptime.IntegrationTests.Fixtures;
 using Xunit;
 
 using HttpRequest = SimpleUptime.Domain.Models.HttpRequest;
-using HttpResponse = SimpleUptime.Domain.Models.HttpResponse;
 
 namespace SimpleUptime.IntegrationTests.Infrastructure.Services
 {
