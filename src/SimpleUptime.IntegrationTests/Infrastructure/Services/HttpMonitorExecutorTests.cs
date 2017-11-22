@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.TestHost;
 using SimpleUptime.Domain.Commands;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Infrastructure.Services;
@@ -19,19 +15,24 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
 {
     public class HttpMonitorExecutorTests : IDisposable
     {
-        // todo switch to other service IWebHost
-        private readonly TestServer _testServer;
         private readonly HttpMonitorExecutor _executor;
+        private readonly OpenHttpServer _httpServer;
 
         public HttpMonitorExecutorTests()
         {
-            _testServer = DummyHttpTestServer.CreateTestServer();
+            _httpServer = OpenHttpServer.CreateAndRun();
 
-            _executor = new HttpMonitorExecutor(_testServer.CreateClient());
+            // todo configure client with custom logic since it needs to be configured per rules of executor
+            _executor = new HttpMonitorExecutor(_httpServer.CreateClient());
+        }
+
+        public void Dispose()
+        {
+            _httpServer?.Dispose();
         }
 
         [Theory]
-        [MemberData(nameof(HttpRequestMethods))]
+        [MemberData(nameof(OpenHttpServerTests.HttpRequestMethods), MemberType = typeof(OpenHttpServerTests))]
         public async Task RequestHttpMethodAndPathCalled(string httpMethod)
         {
             // Arrange
@@ -40,7 +41,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                 HttpMonitorId = HttpMonitorId.Create(),
                 Request = new HttpRequest()
                 {
-                    Url = new Uri(_testServer.BaseAddress, $"/api/{DateTime.UtcNow.Ticks}/index.html?q={DateTime.UtcNow.Ticks}"),
+                    Url = new Uri(_httpServer.BaseAddress, $"/api/{DateTime.UtcNow.Ticks}/index.html?q={DateTime.UtcNow.Ticks}"),
                     Method = new HttpMethod(httpMethod)
                 }
             };
@@ -48,7 +49,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             string actualHttpMethod = null;
             string actualRelativePath = null;
             string actualQueryString = null;
-            DummyHttpTestServer.Handler = ctx =>
+            _httpServer.Handler = ctx =>
             {
                 // capture request data
                 actualHttpMethod = ctx.Request.Method;
@@ -59,7 +60,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             };
 
             // Act
-            var @event = await _executor.CheckHttpEndpointAsync(command);
+            await _executor.CheckHttpEndpointAsync(command);
 
             // Assert
             Assert.Equal(command.Request.Method.Method, actualHttpMethod, StringComparer.InvariantCultureIgnoreCase);
@@ -68,7 +69,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         }
 
         [Theory]
-        [MemberData(nameof(HttpStatusCodes))]
+        [MemberData(nameof(OpenHttpServerTests.HttpStatusCodes), MemberType = typeof(OpenHttpServerTests))]
         public async Task ResponseCatpured(HttpStatusCode statusCode)
         {
             // Arrange
@@ -77,12 +78,12 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                 HttpMonitorId = HttpMonitorId.Create(),
                 Request = new HttpRequest()
                 {
-                    Url = _testServer.BaseAddress,
+                    Url = _httpServer.BaseAddress,
                     Method = HttpMethod.Get
                 }
             };
 
-            DummyHttpTestServer.Handler = ctx =>
+            _httpServer.Handler = ctx =>
             {
                 // set response status code
                 ctx.Response.StatusCode = (int)statusCode;
@@ -109,12 +110,12 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                 HttpMonitorId = HttpMonitorId.Create(),
                 Request = new HttpRequest()
                 {
-                    Url = _testServer.BaseAddress,
+                    Url = _httpServer.BaseAddress,
                     Method = HttpMethod.Get
                 }
             };
 
-            DummyHttpTestServer.Handler = async ctx =>
+            _httpServer.Handler = async ctx =>
             {
                 await Task.Delay(millisecondsDelay);
             };
@@ -131,32 +132,53 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             Assert.True(endTimeDiff < 5);
         }
 
-        // todo: TestWhenServiceIsDown
-
-        private static IEnumerable<object[]> HttpRequestMethods()
+        [Fact]
+        public async Task EndpointUnavailableReturnsError()
         {
-            yield return new object[] { HttpMethods.Connect };
-            yield return new object[] { HttpMethods.Put };
-            yield return new object[] { HttpMethods.Post };
-            yield return new object[] { HttpMethods.Patch };
-            yield return new object[] { HttpMethods.Trace };
-            yield return new object[] { HttpMethods.Head };
-            yield return new object[] { HttpMethods.Get };
-            yield return new object[] { HttpMethods.Delete };
-            yield return new object[] { HttpMethods.Options };
-        }
-
-        private static IEnumerable<object[]> HttpStatusCodes()
-        {
-            foreach (var value in Enum.GetValues(typeof(HttpStatusCode)).Cast<HttpStatusCode>())
+            // Arrange
+            var command = new CheckHttpEndpoint()
             {
-                yield return new object[] { value };
-            }
+                HttpMonitorId = HttpMonitorId.Create(),
+                Request = new HttpRequest()
+                {
+                    Url = new Uri("http://localhost:9485/"),
+                    Method = HttpMethod.Get
+                }
+            };
+
+            // Act
+            var @event = await _executor.CheckHttpEndpointAsync(command);
+
+            // Assert
+            Assert.Null(@event.Response);
+            Assert.Equal("A connection with the server could not be established", @event.ErrorMessage);
         }
 
-        public void Dispose()
+        [Fact]
+        public async Task ForceCloseConnectionReturnsError()
         {
-            _testServer?.Dispose();
+            // Arrange
+            var command = new CheckHttpEndpoint()
+            {
+                HttpMonitorId = HttpMonitorId.Create(),
+                Request = new HttpRequest()
+                {
+                    Url = _httpServer.BaseAddress,
+                    Method = HttpMethod.Get
+                }
+            };
+
+            _httpServer.Handler = async ctx =>
+            {
+                await _httpServer.Host.StopAsync();
+            };
+
+            // Act
+            var @event = await _executor.CheckHttpEndpointAsync(command);
+
+            // Assert
+            Assert.Null(@event.Response);
+            Assert.Equal("The server returned an invalid or unrecognized response", @event.ErrorMessage);
         }
     }
 }

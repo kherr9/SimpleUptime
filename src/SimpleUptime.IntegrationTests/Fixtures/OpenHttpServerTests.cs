@@ -89,7 +89,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        private static IEnumerable<object[]> HttpRequestMethods()
+        public static IEnumerable<object[]> HttpRequestMethods()
         {
             //yield return new object[] { HttpMethods.Connect };
             yield return new object[] { HttpMethods.Put };
@@ -102,7 +102,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
             yield return new object[] { HttpMethods.Options };
         }
 
-        private static IEnumerable<object[]> HttpStatusCodes()
+        public static IEnumerable<object[]> HttpStatusCodes()
         {
             foreach (var value in Enum.GetValues(typeof(HttpStatusCode)).Cast<HttpStatusCode>().Where(x => (int)x >= 200))
             {
