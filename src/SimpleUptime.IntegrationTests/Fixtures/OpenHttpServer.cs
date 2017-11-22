@@ -36,10 +36,22 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
         public HttpClient CreateClient()
         {
-            var client = new HttpClient
+            var handler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = false,
+                AutomaticDecompression = DecompressionMethods.None,
+                UseCookies = false,
+                //ClientCertificateOptions = ClientCertificateOption.Manual,
+                //PreAuthenticate = false,
+                UseProxy = false
+            };
+
+            var client = new HttpClient(handler, true)
             {
                 BaseAddress = BaseAddress
             };
+            client.DefaultRequestHeaders.ExpectContinue = false;
+            client.DefaultRequestHeaders.ConnectionClose = true;
 
             _clients.Add(client);
 

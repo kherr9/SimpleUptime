@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -51,6 +53,61 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Theory]
+        [MemberData(nameof(HttpStatusCodes))]
+        public async Task HttpStatusCodes(HttpStatusCode statusCode)
+        {
+            // Arrange
+            _httpServer.Handler = ctx =>
+            {
+                ctx.Response.StatusCode = (int)statusCode;
+                return Task.CompletedTask;
+            };
+
+            // Act
+            var response = await _client.GetAsync(_httpServer.BaseAddress);
+
+            // Assert
+            Assert.Equal(statusCode, response.StatusCode);
+        }
+
+        [Theory]
+        [MemberData(nameof(HttpRequestMethods))]
+        public async Task HttpRequestMethods(string method)
+        {
+            // Arrange
+            _httpServer.Handler = ctx => Task.CompletedTask;
+
+            var request = new HttpRequestMessage(new HttpMethod(method), _httpServer.BaseAddress.ToString());
+
+            // Act
+            var response = await _client.SendAsync(request);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        private static IEnumerable<object[]> HttpRequestMethods()
+        {
+            //yield return new object[] { HttpMethods.Connect };
+            yield return new object[] { HttpMethods.Put };
+            yield return new object[] { HttpMethods.Post };
+            yield return new object[] { HttpMethods.Patch };
+            yield return new object[] { HttpMethods.Trace };
+            yield return new object[] { HttpMethods.Head };
+            yield return new object[] { HttpMethods.Get };
+            yield return new object[] { HttpMethods.Delete };
+            yield return new object[] { HttpMethods.Options };
+        }
+
+        private static IEnumerable<object[]> HttpStatusCodes()
+        {
+            foreach (var value in Enum.GetValues(typeof(HttpStatusCode)).Cast<HttpStatusCode>().Where(x => (int)x >= 200))
+            {
+                yield return new object[] { value };
+            }
         }
     }
 }
