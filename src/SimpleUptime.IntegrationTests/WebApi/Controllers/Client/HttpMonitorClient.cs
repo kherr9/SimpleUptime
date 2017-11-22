@@ -56,13 +56,21 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
             return await _client.DeleteAsync(Urls.HttpMonitors.Delete(id));
         }
 
+        public async Task<(HttpResponseMessage, HttpMonitorCheckedDto)> TestAsync(string id)
+        {
+            var response = await _client.PostAsync(Urls.HttpMonitors.Test(id), null);
+            var model = await DeserializeOrDefaultAsync<HttpMonitorCheckedDto>(response);
+
+            return (response, model);
+        }
+
         private static async Task<T> DeserializeOrDefaultAsync<T>(HttpResponseMessage httpResponseMessage)
         {
             try
             {
                 return await httpResponseMessage.Content.ReadAsJsonAsync<T>();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return default(T);
             }

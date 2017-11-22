@@ -1,9 +1,11 @@
 using System;
+using System.Net.Http;
+using SimpleUptime.Domain.Models;
 
 namespace SimpleUptime.Application.Commands
 {
     public class CreateHttpMonitor
     {
-        public Uri Url { get; set; }
+        public HttpRequest Request { get; set; }
     }
 }

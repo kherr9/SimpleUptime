@@ -12,19 +12,19 @@ namespace SimpleUptime.Domain.Models
         {
         }
 
-        public HttpMonitor(HttpMonitorId id, Uri url)
+        public HttpMonitor(HttpMonitorId id, HttpRequest request)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
-            Url = url ?? throw new ArgumentNullException(nameof(url));
+            Request = request ?? throw new ArgumentNullException(nameof(request));
         }
 
         public HttpMonitorId Id { get; set; }
 
-        public Uri Url { get; set; }
+        public HttpRequest Request { get; set; }
 
-        public void Update(Uri url)
+        public void UpdateRequest(HttpRequest request)
         {
-            Url = url ?? throw new ArgumentNullException(nameof(url));
+            Request = request ?? throw new ArgumentNullException(nameof(request));
         }
     }
 }

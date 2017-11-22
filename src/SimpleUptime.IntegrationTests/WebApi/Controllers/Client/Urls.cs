@@ -15,6 +15,8 @@
             public static string Put(string id) => $"{BaseUrl}/{id}";
 
             public static string Delete(string id) => $"{BaseUrl}/{id}";
+
+            public static string Test(string id) => $"{BaseUrl}/{id}/test";
         }
     }
 }

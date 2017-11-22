@@ -10,7 +10,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
     {
         public string Id { get; set; }
 
-        public Uri Url { get; set; }
+        public HttpRequestDto Request { get; set; }
 
         public static HttpMonitorDto CreateFrom(HttpMonitor httpMonitor)
         {
@@ -19,7 +19,11 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
             return new HttpMonitorDto
             {
                 Id = httpMonitor.Id.Value.ToString(),
-                Url = httpMonitor.Url
+                Request = new HttpRequestDto()
+                {
+                    Method = httpMonitor.Request.Method.Method,
+                    Url = httpMonitor.Request.Url
+                }
             };
         }
 
@@ -27,14 +31,14 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
         {
             return obj is HttpMonitorDto dto &&
                    Id == dto.Id &&
-                   EqualityComparer<Uri>.Default.Equals(Url, dto.Url);
+                   EqualityComparer<HttpRequestDto>.Default.Equals(Request, dto.Request);
         }
 
         public override int GetHashCode()
         {
-            var hashCode = 315393214;
+            var hashCode = -531886;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Id);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Uri>.Default.GetHashCode(Url);
+            hashCode = hashCode * -1521134295 + EqualityComparer<HttpRequestDto>.Default.GetHashCode(Request);
             return hashCode;
         }
     }

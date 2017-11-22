@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.ComponentModel;
+using System.Net.Http;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Commands;
 using SimpleUptime.Domain.Events;
@@ -30,13 +31,32 @@ namespace SimpleUptime.Infrastructure.Services
             {
                 @event.RequestTiming.SetStartTime();
 
-                using (var responseMessage = await SendMessageAsync(requestMessage))
+                try
                 {
-                    await ReadResponseAsync(responseMessage);
-
+                    using (var responseMessage = await SendMessageAsync(requestMessage))
+                    {
+                        @event.Response = new HttpResponse(responseMessage);
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    if (ex.InnerException is Win32Exception win32Exception)
+                    {
+                        // A connection with the server could not be established
+                        @event.ErrorMessage = win32Exception.Message;
+                    }
+                    else
+                    {
+                        @event.ErrorMessage = ex.Message;
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    @event.ErrorMessage = "Request timed out";
+                }
+                finally
+                {
                     @event.RequestTiming.SetEndTime();
-
-                    @event.Response = new HttpResponse(responseMessage);
                 }
             }
 
@@ -50,12 +70,7 @@ namespace SimpleUptime.Infrastructure.Services
 
         private Task<HttpResponseMessage> SendMessageAsync(HttpRequestMessage requestMessage)
         {
-            return _httpClient.SendAsync(requestMessage);
-        }
-
-        private Task ReadResponseAsync(HttpResponseMessage responseMessage)
-        {
-            return responseMessage.Content.ReadAsByteArrayAsync();
+            return _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
         }
     }
 }

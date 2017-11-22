@@ -30,10 +30,12 @@ namespace SimpleUptime.Infrastructure.Repositories
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
             settings.Converters.Add(new HttpMonitorIdJsonConverter());
+            settings.Converters.Add(new HttpMethodJsonConverter());
 
             var connectionPolicy = new ConnectionPolicy()
             {
-                ConnectionMode = ConnectionMode.Direct,
+                // Direct connect does not work with emulator
+                ////ConnectionMode = ConnectionMode.Direct,
                 ConnectionProtocol = Protocol.Tcp
             };
 

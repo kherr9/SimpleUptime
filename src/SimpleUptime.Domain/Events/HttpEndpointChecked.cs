@@ -11,5 +11,7 @@ namespace SimpleUptime.Domain.Events
         public HttpResponse Response { get; set; }
 
         public HttpRequestTiming RequestTiming { get; set; }
+
+        public string ErrorMessage { get; set; }
     }
 }

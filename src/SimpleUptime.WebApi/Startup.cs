@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Net.Http;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Azure.Documents;
@@ -7,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Repositories;
+using SimpleUptime.Domain.Services;
 using SimpleUptime.Infrastructure.JsonConverters;
 using SimpleUptime.Infrastructure.Repositories;
+using SimpleUptime.Infrastructure.Services;
 using SimpleUptime.WebApi.ModelBinders;
 using SimpleUptime.WebApi.RouteConstraints;
 // ReSharper disable RedundantTypeArgumentsOfMethod
@@ -38,7 +41,11 @@ namespace SimpleUptime.WebApi
                 options.ModelBinderProviders.Insert(0, new HttpMonitorIdBinder());
             })
             // mvc json settings
-            .AddJsonOptions(opt => opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter()));
+            .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter());
+                    opt.SerializerSettings.Converters.Add(new HttpMethodJsonConverter());
+                });
 
             services.Configure<RouteOptions>(options =>
             {
@@ -56,6 +63,10 @@ namespace SimpleUptime.WebApi
             services.AddSingleton<IDocumentClient>(provider => DocumentClientFactory.CreateDocumentClientAsync(provider.GetService<IOptions<DocumentClientSettings>>().Value).Result);
             services.AddTransient<DatabaseConfigurations>(_ => DatabaseConfigurations.Create());
             services.AddTransient<SimpleUptimeDbScript>();
+
+            services.AddTransient<IHttpMonitorExecutorService, HttpMonitorExecutorService>();
+            services.AddTransient<IHttpMonitorExecutor, HttpMonitorExecutor>();
+            services.AddSingleton<HttpClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
