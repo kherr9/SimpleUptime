@@ -70,10 +70,5 @@ namespace SimpleUptime.Infrastructure.Services
         {
             return _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
         }
-
-        ////private Task ReadResponseAsync(HttpResponseMessage responseMessage)
-        ////{
-        ////    return responseMessage.Content.ReadAsByteArrayAsync();
-        ////}
     }
 }
