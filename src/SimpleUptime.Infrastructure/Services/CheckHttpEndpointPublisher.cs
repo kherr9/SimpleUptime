@@ -52,10 +52,13 @@ namespace SimpleUptime.Infrastructure.Services
         private byte[] Serialize(CheckHttpEndpoint command)
         {
             using (var ms = new MemoryStream())
-            using (var sw = new StreamWriter(ms))
-            using (var writer = new JsonTextWriter(sw))
             {
-                _serializer.Serialize(writer, command);
+                using (var sw = new StreamWriter(ms))
+                using (var writer = new JsonTextWriter(sw))
+                {
+                    _serializer.Serialize(writer, command);
+                }
+                
                 return ms.ToArray();
             }
         }

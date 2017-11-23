@@ -1,10 +1,15 @@
 ﻿using System;
 using Microsoft.Azure.Documents;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Repositories;
+using SimpleUptime.Domain.Services;
 using SimpleUptime.Infrastructure.Repositories;
+using SimpleUptime.Infrastructure.Services;
 
 namespace SimpleUptime.MasterApp.Infrastructure
 {
@@ -37,6 +42,12 @@ namespace SimpleUptime.MasterApp.Infrastructure
             });
             services.AddSingleton<IDocumentClient>(provider => DocumentClientFactory.CreateDocumentClientAsync(provider.GetService<DocumentClientSettings>()).Result);
             services.AddTransient<DatabaseConfigurations>(_ => DatabaseConfigurations.Create());
+
+            services.AddTransient<ICheckHttpEndpointPublisher, CheckHttpEndpointPublisher>();
+            services.AddTransient<JsonSerializer>();
+            services.AddTransient<ITopicClient, TopicClient>(provider => new TopicClient("Endpoint=sb://simpleuptime-dev-sbn.servicebus.windows.net/;SharedAccessKeyName=SendListenSharedAccessKey;SharedAccessKey=/Lz+rZ0A+EEdSuVoxPsnBa8x6tyf6kioHr4Rigbh+M8=", "master.events"));
+
+            services.AddTransient<ICheckHttpMonitorPublisherService, CheckHttpMonitorPublisherService>();
         }
     }
 }
