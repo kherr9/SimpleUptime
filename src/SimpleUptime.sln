@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.WebApi", "Simp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.Application", "SimpleUptime.Application\SimpleUptime.Application.csproj", "{C2DC8963-3FAC-4FA2-97AD-28678562A32D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.WorkerApp", "SimpleUptime.WorkerApp\SimpleUptime.WorkerApp.csproj", "{A18B18A1-5D0B-4CCC-9562-6CF2784B2673}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.WorkerApp", "SimpleUptime.WorkerApp\SimpleUptime.WorkerApp.csproj", "{A18B18A1-5D0B-4CCC-9562-6CF2784B2673}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.MasterApp", "SimpleUptime.MasterApp\SimpleUptime.MasterApp.csproj", "{D870FB55-6828-4248-8063-A94D438BA6F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,10 @@ Global
 		{A18B18A1-5D0B-4CCC-9562-6CF2784B2673}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A18B18A1-5D0B-4CCC-9562-6CF2784B2673}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A18B18A1-5D0B-4CCC-9562-6CF2784B2673}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D870FB55-6828-4248-8063-A94D438BA6F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D870FB55-6828-4248-8063-A94D438BA6F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D870FB55-6828-4248-8063-A94D438BA6F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D870FB55-6828-4248-8063-A94D438BA6F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,11 +6,6 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimpleUptime.Application\SimpleUptime.Application.csproj" />
-    <ProjectReference Include="..\SimpleUptime.Domain\SimpleUptime.Domain.csproj" />
-    <ProjectReference Include="..\SimpleUptime.Infrastructure\SimpleUptime.Infrastructure.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
