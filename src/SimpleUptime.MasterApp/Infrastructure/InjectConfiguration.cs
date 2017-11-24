@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Runtime.Serialization.Formatters;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Domain.Services;
+using SimpleUptime.Infrastructure.JsonConverters;
 using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.Infrastructure.Services;
 
@@ -44,7 +47,20 @@ namespace SimpleUptime.MasterApp.Infrastructure
             services.AddTransient<DatabaseConfigurations>(_ => DatabaseConfigurations.Create());
 
             services.AddTransient<ICheckHttpEndpointPublisher, CheckHttpEndpointPublisher>();
-            services.AddTransient<JsonSerializer>();
+            services.AddTransient<JsonSerializer>(provider =>
+            {
+                var settings = new JsonSerializerSettings()
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    TypeNameHandling = TypeNameHandling.Objects,
+                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Full
+                };
+
+                settings.Converters.Add(new HttpMonitorIdJsonConverter());
+                settings.Converters.Add(new HttpMethodJsonConverter());
+
+                return JsonSerializer.Create(settings);
+            });
             services.AddTransient<ITopicClient, TopicClient>(provider => new TopicClient("Endpoint=sb://simpleuptime-dev-sbn.servicebus.windows.net/;SharedAccessKeyName=SendListenSharedAccessKey;SharedAccessKey=/Lz+rZ0A+EEdSuVoxPsnBa8x6tyf6kioHr4Rigbh+M8=", "master.events"));
 
             services.AddTransient<ICheckHttpMonitorPublisherService, CheckHttpMonitorPublisherService>();

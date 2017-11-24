@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SimpleUptime.Domain.Models
 {
+    [DebuggerDisplay("{Method} {Url}")]
     public class HttpRequest
     {
         public Uri Url { get; set; }

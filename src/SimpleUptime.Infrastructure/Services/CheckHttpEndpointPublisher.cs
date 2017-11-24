@@ -43,7 +43,11 @@ namespace SimpleUptime.Infrastructure.Services
             var message = new Message(bytes)
             {
                 ContentType = "application/json",
-                MessageId = $"{DateTime.UtcNow:yyyyMMddhhmm}-{command.HttpMonitorId}"
+                MessageId = $"{DateTime.UtcNow:yyyyMMddhhmm}-{command.HttpMonitorId}",
+                UserProperties =
+                {
+                    { "Message-AssemblyQualifiedName", command.GetType().AssemblyQualifiedName }
+                }
             };
 
             return message;
@@ -58,7 +62,7 @@ namespace SimpleUptime.Infrastructure.Services
                 {
                     _serializer.Serialize(writer, command);
                 }
-                
+
                 return ms.ToArray();
             }
         }
