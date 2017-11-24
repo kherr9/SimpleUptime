@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
-using Newtonsoft.Json;
 using SimpleUptime.Domain.Commands;
 using SimpleUptime.Domain.Services;
 
@@ -13,12 +11,11 @@ namespace SimpleUptime.Infrastructure.Services
     public class CheckHttpEndpointPublisher : ICheckHttpEndpointPublisher
     {
         private readonly ITopicClient _client;
-        private readonly JsonSerializer _serializer;
+        private readonly ValueToMessageConverter _converter = new ValueToMessageConverter();
 
-        public CheckHttpEndpointPublisher(ITopicClient client, JsonSerializer serializer)
+        public CheckHttpEndpointPublisher(ITopicClient client)
         {
             _client = client;
-            _serializer = serializer;
         }
 
         public async Task PublishAsync(IEnumerable<CheckHttpEndpoint> commands)
@@ -38,33 +35,11 @@ namespace SimpleUptime.Infrastructure.Services
 
         private Message ToMessage(CheckHttpEndpoint command)
         {
-            var bytes = Serialize(command);
+            var message = _converter.Convert(command);
 
-            var message = new Message(bytes)
-            {
-                ContentType = "application/json",
-                MessageId = $"{DateTime.UtcNow:yyyyMMddhhmm}-{command.HttpMonitorId}",
-                UserProperties =
-                {
-                    { "Message-AssemblyQualifiedName", command.GetType().AssemblyQualifiedName }
-                }
-            };
+            message.MessageId = $"{DateTime.UtcNow:yyyyMMddhhmm}-{command.HttpMonitorId}";
 
             return message;
-        }
-
-        private byte[] Serialize(CheckHttpEndpoint command)
-        {
-            using (var ms = new MemoryStream())
-            {
-                using (var sw = new StreamWriter(ms))
-                using (var writer = new JsonTextWriter(sw))
-                {
-                    _serializer.Serialize(writer, command);
-                }
-
-                return ms.ToArray();
-            }
         }
     }
 }

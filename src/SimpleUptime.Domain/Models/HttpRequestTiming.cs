@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SimpleUptime.Domain.Models
@@ -6,6 +8,7 @@ namespace SimpleUptime.Domain.Models
     /// <summary>
     /// Detail timing information.
     /// </summary>
+    [DebuggerDisplay("{StartTime} {EndTime} Duration:{EndTime.Subtract(StartTime).TotalMilliseconds}")]
     public class HttpRequestTiming
     {
         public DateTime StartTime { get; set; }
