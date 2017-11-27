@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Runtime.Serialization.Formatters;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.ServiceBus;
@@ -77,6 +78,9 @@ namespace SimpleUptime.MasterApp.Infrastructure
 
                 return queue;
             });
+
+            services.AddTransient<IHttpMonitorExecutor, HttpMonitorExecutor>();
+            services.AddSingleton<HttpClient>();
         }
     }
 }
