@@ -69,7 +69,14 @@ namespace SimpleUptime.MasterApp.Infrastructure
 
             services.AddTransient<CloudStorageAccount>(provider => CloudStorageAccount.Parse("UseDevelopmentStorage=true"));
             services.AddTransient<CloudQueueClient>(provider => provider.GetService<CloudStorageAccount>().CreateCloudQueueClient());
-            services.AddTransient<CloudQueue>(provider => provider.GetService<CloudQueueClient>().GetQueueReference("work"));
+            services.AddTransient<CloudQueue>(provider =>
+            {
+                var queue = provider.GetService<CloudQueueClient>().GetQueueReference("work");
+
+                queue.CreateIfNotExistsAsync();
+
+                return queue;
+            });
         }
     }
 }
