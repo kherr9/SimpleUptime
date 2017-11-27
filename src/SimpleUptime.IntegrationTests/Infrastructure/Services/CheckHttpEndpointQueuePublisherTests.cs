@@ -38,6 +38,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         }
 
         [Theory]
+        [InlineData(0)]
         [InlineData(1)]
         [InlineData(10)]
         public async Task PublishAsyncManyMessages(int count)
