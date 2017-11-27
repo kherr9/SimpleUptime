@@ -9,7 +9,7 @@
     "CORS": "*"
   },
   "ConnectionStrings": {
-    "azureServiceBus": "Endpoint=sb://simpleuptime-dev-sbn.servicebus.windows.net/;SharedAccessKeyName=SendListenSharedAccessKey;SharedAccessKey=/Lz+rZ0A+EEdSuVoxPsnBa8x6tyf6kioHr4Rigbh+M8="
+    "azureServiceBus": "TODO"
   },
-  "azureServiceBus": "Endpoint=sb://simpleuptime-dev-sbn.servicebus.windows.net/;SharedAccessKeyName=SendListenSharedAccessKey;SharedAccessKey=/Lz+rZ0A+EEdSuVoxPsnBa8x6tyf6kioHr4Rigbh+M8="
+  "azureServiceBus": "TODO"
 }

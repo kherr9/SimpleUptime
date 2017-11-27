@@ -17,7 +17,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
 
         public CheckHttpEndpointQueuePublisherTests()
         {
-            var connectionString = "DefaultEndpointsProtocol=https;AccountName=simpleuptimedevdata002;AccountKey=YXSPvZfhv17z0GvHoOQGCc5amk0kBXNsZnC4onVfUPsTox3blrNPWTILhwdLBtcDsJHs0foA4RzS7sOYRdSyzA==;EndpointSuffix=core.windows.net";
+            var connectionString = "TODO";
 
             var storageAccount = CloudStorageAccount.Parse(connectionString);
 
@@ -63,7 +63,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
             var sw = System.Diagnostics.Stopwatch.StartNew();
             await publisher.PublishAsync(commands);
             sw.Stop();
-
+            
             // Assert
             Console.WriteLine($"Count:{count}, TotalMilliseconds:{sw.ElapsedMilliseconds}, Avg:{Convert.ToDouble(sw.ElapsedMilliseconds) / count}");
         }
