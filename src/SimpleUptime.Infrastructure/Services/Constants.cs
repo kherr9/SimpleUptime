@@ -4,7 +4,7 @@ using SimpleUptime.Infrastructure.JsonConverters;
 
 namespace SimpleUptime.Infrastructure.Services
 {
-    internal static class Constants
+    public static class Constants
     {
         static Constants()
         {
