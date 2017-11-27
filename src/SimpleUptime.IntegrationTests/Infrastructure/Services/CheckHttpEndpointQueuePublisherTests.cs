@@ -40,7 +40,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         [Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public async Task PublishIsFast(int count)
+        public async Task PublishAsyncManyMessages(int count)
         {
             // Arrange
             var commands = GenerateCheckHttpEndpoint(count);
