@@ -5,6 +5,8 @@ using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SimpleUptime.Application.Services;
@@ -46,7 +48,7 @@ namespace SimpleUptime.MasterApp.Infrastructure
             services.AddSingleton<IDocumentClient>(provider => DocumentClientFactory.CreateDocumentClientAsync(provider.GetService<DocumentClientSettings>()).Result);
             services.AddTransient<DatabaseConfigurations>(_ => DatabaseConfigurations.Create());
 
-            services.AddTransient<ICheckHttpEndpointPublisher, CheckHttpEndpointPublisher>();
+            services.AddTransient<ICheckHttpEndpointPublisher, CheckHttpEndpointQueuePublisher>();
             services.AddTransient<JsonSerializer>(provider =>
             {
                 var settings = new JsonSerializerSettings()
@@ -64,6 +66,10 @@ namespace SimpleUptime.MasterApp.Infrastructure
             services.AddTransient<ITopicClient, TopicClient>(provider => new TopicClient("Endpoint=sb://simpleuptime-dev-sbn.servicebus.windows.net/;SharedAccessKeyName=SendListenSharedAccessKey;SharedAccessKey=/Lz+rZ0A+EEdSuVoxPsnBa8x6tyf6kioHr4Rigbh+M8=", "master.events"));
 
             services.AddTransient<ICheckHttpMonitorPublisherService, CheckHttpMonitorPublisherService>();
+
+            services.AddTransient<CloudStorageAccount>(provider => CloudStorageAccount.Parse("UseDevelopmentStorage=true"));
+            services.AddTransient<CloudQueueClient>(provider => provider.GetService<CloudStorageAccount>().CreateCloudQueueClient());
+            services.AddTransient<CloudQueue>(provider => provider.GetService<CloudQueueClient>().GetQueueReference("work"));
         }
     }
 }
