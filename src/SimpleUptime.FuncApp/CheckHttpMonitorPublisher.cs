@@ -1,15 +1,14 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
-using SimpleUptime.MasterApp.Infrastructure;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Commands;
 using SimpleUptime.Domain.Services;
+using SimpleUptime.FuncApp.Infrastructure;
 using SimpleUptime.Infrastructure.Services;
 
-namespace SimpleUptime.MasterApp
+namespace SimpleUptime.FuncApp
 {
     public static class CheckHttpMonitorPublisher
     {

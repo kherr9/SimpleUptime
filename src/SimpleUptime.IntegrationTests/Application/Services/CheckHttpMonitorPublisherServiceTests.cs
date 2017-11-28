@@ -40,7 +40,7 @@ namespace SimpleUptime.IntegrationTests.Application.Services
 
             _queue.CreateIfNotExistsAsync().Wait();
 
-            _publisher = new CheckHttpEndpointQueuePublisher(_queue);
+            _publisher = new CheckHttpEndpointQueuePublisher(name => Task.FromResult(_queue));
 
             _service = new CheckHttpMonitorPublisherService(_repository, _publisher);
         }

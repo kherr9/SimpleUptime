@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Host;
 
-namespace SimpleUptime.MasterApp.Infrastructure
+namespace SimpleUptime.FuncApp.Infrastructure
 {
     public class ScopeCleanupFilter : IFunctionInvocationFilter, IFunctionExceptionFilter
     {

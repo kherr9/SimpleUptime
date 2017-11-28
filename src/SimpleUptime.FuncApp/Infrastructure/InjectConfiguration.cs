@@ -17,7 +17,7 @@ using SimpleUptime.Infrastructure.JsonConverters;
 using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.Infrastructure.Services;
 
-namespace SimpleUptime.MasterApp.Infrastructure
+namespace SimpleUptime.FuncApp.Infrastructure
 {
     public class InjectConfiguration : IExtensionConfigProvider
     {

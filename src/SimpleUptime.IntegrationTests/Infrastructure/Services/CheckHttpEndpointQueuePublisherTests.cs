@@ -29,7 +29,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
 
             _queue.CreateIfNotExistsAsync().Wait();
 
-            _publisher = new CheckHttpEndpointQueuePublisher(_queue);
+            _publisher = new CheckHttpEndpointQueuePublisher(name => Task.FromResult(_queue));
         }
 
         public void Dispose()

@@ -4,7 +4,7 @@ using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Azure.WebJobs.Host.Protocols;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace SimpleUptime.MasterApp.Infrastructure
+namespace SimpleUptime.FuncApp.Infrastructure
 {
     public class InjectBinding : IBinding
     {

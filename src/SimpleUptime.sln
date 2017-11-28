@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.WebApi", "Simp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.Application", "SimpleUptime.Application\SimpleUptime.Application.csproj", "{C2DC8963-3FAC-4FA2-97AD-28678562A32D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.MasterApp", "SimpleUptime.MasterApp\SimpleUptime.MasterApp.csproj", "{D870FB55-6828-4248-8063-A94D438BA6F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.FuncApp", "SimpleUptime.FuncApp\SimpleUptime.FuncApp.csproj", "{D870FB55-6828-4248-8063-A94D438BA6F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

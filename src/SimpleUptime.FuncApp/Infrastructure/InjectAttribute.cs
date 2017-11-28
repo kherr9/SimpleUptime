@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Azure.WebJobs.Description;
 
-namespace SimpleUptime.MasterApp.Infrastructure
+namespace SimpleUptime.FuncApp.Infrastructure
 {
     [Binding]
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]

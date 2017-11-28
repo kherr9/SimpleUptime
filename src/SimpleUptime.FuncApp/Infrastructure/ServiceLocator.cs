@@ -1,4 +1,4 @@
-﻿namespace SimpleUptime.MasterApp.Infrastructure
+﻿namespace SimpleUptime.FuncApp.Infrastructure
 {
     ////var configuration = new ConfigurationBuilder()
     ////    .SetBasePath(System.IO.Directory.GetCurrentDirectory())
