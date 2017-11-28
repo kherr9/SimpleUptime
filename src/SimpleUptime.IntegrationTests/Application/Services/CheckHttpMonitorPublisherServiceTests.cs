@@ -8,7 +8,6 @@ using Microsoft.WindowsAzure.Storage.Queue;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
-using SimpleUptime.Domain.Services;
 using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.Infrastructure.Services;
 using SimpleUptime.IntegrationTests.Fixtures;
@@ -22,7 +21,6 @@ namespace SimpleUptime.IntegrationTests.Application.Services
         private readonly DocumentDbFixture _fixture;
         private readonly CheckHttpMonitorPublisherService _service;
         private readonly IHttpMonitorRepository _repository;
-        private readonly ICheckHttpEndpointPublisher _publisher;
         private readonly CloudQueue _queue;
 
         public CheckHttpMonitorPublisherServiceTests(DocumentDbFixture fixture)
@@ -40,9 +38,9 @@ namespace SimpleUptime.IntegrationTests.Application.Services
 
             _queue.CreateIfNotExistsAsync().Wait();
 
-            _publisher = new CheckHttpEndpointQueuePublisher(name => Task.FromResult(_queue));
+            var publisher = new CheckHttpEndpointQueuePublisher(name => Task.FromResult(_queue));
 
-            _service = new CheckHttpMonitorPublisherService(_repository, _publisher);
+            _service = new CheckHttpMonitorPublisherService(_repository, publisher);
         }
 
         public void Dispose()

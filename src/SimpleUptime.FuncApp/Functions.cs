@@ -10,7 +10,7 @@ using SimpleUptime.Infrastructure.Services;
 
 namespace SimpleUptime.FuncApp
 {
-    public static class CheckHttpMonitorPublisher
+    public static class Functions
     {
         [FunctionName("PublishCheckHttpEndpointAsync")]
         public static async Task PublishCheckHttpEndpointAsync(
