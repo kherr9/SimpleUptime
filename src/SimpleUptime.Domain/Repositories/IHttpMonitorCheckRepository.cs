@@ -8,6 +8,6 @@ namespace SimpleUptime.Domain.Repositories
     /// </summary>
     public interface IHttpMonitorCheckRepository
     {
-        Task PutAsync(HttpMonitorCheck httpMonitorCheck);
+        Task CreateAsync(HttpMonitorCheck httpMonitorCheck);
     }
 }

@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Documents.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SimpleUptime.Domain.Models;
@@ -22,7 +24,7 @@ namespace SimpleUptime.Infrastructure.Repositories
             _configs = configs;
         }
 
-        public Task PutAsync(HttpMonitorCheck httpMonitorCheck)
+        public Task CreateAsync(HttpMonitorCheck httpMonitorCheck)
         {
             if (httpMonitorCheck == null) throw new ArgumentNullException(nameof(httpMonitorCheck));
 
@@ -37,7 +39,32 @@ namespace SimpleUptime.Infrastructure.Repositories
 
             var document = JsonSerializable.LoadFrom<Document>(new MemoryStream(Encoding.UTF8.GetBytes(json)));
 
-            return _client.UpsertDocumentAsync(documentcollectionUri, document, null, true);
+            return _client.CreateDocumentAsync(documentcollectionUri, document, null, true);
+        }
+
+        public Task<HttpMonitorCheck> GetAsync(HttpMonitorCheckId id)
+        {
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            var uri = _configs.DocumentCollectionUri;
+            var options = new FeedOptions()
+            {
+                MaxItemCount = 1
+            };
+
+            var querySpec = new SqlQuerySpec
+            {
+                QueryText = "select * from root r where (r.id = @id and r._type = @type)",
+                Parameters = new SqlParameterCollection
+                {
+                    new SqlParameter("@id", id.ToString()),
+                    new SqlParameter("@type", nameof(HttpMonitorCheck))
+                }
+            };
+
+            return _client.CreateDocumentQuery<HttpMonitorCheck>(uri, querySpec, options)
+                .AsDocumentQuery()
+                .FirstOrDefaultAsync();
         }
     }
 }

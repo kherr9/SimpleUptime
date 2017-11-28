@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Azure.Documents;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.IntegrationTests.Fixtures;
@@ -24,28 +25,46 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
             _fixture.Reset();
         }
 
-        #region Put
+        #region Create
 
         [Fact]
-        public async Task PutThrowsExceptionWhenEntityIsNull()
-        {
-            // Act
-            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _repository.PutAsync(null));
-
-            // Assert
-            Assert.Equal("httpMonitorCheck", exception.ParamName);
-        }
-
-        [Fact]
-        public async Task PutCreatesEntity()
+        public async Task CreateCreatesEntity()
         {
             // Arrange
             var entity = GenerateHttpMonitorCheck();
 
             // Act
-            await _repository.PutAsync(entity);
+            await _repository.CreateAsync(entity);
 
             // Assert
+            var readEntity = await _repository.GetAsync(entity.Id);
+            Assert.Equal(readEntity.Id, entity.Id);
+        }
+
+        [Fact]
+        public async Task CreateThrowsExceptionWhenIdExists()
+        {
+            // Arrange
+            var existingEntityId = (await GenerateAndPersistHttpMonitorCheck()).Id;
+            var entity = GenerateHttpMonitorCheck();
+            entity.Id = existingEntityId;
+
+            // Act
+            var ex = await Assert.ThrowsAsync<DocumentClientException>(() => _repository.CreateAsync(entity));
+
+            // Assert
+            Assert.Equal("Conflict", ex.Error.Code);
+            Assert.True(ex.Message.Contains("Resource with specified id or name already exists"), ex.Message);
+        }
+
+        [Fact]
+        public async Task CreateThrowsExceptionWhenEntityIsNull()
+        {
+            // Act
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _repository.CreateAsync(null));
+
+            // Assert
+            Assert.Equal("httpMonitorCheck", exception.ParamName);
         }
 
         #endregion
@@ -58,6 +77,15 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
                 HttpMonitorId = HttpMonitorId.Create(),
                 Request = new HttpRequest() { Method = HttpMethod.Delete, Url = new Uri("http://yahoo.com") }
             };
+        }
+
+        private async Task<HttpMonitorCheck> GenerateAndPersistHttpMonitorCheck()
+        {
+            var httpMonitorCheck = GenerateHttpMonitorCheck();
+
+            await _repository.CreateAsync(httpMonitorCheck);
+
+            return httpMonitorCheck;
         }
     }
 }
