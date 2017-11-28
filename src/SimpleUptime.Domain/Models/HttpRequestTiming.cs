@@ -8,7 +8,7 @@ namespace SimpleUptime.Domain.Models
     /// <summary>
     /// Detail timing information.
     /// </summary>
-    [DebuggerDisplay("{StartTime} {EndTime} Duration:{EndTime.Subtract(StartTime).TotalMilliseconds}")]
+    [DebuggerDisplay("{StartTime} {EndTime} {TotalMilliseconds}")]
     public class HttpRequestTiming
     {
         public DateTime StartTime { get; set; }
