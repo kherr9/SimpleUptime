@@ -4,6 +4,8 @@ using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Commands;
+using SimpleUptime.Domain.Models;
+using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Domain.Services;
 using SimpleUptime.FuncApp.Infrastructure;
 using SimpleUptime.Infrastructure.Services;
@@ -23,20 +25,29 @@ namespace SimpleUptime.FuncApp
             await service.PublishAsync();
         }
 
+        // todo not idempotent
         [FunctionName("HandleCheckHttpEndpointAsync")]
         public static async Task HandleCheckHttpEndpointAsync(
             [QueueTrigger("commands")] string json,
             TraceWriter log,
             [Inject] IHttpMonitorExecutor executor,
-            [Inject] IHttpEndpointCheckedPublisher publisher)
+            [Inject] IHttpMonitorCheckRepository repository)
         {
             var check = JsonConvert.DeserializeObject<CheckHttpEndpoint>(json, Constants.JsonSerializerSettings);
 
-            var result = await executor.CheckHttpEndpointAsync(check);
+            var @event = await executor.CheckHttpEndpointAsync(check);
 
-            log.Info($"{nameof(HandleCheckHttpEndpointAsync)} {JsonConvert.SerializeObject(result, Constants.JsonSerializerSettings)}");
+            log.Info($"{nameof(HandleCheckHttpEndpointAsync)} {JsonConvert.SerializeObject(@event, Constants.JsonSerializerSettings)}");
 
-            await publisher.PublishAsync(result);
+            await repository.CreateAsync(new HttpMonitorCheck()
+            {
+                Id = HttpMonitorCheckId.Create(),
+                HttpMonitorId = @event.HttpMonitorId,
+                Request = @event.Request,
+                Response = @event.Response,
+                RequestTiming = @event.RequestTiming,
+                ErrorMessage = @event.ErrorMessage
+            });
         }
     }
 }
