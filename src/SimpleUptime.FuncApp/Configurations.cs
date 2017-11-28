@@ -23,6 +23,7 @@ namespace SimpleUptime.FuncApp
         {
             // serivces
             services.AddTransient<IHttpMonitorRepository, HttpMonitorDocumentRepository>();
+            services.AddTransient<IHttpMonitorCheckRepository, HttpMonitorCheckDocumentRepository>();
             services.AddSingleton<DocumentClientSettings>(provider => new DocumentClientSettings
             {
                 ServiceEndpoint = new Uri("https://localhost:8081"),
