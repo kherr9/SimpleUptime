@@ -55,7 +55,6 @@ namespace SimpleUptime.IntegrationTests.Application.Services
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(10)]
-        [InlineData(100)]
         public async Task Foo(int count)
         {
             // Arrange
