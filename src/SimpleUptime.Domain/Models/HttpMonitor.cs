@@ -27,24 +27,4 @@ namespace SimpleUptime.Domain.Models
             Request = request ?? throw new ArgumentNullException(nameof(request));
         }
     }
-
-    public class HttpMonitorCheckId
-    {
-
-    }
-
-    public class HttpMonitorCheck
-    {
-        public HttpMonitorCheckId Id { get; set; }
-
-        public HttpMonitorId HttpMonitorId { get; set; }
-
-        public HttpRequest Request { get; set; }
-
-        public HttpResponse Response { get; set; }
-
-        public HttpRequestTiming RequestTiming { get; set; }
-        
-        public string ErrorMessage { get; set; }
-    }
 }
