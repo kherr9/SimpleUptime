@@ -1,8 +1,11 @@
-﻿namespace SimpleUptime.Domain.Models
+﻿using System;
+
+namespace SimpleUptime.Domain.Models
 {
     public class HttpMonitorCheck
     {
-        public HttpMonitorCheckId Id { get; set; }
+        ////public HttpMonitorCheckId Id { get; set; }
+        public Guid Id { get; set; }
 
         public HttpMonitorId HttpMonitorId { get; set; }
 
