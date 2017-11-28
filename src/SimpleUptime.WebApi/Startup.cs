@@ -43,7 +43,7 @@ namespace SimpleUptime.WebApi
             // mvc json settings
             .AddJsonOptions(opt =>
                 {
-                    opt.SerializerSettings.Converters.Add(new HttpMonitorIdJsonConverter());
+                    opt.SerializerSettings.Converters.Add(new GuidValueJsonConverter());
                     opt.SerializerSettings.Converters.Add(new HttpMethodJsonConverter());
                 });
 

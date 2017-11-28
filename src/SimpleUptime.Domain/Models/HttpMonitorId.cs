@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace SimpleUptime.Domain.Models
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IGuidValue" />
     /// <summary>
     /// Identifier of <see cref="T:SimpleUptime.Domain.Models.HttpMonitor" />
     /// </summary>
-    public class HttpMonitorId: IComparable<HttpMonitorId>
+    public class HttpMonitorId : IGuidValue, IComparable<HttpMonitorId>
     {
         public HttpMonitorId(Guid value)
         {

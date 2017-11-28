@@ -17,7 +17,7 @@ namespace SimpleUptime.Infrastructure.Services
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            settings.Converters.Add(new HttpMonitorIdJsonConverter());
+            settings.Converters.Add(new GuidValueJsonConverter());
             settings.Converters.Add(new HttpMethodJsonConverter());
 
             JsonSerializerSettings = settings;

@@ -42,7 +42,7 @@ namespace SimpleUptime.FuncApp
                     TypeNameAssemblyFormat = FormatterAssemblyStyle.Full
                 };
 
-                settings.Converters.Add(new HttpMonitorIdJsonConverter());
+                settings.Converters.Add(new GuidValueJsonConverter());
                 settings.Converters.Add(new HttpMethodJsonConverter());
 
                 return JsonSerializer.Create(settings);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SimpleUptime.Domain.Models
 {
-    public class HttpMonitorCheckId : IComparable<HttpMonitorCheckId>
+    public class HttpMonitorCheckId : IGuidValue, IComparable<HttpMonitorCheckId>
     {
         public HttpMonitorCheckId(Guid value)
         {
