@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "SimpleUptime.WorkerApp": {
-      "commandName": "Project",
-      "commandLineArgs": "host start --pause-on-error --nodeDebugPort 5859"
-    }
-  }
-}
