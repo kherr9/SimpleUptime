@@ -19,20 +19,25 @@ namespace SimpleUptime.MasterApp
             TraceWriter log,
             [Inject]ICheckHttpMonitorPublisherService service)
         {
-            log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
+            log.Info($"Executing {nameof(PublishCheckHttpEndpointAsync)}");
 
             await service.PublishAsync();
         }
 
         [FunctionName("HandleCheckHttpEndpointAsync")]
         public static async Task HandleCheckHttpEndpointAsync(
-            [QueueTrigger("work")] string json,
+            [QueueTrigger("commands")] string json,
             TraceWriter log,
-            [Inject] IHttpMonitorExecutor executor)
+            [Inject] IHttpMonitorExecutor executor,
+            [Inject] IHttpEndpointCheckedPublisher publisher)
         {
             var check = JsonConvert.DeserializeObject<CheckHttpEndpoint>(json, Constants.JsonSerializerSettings);
 
             var result = await executor.CheckHttpEndpointAsync(check);
+
+            log.Info($"{nameof(HandleCheckHttpEndpointAsync)} {JsonConvert.SerializeObject(result, Constants.JsonSerializerSettings)}");
+
+            await publisher.PublishAsync(result);
         }
     }
 }

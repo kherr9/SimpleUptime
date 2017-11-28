@@ -35,6 +35,8 @@ namespace SimpleUptime.Domain.Models
             EndTime = DateTime.UtcNow;
         }
 
+        public double TotalMilliseconds => !StartTime.IsEmpty() && !EndTime.IsEmpty() ? EndTime.Subtract(StartTime).TotalMilliseconds : 0d;
+
         public override bool Equals(object obj)
         {
             return obj is HttpRequestTiming timing &&

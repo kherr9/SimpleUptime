@@ -1,7 +1,7 @@
 {
-  "serviceBus": {
-    "maxConcurrentCalls": 16,
-    "prefetchCount": 100,
-    "autoRenewTimeout": "00:05:00"
+  "queues": {
+    // The maximum interval in milliseconds between
+    // queue polls. The default is 1 minute.
+    "maxPollingInterval": 20000
   }
 }

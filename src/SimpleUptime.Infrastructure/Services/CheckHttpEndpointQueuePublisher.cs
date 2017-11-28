@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Queue;
@@ -9,21 +10,25 @@ namespace SimpleUptime.Infrastructure.Services
 {
     public class CheckHttpEndpointQueuePublisher : ICheckHttpEndpointPublisher
     {
-        private readonly CloudQueue _client;
+        private readonly CreateCloudQueueAsync _queueFactoryAsync;
         private readonly ValueToQueueMessageConverter _converter = new ValueToQueueMessageConverter();
 
-        public CheckHttpEndpointQueuePublisher(CloudQueue client)
+        public CheckHttpEndpointQueuePublisher(CreateCloudQueueAsync queueFactoryAsync)
         {
-            _client = client;
+            _queueFactoryAsync = queueFactoryAsync;
         }
 
         public async Task PublishAsync(IEnumerable<CheckHttpEndpoint> commands)
         {
+            if (commands == null) throw new ArgumentNullException(nameof(commands));
+
             var messages = ToMessage(commands);
+
+            var queue = await _queueFactoryAsync("commands");
 
             foreach (var message in messages)
             {
-                await _client.AddMessageAsync(message);
+                await queue.AddMessageAsync(message);
             }
         }
 

@@ -50,6 +50,7 @@ namespace SimpleUptime.MasterApp.Infrastructure
             services.AddTransient<DatabaseConfigurations>(_ => DatabaseConfigurations.Create());
 
             services.AddTransient<ICheckHttpEndpointPublisher, CheckHttpEndpointQueuePublisher>();
+            services.AddTransient<IHttpEndpointCheckedPublisher, HttpEndpointCheckedQueuePublisher>();
             services.AddTransient<JsonSerializer>(provider =>
             {
                 var settings = new JsonSerializerSettings()
@@ -70,17 +71,14 @@ namespace SimpleUptime.MasterApp.Infrastructure
 
             services.AddTransient<CloudStorageAccount>(provider => CloudStorageAccount.Parse("UseDevelopmentStorage=true"));
             services.AddTransient<CloudQueueClient>(provider => provider.GetService<CloudStorageAccount>().CreateCloudQueueClient());
-            services.AddTransient<CloudQueue>(provider =>
-            {
-                var queue = provider.GetService<CloudQueueClient>().GetQueueReference("work");
-
-                queue.CreateIfNotExistsAsync();
-
-                return queue;
-            });
-
+            
             services.AddTransient<IHttpMonitorExecutor, HttpMonitorExecutor>();
             services.AddSingleton<HttpClient>();
+
+            services.AddTransient<CloudQueueFactory>();
+            services.AddTransient<CreateCloudQueueAsync>(provider =>
+                provider.GetService<CloudQueueFactory>().CreateCloudQueueAsync);
+
         }
     }
 }
