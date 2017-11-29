@@ -75,7 +75,9 @@ namespace SimpleUptime.IntegrationTests.FuncApp
             // Act
             await _fixture.StartHostAsync();
 
-            await Task.WhenAny(combinedTasks, Task.Delay(10000));
+            await Task.WhenAny(
+                combinedTasks,
+                Task.Delay(10000));
 
             // Assert
             Assert.True(combinedTasks.IsCompletedSuccessfully);
