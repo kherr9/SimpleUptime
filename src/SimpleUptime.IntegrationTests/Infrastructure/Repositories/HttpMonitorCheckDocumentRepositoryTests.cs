@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
@@ -65,6 +66,24 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 
             // Assert
             Assert.Equal("httpMonitorCheck", exception.ParamName);
+        }
+
+        #endregion
+
+        #region Get(HttpMonitorId)
+
+        [Fact]
+        public async Task GetByHttpMonitorIdWhenExists()
+        {
+            // Arrange
+            var entity = await GenerateAndPersistHttpMonitorCheck();
+
+            // Act
+            var result = await _repository.GetAsync(entity.HttpMonitorId);
+
+            // Assert
+            var readEntity = result.Single();
+            Assert.Equal(entity.Id, readEntity.Id);
         }
 
         #endregion

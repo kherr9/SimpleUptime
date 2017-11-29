@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,6 +66,27 @@ namespace SimpleUptime.Infrastructure.Repositories
             return _client.CreateDocumentQuery<HttpMonitorCheck>(uri, querySpec, options)
                 .AsDocumentQuery()
                 .FirstOrDefaultAsync();
+        }
+
+        public Task<IEnumerable<HttpMonitorCheck>> GetAsync(HttpMonitorId httpMonitorId)
+        {
+            if (httpMonitorId == null) throw new ArgumentNullException(nameof(httpMonitorId));
+
+            var uri = _configs.DocumentCollectionUri;
+
+            var querySpec = new SqlQuerySpec
+            {
+                QueryText = "select * from root r where (r.httpMonitorId = @httpMonitorId and r._type = @type)",
+                Parameters = new SqlParameterCollection
+                {
+                    new SqlParameter("@httpMonitorId", httpMonitorId.ToString()),
+                    new SqlParameter("@type", nameof(HttpMonitorCheck))
+                }
+            };
+
+            return _client.CreateDocumentQuery<HttpMonitorCheck>(uri, querySpec)
+                .AsDocumentQuery()
+                .ToEnumerableAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
@@ -12,12 +13,14 @@ namespace SimpleUptime.IntegrationTests.FuncApp
     {
         private readonly FuncAppFixture _fixture;
         private readonly IHttpMonitorRepository _httpMonitorRepository;
+        private readonly IHttpMonitorCheckRepository _httpMonitorCheckRepository;
         private readonly OpenHttpServer _openHttpServer;
 
         public EndToEndTests(FuncAppFixture fixture)
         {
             _fixture = fixture;
             _httpMonitorRepository = fixture.HttpMonitorRepository;
+            _httpMonitorCheckRepository = fixture.HttpMonitorCheckRepository;
             _openHttpServer = fixture.OpenHttpServer;
         }
 
@@ -70,12 +73,20 @@ namespace SimpleUptime.IntegrationTests.FuncApp
             };
 
             // Act
-            _fixture.StartHost();
+            await _fixture.StartHostAsync();
 
-            await Task.WhenAny(combinedTasks, Task.Delay(30000));
+            await Task.WhenAny(combinedTasks, Task.Delay(10000));
 
             // Assert
             Assert.True(combinedTasks.IsCompletedSuccessfully);
+
+            var check1 = (await _httpMonitorCheckRepository.GetAsync(httpMonitor1.Id)).SingleOrDefault();
+            Assert.NotNull(check1);
+            Assert.Equal(200, (int)check1.Response.StatusCode);
+
+            var check2 = (await _httpMonitorCheckRepository.GetAsync(httpMonitor2.Id)).SingleOrDefault();
+            Assert.NotNull(check2);
+            Assert.Equal(300, (int)check2.Response.StatusCode);
         }
     }
 }
