@@ -7,6 +7,12 @@
     },
     "storageAccountName": {
       "value": "simpleuptimedevdata001"
+    },
+    "hostingPlanName": {
+      "value": "simpleuptime-dev-asp"
+    },
+    "functionAppName": {
+      "value": "simpleuptime-dev-func"
     }
   }
 }
