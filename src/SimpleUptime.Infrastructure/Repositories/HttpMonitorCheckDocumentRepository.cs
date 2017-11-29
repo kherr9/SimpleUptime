@@ -18,6 +18,7 @@ namespace SimpleUptime.Infrastructure.Repositories
     {
         private readonly IDocumentClient _client;
         private readonly DatabaseConfigurations _configs;
+        private const string DocumentType = nameof(HttpMonitorCheck);
 
         public HttpMonitorCheckDocumentRepository(IDocumentClient client, DatabaseConfigurations configs)
         {
@@ -34,7 +35,7 @@ namespace SimpleUptime.Infrastructure.Repositories
             var jObject = JObject.FromObject(httpMonitorCheck, JsonSerializer.Create(Constants.JsonSerializerSettings));
 
             // add type
-            jObject.Add("_type", JValue.CreateString(httpMonitorCheck.GetType().Name));
+            jObject.Add("_type", JValue.CreateString(DocumentType));
 
             var json = jObject.ToString();
 
@@ -59,7 +60,7 @@ namespace SimpleUptime.Infrastructure.Repositories
                 Parameters = new SqlParameterCollection
                 {
                     new SqlParameter("@id", id.ToString()),
-                    new SqlParameter("@type", nameof(HttpMonitorCheck))
+                    new SqlParameter("@type", DocumentType)
                 }
             };
 
@@ -80,7 +81,7 @@ namespace SimpleUptime.Infrastructure.Repositories
                 Parameters = new SqlParameterCollection
                 {
                     new SqlParameter("@httpMonitorId", httpMonitorId.ToString()),
-                    new SqlParameter("@type", nameof(HttpMonitorCheck))
+                    new SqlParameter("@type", DocumentType)
                 }
             };
 
