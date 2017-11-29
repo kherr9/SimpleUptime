@@ -1,6 +1,8 @@
-﻿using Microsoft.Azure.WebJobs.Host;
+﻿using System;
+using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Extensions.DependencyInjection;
+using SimpleUptime.Infrastructure.Repositories;
 
 namespace SimpleUptime.FuncApp.Infrastructure
 {
@@ -8,6 +10,8 @@ namespace SimpleUptime.FuncApp.Infrastructure
     {
         public void Initialize(ExtensionConfigContext context)
         {
+            AssemblyRedirectConfiguration.Initialize(context);
+
             var services = new ServiceCollection();
             RegisterServices(services);
             var serviceProvider = services.BuildServiceProvider(true);
@@ -20,11 +24,20 @@ namespace SimpleUptime.FuncApp.Infrastructure
             var filter = new ScopeCleanupFilter();
             registry.RegisterExtension(typeof(IFunctionInvocationFilter), filter);
             registry.RegisterExtension(typeof(IFunctionExceptionFilter), filter);
+
+            StartupTasks(serviceProvider);
         }
 
         private void RegisterServices(IServiceCollection services)
         {
             Configurations.RegisterServices(services);
+        }
+
+        private void StartupTasks(IServiceProvider serviceProvider)
+        {
+            var script = serviceProvider.GetService<SimpleUptimeDbScript>();
+
+            script.ExecuteMigration().Wait();
         }
     }
 }
