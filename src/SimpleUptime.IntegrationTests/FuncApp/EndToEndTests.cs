@@ -80,6 +80,9 @@ namespace SimpleUptime.IntegrationTests.FuncApp
             // Assert
             Assert.True(combinedTasks.IsCompletedSuccessfully);
 
+            // todo race condition
+            await Task.Delay(100);
+
             var check1 = (await _httpMonitorCheckRepository.GetAsync(httpMonitor1.Id)).SingleOrDefault();
             Assert.NotNull(check1);
             Assert.Equal(200, (int)check1.Response.StatusCode);
