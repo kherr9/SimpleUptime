@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
+using Constants = SimpleUptime.Infrastructure.Services.Constants;
 
 namespace SimpleUptime.Infrastructure.Repositories
 {
@@ -14,6 +19,7 @@ namespace SimpleUptime.Infrastructure.Repositories
     {
         private readonly IDocumentClient _client;
         private readonly DatabaseConfigurations _configs;
+        private const string DocumentType = nameof(HttpMonitor);
 
         public HttpMonitorDocumentRepository(IDocumentClient client, DatabaseConfigurations configs)
         {
@@ -25,7 +31,16 @@ namespace SimpleUptime.Infrastructure.Repositories
         {
             var uri = _configs.DocumentCollectionUri;
 
-            return _client.CreateDocumentQuery<HttpMonitor>(uri)
+            var querySpec = new SqlQuerySpec
+            {
+                QueryText = "select * from root r where (r._type = @type)",
+                Parameters = new SqlParameterCollection
+                {
+                    new SqlParameter("@type", DocumentType)
+                }
+            };
+
+            return _client.CreateDocumentQuery<HttpMonitor>(uri, querySpec)
                 .AsDocumentQuery()
                 .ToEnumerableAsync();
         }
@@ -42,10 +57,11 @@ namespace SimpleUptime.Infrastructure.Repositories
 
             var querySpec = new SqlQuerySpec
             {
-                QueryText = "select * from root r where (r.id = @id)",
+                QueryText = "select * from root r where (r.id = @id and r._type = @type)",
                 Parameters = new SqlParameterCollection
                 {
-                    new SqlParameter("@id", id.ToString())
+                    new SqlParameter("@id", id.ToString()),
+                    new SqlParameter("@type", DocumentType)
                 }
             };
 
@@ -60,7 +76,14 @@ namespace SimpleUptime.Infrastructure.Repositories
 
             var documentCollectionUri = _configs.DocumentCollectionUri;
 
-            return _client.UpsertDocumentAsync(documentCollectionUri, httpMonitor, null, true);
+            var jObject = JObject.FromObject(httpMonitor, JsonSerializer.Create(Constants.JsonSerializerSettings));
+
+            // add type
+            jObject.Add("_type", JValue.CreateString(DocumentType));
+
+            var document = JsonSerializable.LoadFrom<Document>(new MemoryStream(Encoding.UTF8.GetBytes(jObject.ToString())));
+
+            return _client.UpsertDocumentAsync(documentCollectionUri, document, null, true);
         }
 
         public async Task DeleteAsync(HttpMonitorId id)
@@ -71,6 +94,7 @@ namespace SimpleUptime.Infrastructure.Repositories
 
             try
             {
+                // todo: doesn't check type
                 await _client.DeleteDocumentAsync(uri);
             }
             catch (DocumentClientException ex)

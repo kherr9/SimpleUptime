@@ -1,9 +1,11 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SimpleUptime.Domain.Models
 {
+    [DebuggerDisplay("{StatusCode}")]
     public class HttpResponse
     {
         public HttpResponse()
