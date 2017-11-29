@@ -39,6 +39,34 @@
       "metadata": {
         "description": "When consistencyLevel is set to BoundedStaleness, then this value is required, otherwise it can be ignored."
       }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The Storage Account name"
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ],
+      "metadata": {
+        "description": "The Storage Account type"
+      }
+    },
+    "storageAccountKind": {
+      "type": "string",
+      "defaultValue": "Storage",
+      "allowedValues": [
+        "Storage",
+        "BlobStorage"
+      ]
     }
   },
   "variables": {
@@ -58,6 +86,19 @@
           "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]",
           "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]"
         }
+      }
+    },
+    {
+      "apiVersion": "2017-06-01",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[parameters('storageAccountName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "kind": "[parameters('storageAccountKind')]",
+      "properties": {
+        "supportsHttpsTrafficOnly": "true"
       }
     }
   ]

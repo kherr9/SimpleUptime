@@ -4,6 +4,9 @@
   "parameters": {
     "databaseAccountName": {
       "value": "simpleuptime-dev-cdb"
+    },
+    "storageAccountName": {
+      "value": "simpleuptimedevdata001"
     }
   }
 }
