@@ -1,21 +1,6 @@
-﻿using System;
-using System.Net.Http;
-using System.Runtime.Serialization.Formatters;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.WebJobs.Host;
+﻿using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using SimpleUptime.Application.Services;
-using SimpleUptime.Domain.Repositories;
-using SimpleUptime.Domain.Services;
-using SimpleUptime.Infrastructure.JsonConverters;
-using SimpleUptime.Infrastructure.Repositories;
-using SimpleUptime.Infrastructure.Services;
 
 namespace SimpleUptime.FuncApp.Infrastructure
 {

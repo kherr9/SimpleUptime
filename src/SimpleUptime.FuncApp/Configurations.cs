@@ -14,6 +14,7 @@ using SimpleUptime.Domain.Services;
 using SimpleUptime.Infrastructure.JsonConverters;
 using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.Infrastructure.Services;
+// ReSharper disable RedundantTypeArgumentsOfMethod
 
 namespace SimpleUptime.FuncApp
 {
