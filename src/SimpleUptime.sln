@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.Domain", "SimpleUptime.Domain\SimpleUptime.Domain.csproj", "{B232AF76-163C-4116-9A9B-029B703311EF}"
 EndProject
@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.WebApi", "Simp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.Application", "SimpleUptime.Application\SimpleUptime.Application.csproj", "{C2DC8963-3FAC-4FA2-97AD-28678562A32D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.FuncApp", "SimpleUptime.FuncApp\SimpleUptime.FuncApp.csproj", "{D870FB55-6828-4248-8063-A94D438BA6F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.FuncApp", "SimpleUptime.FuncApp\SimpleUptime.FuncApp.csproj", "{D870FB55-6828-4248-8063-A94D438BA6F9}"
+EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "SimpleUptime.ResourceGroup", "SimpleUptime.ResourceGroup\SimpleUptime.ResourceGroup.deployproj", "{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,10 @@ Global
 		{D870FB55-6828-4248-8063-A94D438BA6F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D870FB55-6828-4248-8063-A94D438BA6F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D870FB55-6828-4248-8063-A94D438BA6F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
