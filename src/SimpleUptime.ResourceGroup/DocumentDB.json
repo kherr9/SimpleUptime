@@ -73,6 +73,12 @@
     },
     "functionAppName": {
       "type": "string"
+    },
+    "functionConainerSize": {
+      "type": "int",
+      "minValue": 128,
+      "maxValue": 1536, 
+      "defaultValue": 128
     }
   },
   "variables": {
@@ -129,7 +135,7 @@
       "kind": "functionapp",
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
-        "containerSize": 1536,
+        "containerSize": "[parameters('functionConainerSize')]",
         "dailyMemoryTimeQuota": 0,
         "siteConfig": {
           "appSettings": [
@@ -165,7 +171,7 @@
               "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(parameters('storageAccountName'),'2015-05-01-preview').key1)]",
               "type": "Custom"
             }
-          ] 
+          ]
         }
       },
       "dependsOn": [
