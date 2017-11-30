@@ -31,6 +31,8 @@ namespace SimpleUptime.FuncApp
 
             services.AddTransient<ICheckHttpEndpointPublisher, CheckHttpEndpointQueuePublisher>();
             services.AddTransient<IHttpEndpointCheckedPublisher, HttpEndpointCheckedQueuePublisher>();
+            services.AddTransient<IHttpMonitorCheckedPublisher, HttpMonitorCheckedQueuePublisher>();
+
             services.AddTransient<JsonSerializer>(provider =>
             {
                 var settings = new JsonSerializerSettings()

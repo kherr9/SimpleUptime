@@ -1,4 +1,5 @@
 ﻿using System;
+using SimpleUptime.Domain.Events;
 
 namespace SimpleUptime.Domain.Models
 {
@@ -29,7 +30,12 @@ namespace SimpleUptime.Domain.Models
         public HttpRequestTiming RequestTiming { get; }
 
         public HttpResponse Response { get; }
-        
+
         public string ErrorMessage { get; }
+
+        public HttpMonitorChecked CreateHttpMonitorChecked()
+        {
+            return new HttpMonitorChecked(this);
+        }
     }
 }
