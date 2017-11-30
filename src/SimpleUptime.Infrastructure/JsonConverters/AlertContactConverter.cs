@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,17 +10,6 @@ namespace SimpleUptime.Infrastructure.JsonConverters
     public class AlertContactConverter : JsonConverter
     {
         private const string TypePropertyName = "type";
-
-        // multiple readers is thread safe, but don't enumerate.
-        private readonly Dictionary<string, Type> _types;
-
-        public AlertContactConverter()
-        {
-            _types = typeof(IAlertContact).Assembly
-                .GetTypes()
-                .Where(t => t.IsPublic && t.IsClass && CanConvert(t))
-                .ToDictionary(x => x.Name, x => x);
-        }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -43,16 +31,21 @@ namespace SimpleUptime.Infrastructure.JsonConverters
 
             var typeValue = jsonValue.Value<string>();
 
-            if (!_types.TryGetValue(typeValue, out var targetType))
+            switch (typeValue)
             {
-                throw new InvalidOperationException($"Unknown alert contact type '{typeValue}'");
+                case nameof(EmailAlertContact):
+                    return new EmailAlertContact(
+                        jsonObject.GetValue("id", StringComparison.InvariantCultureIgnoreCase).ToObject<AlertContactId>(serializer),
+                        jsonObject.GetValue("email", StringComparison.InvariantCultureIgnoreCase).ToObject<string>(serializer)
+                    );
+                case nameof(SlackAlertContact):
+                    return new SlackAlertContact(
+                        jsonObject.GetValue("id", StringComparison.InvariantCultureIgnoreCase).ToObject<AlertContactId>(serializer),
+                        jsonObject.GetValue("webHookUrl", StringComparison.InvariantCultureIgnoreCase).ToObject<Uri>(serializer)
+                    );
+                default:
+                    throw new InvalidOperationException($"Unknown alert contact type of '{typeValue}'");
             }
-
-            var alertContact = Activator.CreateInstance(targetType);
-
-            serializer.Populate(jsonObject.CreateReader(), alertContact);
-
-            return alertContact;
         }
 
         public override bool CanConvert(Type objectType)
@@ -72,21 +65,6 @@ namespace SimpleUptime.Infrastructure.JsonConverters
             }
 
             return dictionary;
-        }
-
-        private static ExpandoObject CreateExpandoFromObject(object source)
-        {
-            var result = new ExpandoObject();
-            IDictionary<string, object> dictionary = result;
-            foreach (var property in source
-                .GetType()
-                .GetProperties()
-                .Where(p => p.CanRead && p.GetMethod.IsPublic))
-            {
-                dictionary[property.Name] = property.GetValue(source, null);
-            }
-
-            return result;
         }
     }
 }

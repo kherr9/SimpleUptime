@@ -45,8 +45,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
         {
             // Arrange
             var existingEntityId = (await GenerateAndPersistEmailAlertContactAsync()).Id;
-            var entity = GenerateEmailAlertContact();
-            entity.Id = existingEntityId;
+            var entity = GenerateEmailAlertContact(existingEntityId);
 
             // Act
             var ex = await Assert.ThrowsAsync<DocumentClientException>(() => _repository.CreateAsync(entity));
@@ -188,20 +187,17 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 
         private static EmailAlertContact GenerateEmailAlertContact()
         {
-            return new EmailAlertContact()
-            {
-                Id = AlertContactId.Create(),
-                Email = "foo@example.com"
-            };
+            return GenerateEmailAlertContact(AlertContactId.Create());
+        }
+
+        private static EmailAlertContact GenerateEmailAlertContact(AlertContactId id)
+        {
+            return new EmailAlertContact(id, "foo@example.com");
         }
 
         private static SlackAlertContact GenerateSlackAlertContact()
         {
-            return new SlackAlertContact()
-            {
-                Id = AlertContactId.Create(),
-                WebHookUrl = new Uri("http://slack.example.com/hook")
-            };
+            return new SlackAlertContact(AlertContactId.Create(), new Uri("http://slack.example.com/hook"));
         }
 
         private async Task<EmailAlertContact> GenerateAndPersistEmailAlertContactAsync()

@@ -4,8 +4,14 @@ namespace SimpleUptime.Domain.Models
 {
     public class SlackAlertContact : IAlertContact
     {
-        public AlertContactId Id { get; set; }
+        public SlackAlertContact(AlertContactId id, Uri webHookUrl)
+        {
+            Id = id ?? throw new ArgumentNullException(nameof(id));
+            WebHookUrl = webHookUrl ?? throw new ArgumentNullException(nameof(webHookUrl));
+        }
 
-        public Uri WebHookUrl { get; set; }
+        public AlertContactId Id { get; }
+
+        public Uri WebHookUrl { get; }
     }
 }

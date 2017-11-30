@@ -1,9 +1,17 @@
-﻿namespace SimpleUptime.Domain.Models
+﻿using System;
+
+namespace SimpleUptime.Domain.Models
 {
     public class EmailAlertContact : IAlertContact
     {
-        public AlertContactId Id { get; set; }
+        public EmailAlertContact(AlertContactId id, string email)
+        {
+            Id = id ?? throw new ArgumentNullException(nameof(id));
+            Email = email ?? throw new ArgumentNullException(nameof(email));
+        }
 
-        public string Email { get; set; }
+        public AlertContactId Id { get; }
+
+        public string Email { get; }
     }
 }
