@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SimpleUptime.Domain.Models
 {
@@ -21,6 +22,8 @@ namespace SimpleUptime.Domain.Models
         public HttpMonitorId Id { get; set; }
 
         public HttpRequest Request { get; set; }
+
+        public HashSet<AlertContactId> AlertContactIds { get; set; }
 
         public void UpdateRequest(HttpRequest request)
         {
