@@ -12,7 +12,7 @@ namespace SimpleUptime.Infrastructure.Services
         private readonly ValueToQueueMessageConverter _converter = new ValueToQueueMessageConverter();
         private readonly string[] _queueNames = new[]
         {
-            $"events.{nameof(HttpMonitorChecked)}.{nameof(HttpMonitor)}".ToLowerInvariant()
+            $"events-{nameof(HttpMonitorChecked)}-{nameof(HttpMonitor)}".ToLowerInvariant()
         };
 
         public HttpMonitorCheckedQueuePublisher(CreateCloudQueueAsync queueFactoryAsync)

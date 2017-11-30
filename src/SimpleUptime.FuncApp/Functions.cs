@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
@@ -6,7 +5,6 @@ using Newtonsoft.Json;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Commands;
 using SimpleUptime.Domain.Events;
-using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Domain.Services;
 using SimpleUptime.FuncApp.Infrastructure;
@@ -40,8 +38,6 @@ namespace SimpleUptime.FuncApp
 
             var httpMonitorCheck = await executor.CheckHttpEndpointAsync(check);
 
-            log.Info($"{nameof(HandleCheckHttpEndpointAsync)} {JsonConvert.SerializeObject(httpMonitorCheck, Constants.JsonSerializerSettings)}");
-
             await repository.CreateAsync(httpMonitorCheck);
 
             var @event = httpMonitorCheck.CreateHttpMonitorChecked();
@@ -49,8 +45,9 @@ namespace SimpleUptime.FuncApp
             await publisher.PublishAsync(@event);
         }
 
-        public static async Task Foo(
-            [QueueTrigger("events.httpmonitorchecked.httpmonitor")] string json,
+        [FunctionName("HttpMonitorHandlesHttpMonitorChecked")]
+        public static async Task HttpMonitorHandlesHttpMonitorChecked(
+            [QueueTrigger("events-httpmonitorchecked-httpmonitor")] string json,
             TraceWriter log,
             [Inject] IHttpMonitorRepository repository)
         {
@@ -59,6 +56,8 @@ namespace SimpleUptime.FuncApp
             var monitor = await repository.GetByIdAsync(@event.HttpMonitorCheck.HttpMonitorId);
 
             monitor?.Handle(@event);
+
+            await repository.PutAsync(monitor);
         }
     }
 };
