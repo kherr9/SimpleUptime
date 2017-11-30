@@ -19,6 +19,7 @@ namespace SimpleUptime.Infrastructure.Services
 
             settings.Converters.Add(new GuidValueJsonConverter());
             settings.Converters.Add(new HttpMethodJsonConverter());
+            settings.Converters.Add(new AlertContactConverter());
 
             JsonSerializerSettings = settings;
         }

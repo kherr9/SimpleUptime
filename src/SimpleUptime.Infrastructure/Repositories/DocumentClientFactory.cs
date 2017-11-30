@@ -33,12 +33,13 @@ namespace SimpleUptime.Infrastructure.Repositories
             if (serviceEndpoint == null) throw new ArgumentNullException(nameof(serviceEndpoint));
             if (authKey == null) throw new ArgumentNullException(nameof(authKey));
 
-            var settings = new JsonSerializerSettings()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
-            settings.Converters.Add(new GuidValueJsonConverter());
-            settings.Converters.Add(new HttpMethodJsonConverter());
+            ////var settings = new JsonSerializerSettings()
+            ////{
+            ////    ContractResolver = new CamelCasePropertyNamesContractResolver()
+            ////};
+            ////settings.Converters.Add(new GuidValueJsonConverter());
+            ////settings.Converters.Add(new HttpMethodJsonConverter());
+            ////settings.Converters.Add(new AlertContactConverter());
 
             var connectionPolicy = new ConnectionPolicy()
             {
@@ -47,7 +48,7 @@ namespace SimpleUptime.Infrastructure.Repositories
                 ConnectionProtocol = Protocol.Tcp
             };
 
-            var client = new DocumentClient(serviceEndpoint, authKey, settings, connectionPolicy);
+            var client = new DocumentClient(serviceEndpoint, authKey, Services.Constants.JsonSerializerSettings, connectionPolicy);
 
             await client.OpenAsync();
 
