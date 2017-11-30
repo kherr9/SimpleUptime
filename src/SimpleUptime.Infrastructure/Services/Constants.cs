@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using SimpleUptime.Infrastructure.JsonConverters;
 
@@ -17,6 +18,7 @@ namespace SimpleUptime.Infrastructure.Services
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
+            settings.Converters.Add(new StringEnumConverter());
             settings.Converters.Add(new GuidValueJsonConverter());
             settings.Converters.Add(new HttpMethodJsonConverter());
             settings.Converters.Add(new AlertContactConverter());
