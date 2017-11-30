@@ -13,7 +13,7 @@ namespace SimpleUptime.Infrastructure.JsonConverters
         {
             if (value is HttpMethod method)
             {
-                var token = JToken.FromObject(method.Method);
+                var token = JToken.FromObject(method.Method, serializer);
                 token.WriteTo(writer);
             }
             else
