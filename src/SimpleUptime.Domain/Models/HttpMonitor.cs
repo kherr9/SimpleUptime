@@ -53,7 +53,7 @@ namespace SimpleUptime.Domain.Models
             return new CheckHttpEndpoint(httpMonitorCheckId, Id, Request);
         }
 
-        public void Handle(HttpMonitorChecked @event)
+        public void Handle(HttpMonitorChecked @event, Action<IEvent> eventCollector = null)
         {
             if (@event == null) throw new ArgumentNullException(nameof(@event));
             if (@event.HttpMonitorCheck.HttpMonitorId != Id)
@@ -79,8 +79,31 @@ namespace SimpleUptime.Domain.Models
                 // did we add it...
                 if (set.Contains(@event.HttpMonitorCheck))
                 {
-                    // todo: act on state change
-                    Status = CalculateMonitorStatus(set);
+                    var newStatus = CalculateMonitorStatus(set);
+                    var startTime = DateTime.UtcNow; // todo calculate start time
+
+                    if (newStatus != Status)
+                    {
+                        switch (newStatus)
+                        {
+                            case MonitorStatus.Up:
+                                eventCollector?.Invoke(new HttpMonitorUp(Id, Status, startTime, DateTime.UtcNow));
+                                foreach (var alertContact in AlertContactIds)
+                                {
+                                    eventCollector?.Invoke(new ScheduleUpAlertContact(alertContact, Id, Status, startTime, DateTime.UtcNow));
+                                }
+                                break;
+                            case MonitorStatus.Down:
+                                eventCollector?.Invoke(new HttpMonitorDown(Id, Status, startTime, DateTime.UtcNow));
+                                foreach (var alertContact in AlertContactIds)
+                                {
+                                    eventCollector?.Invoke(new ScheduleDownAlertContact(alertContact, Id, Status, startTime, DateTime.UtcNow));
+                                }
+                                break;
+                        }
+
+                        Status = newStatus;
+                    }
 
                     RecentHttpMonitorChecks = set.AsReadOnly();
                 }
