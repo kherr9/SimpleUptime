@@ -25,31 +25,11 @@ namespace SimpleUptime.Domain.Models
             EndTime = endTime;
         }
 
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; }
 
-        public DateTime EndTime { get; set; }
+        public DateTime EndTime { get; }
 
-        public void SetStartTime()
-        {
-            if (!StartTime.IsEmpty())
-            {
-                throw new InvalidOperationException($"Property {nameof(StartTime)} already set.");
-            }
-
-            StartTime = DateTime.UtcNow;
-        }
-
-        public void SetEndTime()
-        {
-            if (!EndTime.IsEmpty())
-            {
-                throw new InvalidOperationException($"Property {nameof(EndTime)} already set.");
-            }
-
-            EndTime = DateTime.UtcNow;
-        }
-
-        public double TotalMilliseconds => !StartTime.IsEmpty() && !EndTime.IsEmpty() ? EndTime.Subtract(StartTime).TotalMilliseconds : 0d;
+        public double TotalMilliseconds => EndTime.Subtract(StartTime).TotalMilliseconds;
 
         public override bool Equals(object obj)
         {
