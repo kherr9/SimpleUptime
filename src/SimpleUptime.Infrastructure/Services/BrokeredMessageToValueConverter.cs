@@ -1,10 +1,9 @@
-﻿using System;
-using System.IO;
-using Newtonsoft.Json;
-
-namespace SimpleUptime.Infrastructure.Services
+﻿namespace SimpleUptime.Infrastructure.Services
 {
 #if NET461
+    using System;
+    using System.IO;
+    using Newtonsoft.Json;
     using Microsoft.ServiceBus.Messaging;
     public class BrokeredMessageToValueConverter
     {

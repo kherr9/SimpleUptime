@@ -75,10 +75,15 @@ namespace SimpleUptime.IntegrationTests.FuncApp
             // Act
             await _fixture.StartHostAsync();
 
-            await Task.WhenAny(combinedTasks, Task.Delay(10000));
+            await Task.WhenAny(
+                combinedTasks,
+                Task.Delay(10000));
 
             // Assert
             Assert.True(combinedTasks.IsCompletedSuccessfully);
+
+            // todo race condition
+            await Task.Delay(100);
 
             var check1 = (await _httpMonitorCheckRepository.GetAsync(httpMonitor1.Id)).SingleOrDefault();
             Assert.NotNull(check1);

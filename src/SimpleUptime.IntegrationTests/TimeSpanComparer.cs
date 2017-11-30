@@ -4,6 +4,6 @@ namespace SimpleUptime.IntegrationTests
 {
     public static class TimeSpanComparer
     {
-        public static readonly TimeSpan DefaultTolerance = TimeSpan.FromMilliseconds(100);
+        public static readonly TimeSpan DefaultTolerance = TimeSpan.FromMilliseconds(200);
     }
 }
