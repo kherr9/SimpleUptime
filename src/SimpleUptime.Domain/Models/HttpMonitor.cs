@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleUptime.Domain.Commands;
 
 namespace SimpleUptime.Domain.Models
 {
@@ -28,6 +29,11 @@ namespace SimpleUptime.Domain.Models
         public void UpdateRequest(HttpRequest request)
         {
             Request = request ?? throw new ArgumentNullException(nameof(request));
+        }
+
+        public CheckHttpEndpoint CreateCheckHttpEndpoint(HttpMonitorCheckId httpMonitorCheckId)
+        {
+            return new CheckHttpEndpoint(httpMonitorCheckId, Id, Request);
         }
     }
 }

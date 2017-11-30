@@ -28,11 +28,7 @@ namespace SimpleUptime.Application.Services
                 throw new EntityNotFoundException(httpMonitorId);
             }
 
-            var cmd = new CheckHttpEndpoint()
-            {
-                HttpMonitorId = httpMonitorId,
-                Request = httpMonitor.Request
-            };
+            var cmd = httpMonitor.CreateCheckHttpEndpoint(HttpMonitorCheckId.Create());
 
             return await _executor.CheckHttpEndpointAsync(cmd);
         }

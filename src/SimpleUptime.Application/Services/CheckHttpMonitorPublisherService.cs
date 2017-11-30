@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using SimpleUptime.Domain.Commands;
+using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Domain.Services;
 
@@ -26,11 +26,7 @@ namespace SimpleUptime.Application.Services
         {
             var httpMonitors = await _repository.GetAsync();
 
-            var commands = httpMonitors.Select(x => new CheckHttpEndpoint()
-            {
-                HttpMonitorId = x.Id,
-                Request = x.Request
-            });
+            var commands = httpMonitors.Select(x => x.CreateCheckHttpEndpoint(HttpMonitorCheckId.Create()));
 
             await _publisher.PublishAsync(commands);
         }
