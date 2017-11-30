@@ -33,7 +33,7 @@ namespace SimpleUptime.Infrastructure.Services
                 {
                     using (var responseMessage = await SendMessageAsync(requestMessage))
                     {
-                        response = new HttpResponse(responseMessage);
+                        response = HttpResponse.Create(responseMessage);
                     }
                 }
                 catch (HttpRequestException ex)

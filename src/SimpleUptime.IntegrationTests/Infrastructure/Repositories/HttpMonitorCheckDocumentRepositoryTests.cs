@@ -100,7 +100,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
                 HttpMonitorId.Create(),
                 new HttpRequest(HttpMethod.Delete, new Uri("http://yahoo.com")),
                 new HttpRequestTiming(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(1)),
-                new HttpResponse() { StatusCode = HttpStatusCode.Accepted });
+                new HttpResponse(HttpStatusCode.Accepted));
         }
 
         private async Task<HttpMonitorCheck> GenerateAndPersistHttpMonitorCheck()
