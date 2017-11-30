@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using SimpleUptime.Domain.Commands;
 using SimpleUptime.Domain.Events;
@@ -12,12 +13,15 @@ namespace SimpleUptime.Domain.Models
     /// </summary>
     public class HttpMonitor
     {
-        public HttpMonitor(HttpMonitorId id, HttpRequest request)
+        public HttpMonitor(HttpMonitorId id, HttpRequest request, IEnumerable<HttpMonitorCheck> recentHttpMonitorChecks = null)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Request = request ?? throw new ArgumentNullException(nameof(request));
             AlertContactIds = new HashSet<AlertContactId>();
-            RecentHttpMonitorChecks = new HttpMonitorCheck[0];
+
+            RecentHttpMonitorChecks = recentHttpMonitorChecks != null ?
+                recentHttpMonitorChecks.ToList().AsReadOnly() :
+                new List<HttpMonitorCheck>().AsReadOnly();
         }
 
         public HttpMonitorId Id { get; }
@@ -26,7 +30,7 @@ namespace SimpleUptime.Domain.Models
 
         public HashSet<AlertContactId> AlertContactIds { get; }
 
-        public HttpMonitorCheck[] RecentHttpMonitorChecks { get; private set; }
+        public ReadOnlyCollection<HttpMonitorCheck> RecentHttpMonitorChecks { get; private set; }
 
         public void UpdateRequest(HttpRequest request)
         {
@@ -55,7 +59,8 @@ namespace SimpleUptime.Domain.Models
                 RecentHttpMonitorChecks = set
                     .OrderByDescending(x => x.RequestTiming.StartTime)
                     .Take(maxCount)
-                    .ToArray();
+                    .ToList()
+                    .AsReadOnly();
             }
         }
     }

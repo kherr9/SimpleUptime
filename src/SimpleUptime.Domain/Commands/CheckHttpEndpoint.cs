@@ -21,7 +21,7 @@ namespace SimpleUptime.Domain.Commands
 
         public HttpRequest Request { get; }
 
-        public HttpMonitorCheck CreateHttpMonitorCheck(HttpRequestTiming requestTiming, HttpResponse response, string errorMessage)
+        public HttpMonitorCheck CreateHttpMonitorCheck(HttpRequestTiming requestTiming, HttpResponse response = null, string errorMessage = null)
         {
             return new HttpMonitorCheck(HttpMonitorCheckId, HttpMonitorId, Request, requestTiming, response, errorMessage);
         }

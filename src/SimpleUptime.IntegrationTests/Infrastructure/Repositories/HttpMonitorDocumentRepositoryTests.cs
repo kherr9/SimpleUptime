@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SimpleUptime.Domain.Events;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Infrastructure.Repositories;
 using SimpleUptime.IntegrationTests.Fixtures;
@@ -132,7 +134,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
         }
 
         [Fact]
-        public async Task PutUpdatesEntity()
+        public async Task PutUpdateRequest()
         {
             // Arrange
             var entity = await GenerateAndPersistHttpMonitorAsync();
@@ -145,6 +147,22 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
             // Assert
             var readEntity = await _repository.GetByIdAsync(entity.Id);
             Assert.Equal(newHttpRequest, readEntity.Request);
+        }
+
+        [Fact]
+        public async Task PutHandleHttpMonitorChecked()
+        {
+            // Arrange
+            var entity = await GenerateAndPersistHttpMonitorAsync();
+            var @event = GenerateHttpMonitorChecked(entity);
+            entity.Handle(@event);
+
+            // Act
+            await _repository.PutAsync(entity);
+
+            // Assert
+            var readEntity = await _repository.GetByIdAsync(entity.Id);
+            Assert.True(readEntity.RecentHttpMonitorChecks.Any(c => c.Id == @event.HttpMonitorCheck.Id));
         }
 
         #endregion
@@ -180,7 +198,25 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 
         private HttpMonitor GenerateHttpMonitor()
         {
-            return new HttpMonitor(HttpMonitorId.Create(), new HttpRequest(HttpMethod.Get, new Uri("https://example.com")));
+            var entity = new HttpMonitor(
+                HttpMonitorId.Create(),
+                new HttpRequest(HttpMethod.Get, new Uri("https://example.com")));
+
+            var @event = GenerateHttpMonitorChecked(entity);
+
+            entity.Handle(@event);
+
+            return entity;
+        }
+
+        private HttpMonitorChecked GenerateHttpMonitorChecked(HttpMonitor httpMonitor)
+        {
+            return httpMonitor
+                .CreateCheckHttpEndpoint(HttpMonitorCheckId.Create())
+                .CreateHttpMonitorCheck(
+                    new HttpRequestTiming(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(1)),
+                    new HttpResponse(HttpStatusCode.OK))
+                .CreateHttpMonitorChecked();
         }
 
         private async Task<HttpMonitor> GenerateAndPersistHttpMonitorAsync()
