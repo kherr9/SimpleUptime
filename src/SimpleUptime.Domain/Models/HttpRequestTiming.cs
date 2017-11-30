@@ -11,6 +11,20 @@ namespace SimpleUptime.Domain.Models
     [DebuggerDisplay("{StartTime} {EndTime} {TotalMilliseconds}")]
     public class HttpRequestTiming
     {
+        public HttpRequestTiming(DateTime startTime, DateTime endTime)
+        {
+            ThrowIfInvalid(startTime, nameof(startTime));
+            ThrowIfInvalid(endTime, nameof(endTime));
+
+            if (startTime > endTime)
+            {
+                throw new ArgumentException($"StartTime '{startTime}' can not be greater than EndTime '{endTime}'.");
+            }
+
+            StartTime = startTime;
+            EndTime = endTime;
+        }
+
         public DateTime StartTime { get; set; }
 
         public DateTime EndTime { get; set; }
@@ -50,6 +64,11 @@ namespace SimpleUptime.Domain.Models
             hashCode = hashCode * -1521134295 + StartTime.GetHashCode();
             hashCode = hashCode * -1521134295 + EndTime.GetHashCode();
             return hashCode;
+        }
+
+        private void ThrowIfInvalid(DateTime value, string paramName)
+        {
+            if (value.IsEmpty() || value == DateTime.MaxValue || value == DateTime.MinValue) throw new ArgumentException($"Invalid value of {value}", paramName);
         }
     }
 }

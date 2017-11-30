@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Commands;
@@ -17,25 +18,22 @@ namespace SimpleUptime.Infrastructure.Services
             _httpClient = httpClient;
         }
 
-        public async Task<HttpEndpointChecked> CheckHttpEndpointAsync(CheckHttpEndpoint command)
+        public async Task<HttpMonitorCheck> CheckHttpEndpointAsync(CheckHttpEndpoint command)
         {
-            var @event = new HttpEndpointChecked()
-            {
-                HttpMonitorId = command.HttpMonitorId,
-                Request = command.Request,
-                Response = null,
-                RequestTiming = new HttpRequestTiming()
-            };
+            HttpResponse response = null;
+            DateTime startTime;
+            DateTime endTime;
+            string errorMessage = null;
 
             using (var requestMessage = BuildRequestMessage(command))
             {
-                @event.RequestTiming.SetStartTime();
+                startTime = DateTime.UtcNow;
 
                 try
                 {
                     using (var responseMessage = await SendMessageAsync(requestMessage))
                     {
-                        @event.Response = new HttpResponse(responseMessage);
+                        response = new HttpResponse(responseMessage);
                     }
                 }
                 catch (HttpRequestException ex)
@@ -43,24 +41,24 @@ namespace SimpleUptime.Infrastructure.Services
                     if (ex.InnerException is Win32Exception win32Exception)
                     {
                         // A connection with the server could not be established
-                        @event.ErrorMessage = win32Exception.Message;
+                        errorMessage = win32Exception.Message;
                     }
                     else
                     {
-                        @event.ErrorMessage = ex.Message;
+                        errorMessage = ex.Message;
                     }
                 }
                 catch (TaskCanceledException)
                 {
-                    @event.ErrorMessage = "Request timed out";
+                    errorMessage = "Request timed out";
                 }
                 finally
                 {
-                    @event.RequestTiming.SetEndTime();
+                    endTime = DateTime.UtcNow;
                 }
             }
 
-            return @event;
+            return command.CreateHttpMonitorCheck(new HttpRequestTiming(startTime, endTime), response, errorMessage);
         }
 
         private HttpRequestMessage BuildRequestMessage(CheckHttpEndpoint command)

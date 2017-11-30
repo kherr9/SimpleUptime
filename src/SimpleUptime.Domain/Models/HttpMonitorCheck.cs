@@ -1,17 +1,35 @@
-﻿namespace SimpleUptime.Domain.Models
+﻿using System;
+
+namespace SimpleUptime.Domain.Models
 {
     public class HttpMonitorCheck
     {
-        public HttpMonitorCheckId Id { get; set; }
+        public HttpMonitorCheck(
+            HttpMonitorCheckId id,
+            HttpMonitorId httpMonitorId,
+            HttpRequest request,
+            HttpRequestTiming requestTiming,
+            HttpResponse response = null,
+            string errorMessage = null)
+        {
+            Id = id ?? throw new ArgumentNullException(nameof(id));
+            HttpMonitorId = httpMonitorId ?? throw new ArgumentNullException(nameof(httpMonitorId));
+            Request = request ?? throw new ArgumentNullException(nameof(request));
+            RequestTiming = requestTiming ?? throw new ArgumentNullException(nameof(requestTiming));
+            Response = response;
+            ErrorMessage = errorMessage;
+        }
 
-        public HttpMonitorId HttpMonitorId { get; set; }
+        public HttpMonitorCheckId Id { get; }
 
-        public HttpRequest Request { get; set; }
+        public HttpMonitorId HttpMonitorId { get; }
 
-        public HttpResponse Response { get; set; }
+        public HttpRequest Request { get; }
 
-        public HttpRequestTiming RequestTiming { get; set; }
+        public HttpRequestTiming RequestTiming { get; }
 
-        public string ErrorMessage { get; set; }
+        public HttpResponse Response { get; }
+        
+        public string ErrorMessage { get; }
     }
 }

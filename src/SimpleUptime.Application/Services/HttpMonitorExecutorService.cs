@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using SimpleUptime.Application.Exceptions;
-using SimpleUptime.Domain.Commands;
 using SimpleUptime.Domain.Events;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
@@ -19,7 +18,7 @@ namespace SimpleUptime.Application.Services
             _executor = executor;
         }
 
-        public async Task<HttpEndpointChecked> ExecuteAsync(HttpMonitorId httpMonitorId)
+        public async Task<HttpMonitorCheck> ExecuteAsync(HttpMonitorId httpMonitorId)
         {
             var httpMonitor = await _repository.GetByIdAsync(httpMonitorId);
 

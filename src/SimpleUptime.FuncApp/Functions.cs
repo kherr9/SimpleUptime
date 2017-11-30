@@ -35,19 +35,11 @@ namespace SimpleUptime.FuncApp
         {
             var check = JsonConvert.DeserializeObject<CheckHttpEndpoint>(json, Constants.JsonSerializerSettings);
 
-            var @event = await executor.CheckHttpEndpointAsync(check);
+            var httpMonitorCheck = await executor.CheckHttpEndpointAsync(check);
 
-            log.Info($"{nameof(HandleCheckHttpEndpointAsync)} {JsonConvert.SerializeObject(@event, Constants.JsonSerializerSettings)}");
+            log.Info($"{nameof(HandleCheckHttpEndpointAsync)} {JsonConvert.SerializeObject(httpMonitorCheck, Constants.JsonSerializerSettings)}");
 
-            await repository.CreateAsync(new HttpMonitorCheck()
-            {
-                Id = HttpMonitorCheckId.Create(),
-                HttpMonitorId = @event.HttpMonitorId,
-                Request = @event.Request,
-                Response = @event.Response,
-                RequestTiming = @event.RequestTiming,
-                ErrorMessage = @event.ErrorMessage
-            });
+            await repository.CreateAsync(httpMonitorCheck);
         }
     }
 }
