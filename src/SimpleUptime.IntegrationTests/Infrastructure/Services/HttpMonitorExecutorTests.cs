@@ -38,12 +38,12 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         public async Task RequestHttpMethodAndPathCalled(string httpMethod)
         {
             // Arrange
-            var command = new CheckHttpEndpoint(HttpMonitorCheckId.Create(), HttpMonitorId.Create(), new HttpRequest()
-            {
-                Url = new Uri(_httpServer.BaseAddress,
-                    $"/api/{DateTime.UtcNow.Ticks}/index.html?q={DateTime.UtcNow.Ticks}"),
-                Method = new HttpMethod(httpMethod)
-            });
+            var command = new CheckHttpEndpoint(
+                HttpMonitorCheckId.Create(),
+                HttpMonitorId.Create(),
+                new HttpRequest(new HttpMethod(httpMethod),
+                    new Uri(_httpServer.BaseAddress,
+                        $"/api/{DateTime.UtcNow.Ticks}/index.html?q={DateTime.UtcNow.Ticks}")));
 
             string actualHttpMethod = null;
             string actualRelativePath = null;
@@ -72,11 +72,10 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         public async Task ResponseCatpured(HttpStatusCode statusCode)
         {
             // Arrange
-            var command = new CheckHttpEndpoint(HttpMonitorCheckId.Create(), HttpMonitorId.Create(), new HttpRequest
-            {
-                Url = _httpServer.BaseAddress,
-                Method = HttpMethod.Get
-            });
+            var command = new CheckHttpEndpoint(
+                HttpMonitorCheckId.Create(),
+                HttpMonitorId.Create(),
+                new HttpRequest(HttpMethod.Get, _httpServer.BaseAddress));
 
             _httpServer.Handler = ctx =>
             {
@@ -100,11 +99,10 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         public async Task RequestTiming(int millisecondsDelay)
         {
             // Arrange
-            var command = new CheckHttpEndpoint(HttpMonitorCheckId.Create(), HttpMonitorId.Create(), new HttpRequest
-            {
-                Url = _httpServer.BaseAddress,
-                Method = HttpMethod.Get
-            });
+            var command = new CheckHttpEndpoint(
+                HttpMonitorCheckId.Create(),
+                HttpMonitorId.Create(),
+                new HttpRequest(HttpMethod.Get, _httpServer.BaseAddress));
 
             _httpServer.Handler = async ctx =>
             {
@@ -125,11 +123,10 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         public async Task EndpointUnavailableReturnsError()
         {
             // Arrange
-            var command = new CheckHttpEndpoint(HttpMonitorCheckId.Create(), HttpMonitorId.Create(), new HttpRequest()
-            {
-                Url = new Uri("http://localhost:9485/"), // nothing should be open on port
-                Method = HttpMethod.Get
-            });
+            var command = new CheckHttpEndpoint(
+                HttpMonitorCheckId.Create(),
+                HttpMonitorId.Create(),
+                new HttpRequest(HttpMethod.Get, new Uri("http://localhost:9485/")));// nothing should be open on port
 
             // Act
             var @event = await _executor.CheckHttpEndpointAsync(command);
@@ -143,11 +140,10 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         public async Task ForceCloseConnectionReturnsError()
         {
             // Arrange
-            var command = new CheckHttpEndpoint(HttpMonitorCheckId.Create(), HttpMonitorId.Create(), new HttpRequest
-            {
-                Url = _httpServer.BaseAddress,
-                Method = HttpMethod.Get
-            });
+            var command = new CheckHttpEndpoint(
+                HttpMonitorCheckId.Create(),
+                HttpMonitorId.Create(),
+                new HttpRequest(HttpMethod.Get, _httpServer.BaseAddress));
 
             _httpServer.Handler = async ctx =>
             {
@@ -166,11 +162,10 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         public async Task HangRequestReturnsTimeoutError()
         {
             // Arrange
-            var command = new CheckHttpEndpoint(HttpMonitorCheckId.Create(), HttpMonitorId.Create(), new HttpRequest
-            {
-                Url = _httpServer.BaseAddress,
-                Method = HttpMethod.Get
-            });
+            var command = new CheckHttpEndpoint(
+                HttpMonitorCheckId.Create(),
+                HttpMonitorId.Create(),
+                new HttpRequest(HttpMethod.Get, _httpServer.BaseAddress));
 
             // set timeout on client level
             _httpClient.Timeout = TimeSpan.FromMilliseconds(100);
@@ -192,11 +187,10 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         public async Task DoNotReadEntireResponseBody()
         {
             // Arrange
-            var command = new CheckHttpEndpoint(HttpMonitorCheckId.Create(), HttpMonitorId.Create(), new HttpRequest()
-            {
-                Url = _httpServer.BaseAddress,
-                Method = HttpMethod.Get
-            });
+            var command = new CheckHttpEndpoint(
+                HttpMonitorCheckId.Create(),
+                HttpMonitorId.Create(),
+                new HttpRequest(HttpMethod.Get, _httpServer.BaseAddress));
 
             _httpServer.Handler = async ctx =>
             {

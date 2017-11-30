@@ -98,7 +98,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
             return new HttpMonitorCheck(
                 id,
                 HttpMonitorId.Create(),
-                new HttpRequest { Method = HttpMethod.Delete, Url = new Uri("http://yahoo.com") },
+                new HttpRequest(HttpMethod.Delete, new Uri("http://yahoo.com")),
                 new HttpRequestTiming(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(1)),
                 new HttpResponse() { StatusCode = HttpStatusCode.Accepted });
         }

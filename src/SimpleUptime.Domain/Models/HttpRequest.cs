@@ -9,9 +9,15 @@ namespace SimpleUptime.Domain.Models
     [DebuggerDisplay("{Method} {Url}")]
     public class HttpRequest
     {
-        public Uri Url { get; set; }
+        public HttpRequest(HttpMethod method, Uri url)
+        {
+            Method = method ?? throw new ArgumentNullException(nameof(method));
+            Url = url ?? throw new ArgumentNullException(nameof(url));
+        }
 
-        public HttpMethod Method { get; set; }
+        public HttpMethod Method { get; }
+
+        public Uri Url { get; }
 
         public override bool Equals(object obj)
         {

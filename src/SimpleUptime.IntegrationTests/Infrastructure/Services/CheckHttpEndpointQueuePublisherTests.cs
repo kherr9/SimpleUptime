@@ -59,11 +59,10 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
         {
             for (var i = 0; i < count; i++)
             {
-                yield return new CheckHttpEndpoint(HttpMonitorCheckId.Create(), HttpMonitorId.Create(), new HttpRequest()
-                {
-                    Method = HttpMethod.Get,
-                    Url = new Uri("http://example.com/asdfasdfasdfasdfasdf/asdfasdfasdf/asdfasdfasdf/asdfasdf/sadf")
-                });
+                yield return new CheckHttpEndpoint(
+                    HttpMonitorCheckId.Create(),
+                    HttpMonitorId.Create(),
+                    new HttpRequest(HttpMethod.Get, new Uri("http://example.com/asdfasdfasdfasdfasdf/asdfasdfasdf/asdfasdfasdf/asdfasdf/sadf")));
             }
         }
     }

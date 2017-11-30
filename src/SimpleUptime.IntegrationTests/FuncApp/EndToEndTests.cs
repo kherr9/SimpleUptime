@@ -30,19 +30,11 @@ namespace SimpleUptime.IntegrationTests.FuncApp
             // Arrange
             var httpMonitor1 = new HttpMonitor(
                 HttpMonitorId.Create(),
-                new HttpRequest()
-                {
-                    Method = HttpMethod.Get,
-                    Url = _fixture.OpenHttpServer.BaseAddress
-                });
+                new HttpRequest(HttpMethod.Get, _fixture.OpenHttpServer.BaseAddress));
 
             var httpMonitor2 = new HttpMonitor(
                 HttpMonitorId.Create(),
-                new HttpRequest()
-                {
-                    Method = HttpMethod.Delete,
-                    Url = _fixture.OpenHttpServer.BaseAddress
-                });
+                new HttpRequest(HttpMethod.Delete, _fixture.OpenHttpServer.BaseAddress));
 
             await _httpMonitorRepository.PutAsync(httpMonitor1);
             await _httpMonitorRepository.PutAsync(httpMonitor2);

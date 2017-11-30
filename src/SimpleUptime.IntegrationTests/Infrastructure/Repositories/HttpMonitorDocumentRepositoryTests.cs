@@ -136,15 +136,15 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
         {
             // Arrange
             var entity = await GenerateAndPersistHttpMonitorAsync();
-            var newUrl = new Uri("http://foo-bar.com/");
-            entity.Request.Url = newUrl;
+            var newHttpRequest = new HttpRequest(HttpMethod.Get, new Uri("http://foo-bar.com/"));
+            entity.UpdateRequest(newHttpRequest);
 
             // Act
             await _repository.PutAsync(entity);
 
             // Assert
             var readEntity = await _repository.GetByIdAsync(entity.Id);
-            Assert.Equal(newUrl, readEntity.Request.Url);
+            Assert.Equal(newHttpRequest, readEntity.Request);
         }
 
         #endregion
@@ -180,7 +180,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 
         private HttpMonitor GenerateHttpMonitor()
         {
-            return new HttpMonitor(HttpMonitorId.Create(), new HttpRequest { Method = HttpMethod.Get, Url = new Uri("https://example.com") });
+            return new HttpMonitor(HttpMonitorId.Create(), new HttpRequest(HttpMethod.Get, new Uri("https://example.com")));
         }
 
         private async Task<HttpMonitor> GenerateAndPersistHttpMonitorAsync()
