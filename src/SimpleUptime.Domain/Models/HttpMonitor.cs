@@ -10,21 +10,18 @@ namespace SimpleUptime.Domain.Models
     /// </summary>
     public class HttpMonitor
     {
-        public HttpMonitor()
-        {
-        }
-
         public HttpMonitor(HttpMonitorId id, HttpRequest request)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Request = request ?? throw new ArgumentNullException(nameof(request));
+            AlertContactIds = new HashSet<AlertContactId>();
         }
 
-        public HttpMonitorId Id { get; set; }
+        public HttpMonitorId Id { get; }
 
-        public HttpRequest Request { get; set; }
+        public HttpRequest Request { get; private set; }
 
-        public HashSet<AlertContactId> AlertContactIds { get; set; }
+        public HashSet<AlertContactId> AlertContactIds { get; }
 
         public void UpdateRequest(HttpRequest request)
         {
