@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Commands;
-using SimpleUptime.Domain.Events;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Services;
 

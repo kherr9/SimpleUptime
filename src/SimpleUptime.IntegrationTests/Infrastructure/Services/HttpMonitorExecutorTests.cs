@@ -201,6 +201,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Services
                 {
                     await ctx.Response.WriteAsync(Guid.NewGuid().ToString());
                 }
+                // ReSharper disable once FunctionNeverReturns
             };
 
             // Act

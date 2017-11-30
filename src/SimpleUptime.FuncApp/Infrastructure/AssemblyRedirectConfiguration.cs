@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Config;
+// ReSharper disable UnusedMember.Local
 
 namespace SimpleUptime.FuncApp.Infrastructure
 {

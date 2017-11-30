@@ -4,7 +4,6 @@ using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Commands;
-using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Domain.Services;
 using SimpleUptime.FuncApp.Infrastructure;

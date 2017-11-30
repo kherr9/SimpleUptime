@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using SimpleUptime.Application.Exceptions;
-using SimpleUptime.Domain.Events;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Domain.Services;

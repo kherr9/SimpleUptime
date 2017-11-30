@@ -73,6 +73,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
                     server = new OpenHttpServer();
 
                     var baseAddress = new Uri($"http://localhost:{currentPort}");
+                    // ReSharper disable once AccessToDisposedClosure
                     var webHost = WebHost.Start(baseAddress.ToString(), ctx => server.Handler(ctx));
 
                     server.Host = webHost;

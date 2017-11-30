@@ -7,7 +7,7 @@ using System.Net.Http;
 
 namespace SimpleUptime.Domain.Models
 {
-    [DebuggerDisplay("{StatusCode}")]
+    [DebuggerDisplay("{" + nameof(StatusCode) + "}")]
     public class HttpResponse
     {
         public HttpResponse(HttpStatusCode statusCode)
