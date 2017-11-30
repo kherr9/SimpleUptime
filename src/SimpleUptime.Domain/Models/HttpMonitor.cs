@@ -45,6 +45,10 @@ namespace SimpleUptime.Domain.Models
         public void Handle(HttpMonitorChecked @event)
         {
             if (@event == null) throw new ArgumentNullException(nameof(@event));
+            if (@event.HttpMonitorCheck.HttpMonitorId != Id)
+            {
+                throw new InvalidOperationException($"Conflicting ids. Expected {Id}, but got {@event.HttpMonitorCheck.HttpMonitorId}.");
+            }
 
             const int maxCount = 10;
 
