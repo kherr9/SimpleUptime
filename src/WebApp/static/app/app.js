@@ -20,6 +20,9 @@ class CheckListViewModel {
 
     init() {
         var self = this;
+
+        $(this.target).on('submit', 'form', self.saveCheck);
+
         self.checkService
             .getChecks()
             .then(function (checks) {
@@ -31,12 +34,23 @@ class CheckListViewModel {
     updateChecks(checks) {
         var self = this;
         var model = {
-            checks:checks
+            checks: checks
         };
         var html = Mustache.render(
-            $(self.template).html(), 
+            $(self.template).html(),
             model);
         $(self.target).html(html);
+    }
+
+    saveCheck(e){
+        e.preventDefault();
+        console.log('saving check');
+
+        // save check
+
+        // update local check/rerender
+
+        // clear form
     }
 }
 
