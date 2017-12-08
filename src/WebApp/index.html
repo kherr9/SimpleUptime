@@ -27,13 +27,6 @@
         <br/>
         <main>
             <div class="check">
-                <div class="card">
-                    <div class="row">
-                        <div class="col">
-                            <span>http://example.com/</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </main>
     </div>
@@ -46,7 +39,31 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js" integrity="sha256-iaqfO5ue0VbSGcEiQn+OeXxnxAMK2+QgHXIDA5bWtGI="
+        crossorigin="anonymous"></script>
     <script src="/static/app/app.js"></script>
+
+    <!-- templates -->
+    <script type="text/html" id="check-template">
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                {{#checks}}
+                <li class="list-group-item">{{url}}</li>
+                {{/checks}}
+            </ul>
+        </div>
+        <!--
+        {{#checks}}
+        <div class="card">
+            <div class="row">
+                <div class="col">
+                    <span>{{url}}</span>
+                </div>
+            </div>
+        </div>
+        {{/checks}}
+    -->
+    </script>
 </body>
 
 </html>

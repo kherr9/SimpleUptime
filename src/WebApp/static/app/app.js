@@ -1,9 +1,9 @@
 class CheckMockService {
-    constructor(){
+    constructor() {
         this.checks = [{
-            url:"http://example.com/"
-        },{
-            url:"http://example.com/foo/"
+            url: "http://example.com/"
+        }, {
+            url: "http://example.com/foo/"
         }];
     }
     getChecks() {
@@ -14,7 +14,8 @@ class CheckMockService {
 class CheckListViewModel {
     constructor(checkService) {
         this.checkService = checkService;
-        this.selector = '#thing';
+        this.template = '#check-template';
+        this.target = '.check'
     }
 
     init() {
@@ -28,7 +29,14 @@ class CheckListViewModel {
     }
 
     updateChecks(checks) {
-        console.log('update checks', checks);
+        var self = this;
+        var model = {
+            checks:checks
+        };
+        var html = Mustache.render(
+            $(self.template).html(), 
+            model);
+        $(self.target).html(html);
     }
 }
 
