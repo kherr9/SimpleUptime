@@ -25,10 +25,7 @@
         </nav>
 
         <br/>
-        <main>
-            <div class="check">
-            </div>
-        </main>
+        <main/>
     </div>
 
     <!-- Optional JavaScript -->
@@ -41,10 +38,12 @@
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js" integrity="sha256-iaqfO5ue0VbSGcEiQn+OeXxnxAMK2+QgHXIDA5bWtGI="
         crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/navigo@6.0.1/lib/navigo.min.js"></script>
     <script src="/static/app/app.js"></script>
 
     <!-- templates -->
     <script type="text/html" id="check-template">
+        <a href="/#add" class="btn btn-outline-primary btn-sm">Add</a>
         <div class="card">
             <ul class="list-group list-group-flush">
                 {{#checks}}
@@ -58,17 +57,20 @@
                 </li>
             </ul>
         </div>
-        <!--
-        {{#checks}}
-        <div class="card">
-            <div class="row">
-                <div class="col">
-                    <span>{{url}}</span>
+    </script>
+
+    <script type="text/html" id="addcheck-template">
+        <div>
+            <h5>Add Check</h5>
+            <form>
+                <div class="form-group">
+                    <label>Url</label>
+                    <input type="url" class="form-control" id="url" name="url" placeholder="http://example.com" required />
                 </div>
-            </div>
+                <button type="submit" class="btn btn-outline-primary btn-sm" style="cursor:pointer">Add</button>
+                <a href="/#" class="btn btn-outline-secondary btn-sm" style="cursor:pointer">Cancel</a>
+            </form>
         </div>
-        {{/checks}}
-    -->
     </script>
 </body>
 
