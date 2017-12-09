@@ -28,6 +28,25 @@ class CheckMockService {
     }
 }
 
+class CheckService {
+    constructor(baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    getChecks() {
+        return fetch(this.baseUrl + '/api/httpmonitors')
+            .then(function (response) { 
+                return response.json();
+            });
+    }
+
+    addCheck(check) {
+    }
+
+    removeCheckById(checkId) {
+    }
+}
+
 class CheckListViewModel {
     constructor(checkService) {
         this.checkService = checkService;
@@ -130,7 +149,8 @@ class AddCheckViewModel {
     }
 }
 
-var checkService = new CheckMockService();
+//var checkService = new CheckMockService();
+var checkService = new CheckService('http://localhost:24600');
 
 $(function () {
 

@@ -1,6 +1,9 @@
 ﻿using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Configuration;
@@ -53,6 +56,16 @@ namespace SimpleUptime.WebApi
                 options.ConstraintMap.Add(HttpMonitorIdRouteConstraint.RouteLabel, typeof(HttpMonitorIdRouteConstraint));
             });
 
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowAnyOrigin"));
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAnyOrigin", builder => builder.AllowAnyOrigin());
+            });
+
             // settings
             services.AddOptions();
             services.Configure<DocumentClientSettings>(Configuration.GetSection("DocumentClientSettings"));
@@ -78,6 +91,8 @@ namespace SimpleUptime.WebApi
             }
 
             app.UseMvc();
+
+            app.UseCors("AllowAnyOrigin");
 
             app.EnsureDocumentDatabase();
         }
