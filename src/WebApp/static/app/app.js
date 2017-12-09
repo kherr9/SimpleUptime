@@ -62,6 +62,9 @@ class CheckListViewModel {
 
     updateChecks(checks) {
         var self = this;
+        checks.sort(function (a, b) {
+            return a.url.localeCompare(b.url);
+        });
         self.checks = checks;
         var model = {
             checks: checks
