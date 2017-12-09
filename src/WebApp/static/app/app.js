@@ -20,11 +20,18 @@ class CheckMockService {
 
         return Promise.resolve(check);
     }
+
+    removeCheckById(checkId) {
+        this.checks = this.checks.filter(c => c.id !== checkId);
+
+        return Promise.resolve(true);
+    }
 }
 
 class CheckListViewModel {
     constructor(checkService) {
         this.checkService = checkService;
+        this.checks = [];
         this.template = '#check-template';
         this.target = 'main'
     }
@@ -38,6 +45,15 @@ class CheckListViewModel {
                 console.log('got checks');
                 self.updateChecks(checks);
             });
+
+        $(self.target).on('click', '.delete', function (e) {
+            var checkId = $(this).data('id');
+            var check = self.checks.find(c => c.id == checkId);
+
+            if (check !== undefined) {
+                self.removeCheck(check)
+            }
+        });
     }
 
     dispose() {
@@ -46,6 +62,7 @@ class CheckListViewModel {
 
     updateChecks(checks) {
         var self = this;
+        self.checks = checks;
         var model = {
             checks: checks
         };
@@ -53,6 +70,17 @@ class CheckListViewModel {
             $(self.template).html(),
             model);
         $(self.target).html(html);
+    }
+
+    removeCheck(check) {
+        var self = this;
+        if (confirm('Are you sure you want to delete?')) {
+            self.checkService.removeCheckById(check.id)
+                .then(function (e) {
+                    var modifiedChecks = self.checks.filter(c => c !== check);
+                    self.updateChecks(modifiedChecks)
+                });
+        }
     }
 }
 
