@@ -43,25 +43,20 @@
 
     <!-- templates -->
     <script type="text/html" id="check-template">
-        <a href="/#add" class="btn btn-outline-primary btn-sm">Add</a>
+        <div class="text-right" style="margin-bottom:6px;">
+                <a href="/#add" class="btn btn-outline-primary btn-sm">Add</a>
+        </div>
         <div class="card">
             <ul class="list-group list-group-flush">
                 {{#checks}}
                 <li class="list-group-item">{{url}}</li>
                 {{/checks}}
-                <li class="list-group-item">
-                    <form class="form-inline">
-                        <input type="url" class="form-control" name="url" placeholder="http://example.com" required />
-                        <button type="submit" class="btn btn-outline-primary btn-sm" style="margin-left:20px; cursor:pointer">Add</button>
-                    </form>
-                </li>
             </ul>
         </div>
     </script>
 
     <script type="text/html" id="addcheck-template">
         <div>
-            <h5>Add Check</h5>
             <form>
                 <div class="form-group">
                     <label>Url</label>

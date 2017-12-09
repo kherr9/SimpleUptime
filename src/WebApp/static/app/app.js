@@ -28,8 +28,6 @@ class CheckListViewModel {
     init() {
         var self = this;
 
-        $(this.target).on('submit', 'form', self.saveCheck);
-
         self.checkService
             .getChecks()
             .then(function (checks) {
@@ -51,17 +49,6 @@ class CheckListViewModel {
             $(self.template).html(),
             model);
         $(self.target).html(html);
-    }
-
-    saveCheck(e) {
-        var self = this;
-
-        e.preventDefault();
-
-        self.checkService.addCheck({ url: 'http://mylittleponty.com' })
-            .then(function (check) {
-                window.location = '#/'
-            })
     }
 }
 
