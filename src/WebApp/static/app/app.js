@@ -1,8 +1,11 @@
 class CheckMockService {
     constructor() {
+        this.nextId = 1;
         this.checks = [{
+            id: this.nextId++,
             url: "http://example.com/"
         }, {
+            id: this.nextId++,
             url: "http://example.com/foo/"
         }];
     }
@@ -12,6 +15,7 @@ class CheckMockService {
     }
 
     addCheck(check) {
+        check.id = this.nextId++;
         this.checks.push(check);
 
         return Promise.resolve(check);

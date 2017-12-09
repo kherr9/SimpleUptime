@@ -49,7 +49,12 @@
         <div class="card">
             <ul class="list-group list-group-flush">
                 {{#checks}}
-                <li class="list-group-item">{{url}}</li>
+                <li class="list-group-item">
+                    <span>{{url}}</span>
+                    <div style="float:right">
+                        <button data-id="{{id}}" class="btn btn btn-outline-secondary btn-sm delete" style="cursor:pointer">Remove</button>
+                    </div>
+                </li>
                 {{/checks}}
             </ul>
         </div>
