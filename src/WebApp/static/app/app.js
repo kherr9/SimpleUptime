@@ -41,7 +41,6 @@ class CheckService {
     }
 
     addCheck(check) {
-
         return fetch(this.baseUrl + '/api/httpmonitors', {
             method: 'POST',
             headers: {
@@ -56,6 +55,9 @@ class CheckService {
     }
 
     removeCheckById(checkId) {
+        return fetch(this.baseUrl + '/api/httpmonitors/' + checkId, {
+            method: 'DELETE'
+        });
     }
 }
 
