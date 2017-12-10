@@ -50,7 +50,7 @@
             <ul class="list-group list-group-flush">
                 {{#checks}}
                 <li class="list-group-item">
-                    <span>{{url}}</span>
+                    <span>{{request.url}}</span>
                     <div style="float:right">
                         <button data-id="{{id}}" class="btn btn btn-outline-secondary btn-sm delete" style="cursor:pointer">Remove</button>
                     </div>
@@ -67,6 +67,7 @@
                     <label>Url</label>
                     <input type="url" class="form-control" id="url" name="url" placeholder="http://example.com" required />
                 </div>
+                <input type="hidden" id="method" name="method" value="GET" />
                 <button type="submit" class="btn btn-outline-primary btn-sm" style="cursor:pointer">Add</button>
                 <a href="/#" class="btn btn-outline-secondary btn-sm" style="cursor:pointer">Cancel</a>
             </form>

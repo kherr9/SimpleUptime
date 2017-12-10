@@ -62,7 +62,7 @@ namespace SimpleUptime.WebApi
 
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAnyOrigin", builder => builder.AllowAnyOrigin());
+                options.AddPolicy("AllowAnyOrigin", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
             // settings

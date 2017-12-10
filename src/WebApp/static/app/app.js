@@ -35,12 +35,24 @@ class CheckService {
 
     getChecks() {
         return fetch(this.baseUrl + '/api/httpmonitors')
-            .then(function (response) { 
+            .then(function (response) {
                 return response.json();
             });
     }
 
     addCheck(check) {
+
+        return fetch(this.baseUrl + '/api/httpmonitors', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(check)
+        })
+            .then(function (res) {
+                return JSON.stringify(res.json());
+            });
     }
 
     removeCheckById(checkId) {
@@ -82,7 +94,7 @@ class CheckListViewModel {
     updateChecks(checks) {
         var self = this;
         checks.sort(function (a, b) {
-            return a.url.localeCompare(b.url);
+            return a.request.url.localeCompare(b.request.url);
         });
         self.checks = checks;
         var model = {
@@ -133,14 +145,20 @@ class AddCheckViewModel {
 
         var html = $(self.template).html();
 
-        $(self.target).html(html);
+        $(self.target)
+        .html(html)
+        .find('*').filter(':input:visible:first').focus();
     }
 
     onAddCheck(e) {
         var self = this;
         e.preventDefault();
 
-        var check = $(self.target).find('form').serializeFormJSON();
+        var request = $(self.target).find('form').serializeFormJSON();
+        
+        var check = {
+            request: request
+        };
 
         self.checkService.addCheck(check)
             .then(function () {
