@@ -68,11 +68,11 @@ namespace SimpleUptime.WebApi
             // settings
             services.AddOptions();
             services.Configure<DocumentClientSettings>(Configuration.GetSection("DocumentClientSettings"));
-
+            
             // serivces
             services.AddTransient<IHttpMonitorService, HttpMonitorService>();
             services.AddTransient<IHttpMonitorRepository, HttpMonitorDocumentRepository>();
-            services.AddSingleton<IDocumentClient>(provider => DocumentClientFactory.CreateDocumentClientAsync(provider.GetService<IOptions<DocumentClientSettings>>().Value).Result);
+            services.AddSingleton<IDocumentClient>(provider => DocumentClientFactory.CreateDocumentClientAsync(Configuration.GetConnectionString("CosmosDb")).Result);
             services.AddTransient<DatabaseConfigurations>(_ => DatabaseConfigurations.Create());
             services.AddTransient<SimpleUptimeDbScript>();
 
