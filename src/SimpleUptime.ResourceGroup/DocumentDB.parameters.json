@@ -3,16 +3,16 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "databaseAccountName": {
-      "value": "simpleuptime-dev-cdb"
+      "value": "simpleuptime-uat-cdb"
     },
     "storageAccountName": {
-      "value": "simpleuptimedevdata001"
+      "value": "simpleuptimeuatdata001"
     },
     "hostingPlanName": {
-      "value": "simpleuptime-dev-asp"
+      "value": "simpleuptime-uat-asp"
     },
     "functionAppName": {
-      "value": "simpleuptime-dev-func"
+      "value": "simpleuptime-uat-func"
     }
   }
 }
