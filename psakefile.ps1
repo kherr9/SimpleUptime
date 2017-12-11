@@ -59,7 +59,21 @@ Task Authenticate {
     }
 }
 
-Task Publish -depends Authenticate {
+Task Publish-Function -depends Authenticate {
+    # https://markheath.net/post/deploy-azure-functions-kudu-powershell
+    # https://dscottraynsford.wordpress.com/2017/07/12/publish-an-azure-rm-web-app-using-a-service-principal-in-powershell/
+    $resourceGroupName = "simpleuptime-uat-rg"
+    $functionAppName = "simpleuptime-uat-func"
+    $creds = Invoke-AzureRmResourceAction -ResourceGroupName $resourceGroupName -ResourceType Microsoft.Web/sites/config `
+                -ResourceName $functionAppName/publishingcredentials -Action list -ApiVersion 2015-08-01 -Force
+    
+    $username = $creds.Properties.PublishingUserName
+    $password = $creds.Properties.PublishingPassword
+
+    DeployAzureFunction $username $password $functionAppName "C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp.zip"
+}
+
+Task Publish-ResourceGroup -depends Authenticate {
     $resourceGroupLocation = "northcentralus"
     $resourceGroupName = "simpleuptime-uat-rg"
     $templateFile = "DocumentDB.json"
@@ -70,20 +84,9 @@ Task Publish -depends Authenticate {
         -ResourceGroupName $resourceGroupName `
         -TemplateFile $templateFile `
         -TemplateParametersFile $templateParametersFile
-        #-UploadArtifacts `
-        #-ArtifactStagingDirectory "C:\git\SimpleUptime\artifacts\SimpleUptime.ResourceGroup\staging"
-
-    # https://markheath.net/post/deploy-azure-functions-kudu-powershell
-    $resourceGroup = $resourceGroupName
-    $functionAppName = "simpleuptime-uat-func"
-    $creds = Invoke-AzureRmResourceAction -ResourceGroupName $resourceGroup -ResourceType Microsoft.Web/sites/config `
-                -ResourceName $functionAppName/publishingcredentials -Action list -ApiVersion 2015-08-01 -Force
-    
-    $username = $creds.Properties.PublishingUserName
-    $password = $creds.Properties.PublishingPassword
-
-    DeployAzureFunction $username $password $functionAppName "C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp.zip"
 }
+
+Task Publish -depends Publish-ResourceGroup, Publish-Function
 
 Function ZipAzureFunction(
     [Parameter(Mandatory = $true)]
