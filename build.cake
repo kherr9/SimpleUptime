@@ -1,3 +1,11 @@
+#addin "Cake.Azure"
+
+//////////////////////////////////////////////////////////////////////
+// EXAMPLES
+//////////////////////////////////////////////////////////////////////
+// PS> .\build.ps1
+// PS> .\build.ps1 -Target Build
+
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
@@ -63,24 +71,24 @@ Task("Build")
 	DotNetCoreBuild("./src/SimpleUptime.sln", new DotNetCoreBuildSettings
     {
         Configuration = configuration,
-		ArgumentCustomization  = args => args.Append($"/p:VersionPrefix={version.ToString(3)} /m")
+		ArgumentCustomization  = args => args.Append($"/p:VersionPrefix={version.ToString(3)} /m --no-restore")
     });
 });
 
 Task("Run-Unit-Tests")
     .Does(() =>
 {
-	DotNetCoreTest("./src/ToyStorage.UnitTests", new DotNetCoreTestSettings
+	DotNetCoreTest("./src/SimpleUptime.UnitTests", new DotNetCoreTestSettings
     {
         Configuration = configuration,
     });
 });
 
 Task("Run-Integration-Tests")
-    .IsDependentOn("End-StartAzureStorageEmulator")
+    //.IsDependentOn("End-StartAzureStorageEmulator")
     .Does(() =>
 {
-	DotNetCoreTest("./src/ToyStorage.IntegrationTests", new DotNetCoreTestSettings
+	DotNetCoreTest("./src/SimpleUptime.IntegrationTests", new DotNetCoreTestSettings
     {
         Configuration = configuration
     });
@@ -124,21 +132,17 @@ Task("Pack")
 {
 	Information($"Packing version {version}");
 
-	var settings = new DotNetCorePackSettings
-	{
-		Configuration = configuration,
-		OutputDirectory = artifactDir,
-		NoBuild = true,
-		ArgumentCustomization  = args => args.Append($"/p:VersionPrefix={version.ToString(3)}")
-	};
+    Information("Copy resource group to artifacts...");
+	Information($@"{artifactDir}\SimpleUptime.ResourceGroup");
+    CopyDirectory($@".\src\SimpleUptime.ResourceGroup\bin\{configuration}", $@".\{artifactDir}\SimpleUptime.ResourceGroup");
+});
 
-	if(!string.IsNullOrEmpty(versionSuffix))
-	{
-		settings.VersionSuffix = $"{versionSuffix}-{version.Revision}";
-		Information($"VersionSuffix: {settings.VersionSuffix}");
-	}
+Task("Publish-ResourceGroup")
+    .Does(() => 
+{
+    Information("Publishing Resource Group");
 
-	DotNetCorePack("./src/ToyStorage", settings);
+    AzureLogin("c4b5de22-cde4-4c12-8ccd-af20539b607f", "84a1aba8-ca0a-4b84-ab98-0823c39164a0", "LxkH4DEDgyGptj2s");
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -147,9 +151,9 @@ Task("Pack")
 
 Task("Default")
 	.IsDependentOn("Begin-StartAzureStorageEmulator")
-	.IsDependentOn("Build");
-	//.IsDependentOn("Run-Unit-Tests")
-	//.IsDependentOn("Run-Integration-Tests")
+	.IsDependentOn("Build")
+	.IsDependentOn("Run-Unit-Tests")
+	.IsDependentOn("Run-Integration-Tests");
 	//.IsDependentOn("Pack");
 
 //////////////////////////////////////////////////////////////////////
