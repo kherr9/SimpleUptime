@@ -42,10 +42,10 @@ function Resolve-Module {
     }
 }
 
-Get-PackageProvider -Name Nuget -ForceBootstrap | Out-Null
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+#Get-PackageProvider -Name Nuget -ForceBootstrap | Out-Null
+#Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 
-'psake' | Resolve-Module
+#'psake' | Resolve-Module
 
 Invoke-psake -taskList $Task -nologo -Verbose:$VerbosePreference
 exit ( [int]( -not $psake.build_success ) )
