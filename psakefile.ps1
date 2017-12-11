@@ -50,5 +50,4 @@ Task Authenticate {
         Login-AzureRmAccount
         Save-AzureRmProfile -Path $profile
     }
-    
 }
