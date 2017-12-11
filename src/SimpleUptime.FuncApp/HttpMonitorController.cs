@@ -12,11 +12,14 @@ namespace SimpleUptime.FuncApp
     public static class HttpMonitorController
     {
         [FunctionName("HttpMonitorsGet")]
-        public static HttpResponseMessage GetAsync(
+        public static async Task<HttpResponseMessage> GetAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "httpmonitors")]HttpRequestMessage req,
-            TraceWriter log)
+            TraceWriter log,
+            [Inject] IHttpMonitorService services)
         {
-            return req.CreateResponse(HttpStatusCode.OK, "Success me");
+            var httpMonitors = await services.GetHttpMonitorsAsync();
+
+            return req.CreateResponse(HttpStatusCode.OK, httpMonitors);
         }
     }
 }

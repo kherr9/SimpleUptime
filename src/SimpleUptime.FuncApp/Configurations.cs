@@ -57,6 +57,8 @@ namespace SimpleUptime.FuncApp
             services.AddTransient<CloudQueueFactory>();
             services.AddTransient<CreateCloudQueueAsync>(provider =>
                 provider.GetService<CloudQueueFactory>().CreateCloudQueueAsync);
+
+            services.AddTransient<IHttpMonitorService, HttpMonitorService>();
         }
     }
 }
