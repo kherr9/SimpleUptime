@@ -6,14 +6,14 @@
         "route": "/",
         "methods": [ "GET", "HEAD", "OPTIONS" ]
       },
-      "backendUri": "https://simpleuptimedevdata001.blob.core.windows.net/www/index.html"
+      "backendUri": "https://simpleuptimeuatdata001.blob.core.windows.net/www/index.html"
     },
     "static": {
       "matchCondition": {
         "route": "/{*restOfPath}",
         "methods": [ "GET", "HEAD", "OPTIONS" ]
       },
-      "backendUri": "https://simpleuptimedevdata001.blob.core.windows.net/www/dist/{restOfPath}"
+      "backendUri": "https://simpleuptimeuatdata001.blob.core.windows.net/www/{restOfPath}"
     }
   }
 }
