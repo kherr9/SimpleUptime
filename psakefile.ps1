@@ -147,6 +147,15 @@ Task Publish-ResourceGroup -depends Authenticate {
         -ResourceGroupName $resourceGroupName `
         -TemplateFile $templateFile `
         -TemplateParametersFile $templateParametersFile
+    
+    # set custom dns
+    $webAppName = "simpleuptime-uat-spahost"
+    $fqdn = "app-uat.simpleuptime.io"
+
+    Set-AzureRmWebApp `
+        -Name $webAppName `
+        -ResourceGroupName $resourceGroupName `
+        -HostNames @($fqdn, "$webappname.azurewebsites.net")
 }
 
 Function ZipAzureFunction(
