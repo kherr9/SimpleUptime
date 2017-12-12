@@ -53,47 +53,47 @@ namespace SimpleUptime.IntegrationTests.FuncApp.Controllers
 
         #endregion
 
-        #region GetById(id)
+        ////#region GetById(id)
 
-        [Fact]
-        public async Task GetById()
-        {
-            // Arrange
-            var entity = await GenerateAndPostHttpMonitorAsync();
+        ////[Fact]
+        ////public async Task GetById()
+        ////{
+        ////    // Arrange
+        ////    var entity = await GenerateAndPostHttpMonitorAsync();
 
-            // Act
-            (var response, var model) = await _client.GetAsync(entity.Id);
+        ////    // Act
+        ////    (var response, var model) = await _client.GetAsync(entity.Id);
 
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(entity, model);
-        }
+        ////    // Assert
+        ////    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        ////    Assert.Equal(entity, model);
+        ////}
 
-        [Fact]
-        public async Task GetByIdReturnsNotFound()
-        {
-            // Arrange
-            var entityId = HttpMonitorId.Create().ToString();
+        ////[Fact]
+        ////public async Task GetByIdReturnsNotFound()
+        ////{
+        ////    // Arrange
+        ////    var entityId = HttpMonitorId.Create().ToString();
 
-            // Act
-            (var response, _) = await _client.GetAsync(entityId);
+        ////    // Act
+        ////    (var response, _) = await _client.GetAsync(entityId);
 
-            // Assert
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        ////    // Assert
+        ////    Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        ////}
 
-        [Theory]
-        [MemberData(nameof(HttpMonitorIdHelper.InvalidHttpMonitorIds), MemberType = typeof(HttpMonitorIdHelper))]
-        public async Task GetByIdReturnsNotFoundWhenIdNotValidFormat(object id)
-        {
-            // Act
-            (var response, _) = await _client.GetAsync(id.ToString());
+        ////[Theory]
+        ////[MemberData(nameof(HttpMonitorIdHelper.InvalidHttpMonitorIds), MemberType = typeof(HttpMonitorIdHelper))]
+        ////public async Task GetByIdReturnsNotFoundWhenIdNotValidFormat(object id)
+        ////{
+        ////    // Act
+        ////    (var response, _) = await _client.GetAsync(id.ToString());
 
-            // Assert
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
+        ////    // Assert
+        ////    Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        ////}
 
-        #endregion
+        ////#endregion
 
         #region Post
 

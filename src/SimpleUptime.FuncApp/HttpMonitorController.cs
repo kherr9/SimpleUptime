@@ -1,12 +1,10 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
-using Newtonsoft.Json;
 using SimpleUptime.Application.Commands;
 using SimpleUptime.Application.Services;
 using SimpleUptime.FuncApp.Infrastructure;
@@ -31,14 +29,14 @@ namespace SimpleUptime.FuncApp
         public static async Task<HttpResponseMessage> PostAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "httpmonitors")]HttpRequestMessage req,
             TraceWriter log,
-            [Inject] IHttpMonitorService service)
+            [Inject] IHttpMonitorService service,
+            [Inject] JsonMediaTypeFormatter formatter)
         {
-            var json = await req.Content.ReadAsStringAsync();
-            var cmd = JsonConvert.DeserializeObject<CreateHttpMonitor>(json);
+            var cmd = await req.Content.ReadAsAsync<CreateHttpMonitor>(new[] { formatter });
 
             var httpMonitor = await service.CreateHttpMonitorAsync(cmd);
 
-            return req.CreateResponse(HttpStatusCode.OK, httpMonitor, MediaTypeHeaderValue.Parse("application.json"));
+            return req.CreateResponse(HttpStatusCode.OK, httpMonitor, formatter);
         }
     }
 }
