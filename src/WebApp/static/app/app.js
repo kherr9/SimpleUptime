@@ -170,8 +170,9 @@ class AddCheckViewModel {
 }
 
 //var checkService = new CheckMockService();
-var checkService = new CheckService('http://localhost:8011');
+//var checkService = new CheckService('http://localhost:8011');
 //var checkService = new CheckService('http://localhost:24600'); //web api
+var checkService = new CheckService('https://simpleuptime-uat-spahost.azurewebsites.net');
 
 $(function () {
 
