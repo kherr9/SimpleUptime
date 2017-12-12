@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
@@ -20,13 +19,14 @@ namespace SimpleUptime.FuncApp
         public static async Task<HttpResponseMessage> GetAsync(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "httpmonitors")]HttpRequestMessage req,
         TraceWriter log,
-        [Inject] IHttpMonitorService service)
+        [Inject] IHttpMonitorService service,
+        [Inject] JsonMediaTypeFormatter formatter)
         {
             var httpMonitors = await service.GetHttpMonitorsAsync();
 
-            return req.CreateResponse(HttpStatusCode.OK, httpMonitors, MediaTypeHeaderValue.Parse("application/json"));
+            return req.CreateResponse(HttpStatusCode.OK, httpMonitors, formatter);
         }
-        
+
         [FunctionName("HttpMonitorsPost")]
         public static async Task<HttpResponseMessage> PostAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "httpmonitors")]HttpRequestMessage req,
