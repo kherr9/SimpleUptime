@@ -40,12 +40,19 @@ Task Pack {
     Remove-Item $destination -Force -Recurse -ErrorAction Ignore
     Copy-Item -Path $source -Recurse -Destination $destination -Force -Container
 
-    "copy azure function"
+    "copy azure function - app"
     exec {
         dotnet publish .\src\SimpleUptime.FuncApp -o C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp --no-restore
     }
 
     ZipAzureFunction C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp.zip
+
+    "copy azure function - spa host"
+    exec {
+        dotnet publish .\src\SimpleUptime.SpaHost -o C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost --no-restore
+    }
+    
+    ZipAzureFunction C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost.zip
 }
 
 Task Authenticate {
