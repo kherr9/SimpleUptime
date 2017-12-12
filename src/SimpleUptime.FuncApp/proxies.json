@@ -3,8 +3,7 @@
   "proxies": {
     "api": {
       "matchCondition": {
-        "route": "/api/{*restOfPath}",
-        "methods": [ "GET" ]
+        "route": "/api/{*restOfPath}"
       },
       "backendUri": "https://%WEBSITE_HOSTNAME%/api/{restOfPath}"
     },
