@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SimpleUptime.SpaHost": {
+      "commandName": "Project",
+      "commandLineArgs": "host start --cors http://localhost:8082 --port 8011"
+    }
+  }
+}

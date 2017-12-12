@@ -2,7 +2,7 @@
   "profiles": {
     "SimpleUptime.FuncApp": {
       "commandName": "Project",
-      "commandLineArgs": "host start --cors http://localhost:8080"
+      "commandLineArgs": "host start --cors http://localhost:8080 --port 8010"
     }
   }
 }

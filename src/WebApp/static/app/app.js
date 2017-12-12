@@ -170,7 +170,7 @@ class AddCheckViewModel {
 }
 
 //var checkService = new CheckMockService();
-var checkService = new CheckService('http://localhost:7071');
+var checkService = new CheckService('http://localhost:8011');
 //var checkService = new CheckService('http://localhost:24600'); //web api
 
 $(function () {
