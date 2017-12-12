@@ -80,6 +80,20 @@ Task Publish-Function -depends Authenticate {
     DeployAzureFunction $username $password $functionAppName "C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp.zip"
 }
 
+Task Publish-SpaHost -depends Authenticate {
+    # https://markheath.net/post/deploy-azure-functions-kudu-powershell
+    # https://dscottraynsford.wordpress.com/2017/07/12/publish-an-azure-rm-web-app-using-a-service-principal-in-powershell/
+    $resourceGroupName = "simpleuptime-uat-rg"
+    $functionAppName = "simpleuptime-uat-spahost"
+    $creds = Invoke-AzureRmResourceAction -ResourceGroupName $resourceGroupName -ResourceType Microsoft.Web/sites/config `
+                -ResourceName $functionAppName/publishingcredentials -Action list -ApiVersion 2015-08-01 -Force
+    
+    $username = $creds.Properties.PublishingUserName
+    $password = $creds.Properties.PublishingPassword
+
+    DeployAzureFunction $username $password $functionAppName "C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost.zip"
+}
+
 Task Publish-ResourceGroup -depends Authenticate {
     $resourceGroupLocation = "northcentralus"
     $resourceGroupName = "simpleuptime-uat-rg"
@@ -93,7 +107,7 @@ Task Publish-ResourceGroup -depends Authenticate {
         -TemplateParametersFile $templateParametersFile
 }
 
-Task Publish -depends Publish-ResourceGroup, Publish-Function
+Task Publish -depends Publish-ResourceGroup, Publish-Function, Publish-SpaHost
 
 Function ZipAzureFunction(
     [Parameter(Mandatory = $true)]

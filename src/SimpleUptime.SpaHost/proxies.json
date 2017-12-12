@@ -5,8 +5,7 @@
       "matchCondition": {
         "route": "/api/{*restOfPath}"
       },
-      //"backendUri": "https://%API_HOST%/api/{restOfPath}"
-      "backendUri": "https://simpleuptime-uat-func.azurewebsites.net/api/{restOfPath}"
+      "backendUri": "https://%API_HOST%/api/{restOfPath}"
     },
     "app": {
       "matchCondition": {
