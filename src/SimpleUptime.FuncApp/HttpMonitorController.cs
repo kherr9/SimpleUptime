@@ -50,19 +50,7 @@ namespace SimpleUptime.FuncApp
             [Inject] IHttpMonitorService service,
             [Inject] JsonMediaTypeFormatter formatter)
         {
-            HttpMonitorId id;
-            try
-            {
-                id = new HttpMonitorId(Guid.Parse(httpMonitorId));
-            }
-            catch (FormatException)
-            {
-                return req.CreateResponse(HttpStatusCode.NotFound);
-            }
-            catch (ArgumentException)
-            {
-                return req.CreateResponse(HttpStatusCode.NotFound);
-            }
+            if (!HttpMonitorId.TryParse(httpMonitorId, out var id)) return req.CreateResponse(HttpStatusCode.NotFound);
 
             try
             {

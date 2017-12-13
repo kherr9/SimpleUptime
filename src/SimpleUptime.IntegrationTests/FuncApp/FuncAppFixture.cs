@@ -71,6 +71,8 @@ namespace SimpleUptime.IntegrationTests.FuncApp
             {
                 throw new Exception("Start process returned error");
             }
+
+            await Task.Delay(2000);
         }
 
         public void Dispose()
