@@ -28,6 +28,26 @@ namespace SimpleUptime.FuncApp
             return req.CreateResponse(HttpStatusCode.OK, httpMonitors, formatter);
         }
 
+        [FunctionName("HttpMonitorsGetById")]
+        public static async Task<HttpResponseMessage> GetByIdAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "httpmonitors/{httpMonitorId}")]HttpRequestMessage req,
+            string httpMonitorId,
+            TraceWriter log,
+            [Inject] IHttpMonitorService service,
+            [Inject] JsonMediaTypeFormatter formatter)
+        {
+            if (!HttpMonitorId.TryParse(httpMonitorId, out var id)) return req.CreateResponse(HttpStatusCode.NotFound);
+
+            var httpMonitor = await service.GetHttpMonitorByIdAsync(id);
+
+            if (httpMonitor != null)
+            {
+                return req.CreateResponse(HttpStatusCode.OK, httpMonitor, formatter);
+            }
+
+            return req.CreateResponse(HttpStatusCode.NotFound);
+        }
+
         [FunctionName("HttpMonitorsPost")]
         public static async Task<HttpResponseMessage> PostAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "httpmonitors")]HttpRequestMessage req,
