@@ -62,6 +62,32 @@ namespace SimpleUptime.FuncApp
             return req.CreateResponse(HttpStatusCode.OK, httpMonitor, formatter);
         }
 
+        [FunctionName("HttpMonitorsPut")]
+        public static async Task<HttpResponseMessage> PutAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "httpmonitors/{httpMonitorId}")]HttpRequestMessage req,
+            string httpMonitorId,
+            TraceWriter log,
+            [Inject] IHttpMonitorService service,
+            [Inject] JsonMediaTypeFormatter formatter)
+        {
+            if (!HttpMonitorId.TryParse(httpMonitorId, out var id)) return req.CreateResponse(HttpStatusCode.NotFound);
+
+            try
+            {
+                var cmd = await req.Content.ReadAsAsync<UpdateHttpMonitor>(new[] { formatter });
+
+                cmd.HttpMonitorId = id;
+
+                var httpMonitor = await service.UpdateHttpMonitorAsync(cmd);
+
+                return req.CreateResponse(HttpStatusCode.OK, httpMonitor, formatter);
+            }
+            catch (EntityNotFoundException)
+            {
+                return req.CreateResponse(HttpStatusCode.NotFound);
+            }
+        }
+
         [FunctionName("HttpMonitorsDelete")]
         public static async Task<HttpResponseMessage> DeleteAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "httpmonitors/{httpMonitorId}")]HttpRequestMessage req,
