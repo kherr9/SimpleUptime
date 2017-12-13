@@ -217,6 +217,10 @@
             {
               "name": "API_HOST",
               "value": "[concat(parameters('functionAppName'), '.azurewebsites.net')]"
+            },
+            {
+              "name": "STORAGE_HOST",
+              "value": "[concat(parameters('storageAccountName'), '.blob.core.windows.net')]"
             }
           ]
         }
