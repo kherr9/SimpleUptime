@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.WindowsAzure.Storage;
@@ -14,11 +15,16 @@ namespace SimpleUptime.IntegrationTests.FuncApp
         private Process _process;
         private readonly DocumentDbFixture _documentDbFixture;
         private readonly OpenHttpServer _httpServer;
+        private readonly HttpClient _httpClient;
 
         public FuncAppFixture()
         {
             _documentDbFixture = new DocumentDbFixture();
             _httpServer = OpenHttpServer.CreateAndRun();
+            _httpClient = new HttpClient()
+            {
+                BaseAddress = new Uri("http://localhost:7071")
+            };
             // todo: delete container
         }
 
@@ -30,11 +36,14 @@ namespace SimpleUptime.IntegrationTests.FuncApp
 
         public OpenHttpServer OpenHttpServer => _httpServer;
 
+        public HttpClient HttpClient => _httpClient;
+
         public async Task StartHostAsync()
         {
             if (_process != null)
             {
-                throw new InvalidOperationException("Process already started");
+                return;
+                ////throw new InvalidOperationException("Process already started");
             }
 
             await ClearWebJobDataAsync();
@@ -62,6 +71,8 @@ namespace SimpleUptime.IntegrationTests.FuncApp
             {
                 throw new Exception("Start process returned error");
             }
+
+            await Task.Delay(2000);
         }
 
         public void Dispose()
@@ -71,6 +82,7 @@ namespace SimpleUptime.IntegrationTests.FuncApp
             _process?.Dispose();
             _documentDbFixture?.Dispose();
             _httpServer?.Dispose();
+            _httpClient?.Dispose();
         }
 
         private async Task ClearWebJobDataAsync()
@@ -81,6 +93,11 @@ namespace SimpleUptime.IntegrationTests.FuncApp
 
             var container = blobClient.GetContainerReference("azure-webjobs-hosts");
             await container.DeleteIfExistsAsync();
+        }
+
+        public void Reset()
+        {
+            _documentDbFixture.Reset();
         }
     }
 }
