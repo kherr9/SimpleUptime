@@ -13,6 +13,9 @@
     },
     "functionAppName": {
       "value": "simpleuptime-uat-func"
+    },
+    "spaHostAppName": {
+      "value": "simpleuptime-uat-spahost"
     }
   }
 }

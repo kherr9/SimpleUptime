@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Runtime.Serialization.Formatters;
 using Microsoft.Azure.Documents;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +58,13 @@ namespace SimpleUptime.FuncApp
             services.AddTransient<CloudQueueFactory>();
             services.AddTransient<CreateCloudQueueAsync>(provider =>
                 provider.GetService<CloudQueueFactory>().CreateCloudQueueAsync);
+
+            services.AddTransient<IHttpMonitorService, HttpMonitorService>();
+
+            services.AddSingleton<JsonMediaTypeFormatter>(_ => new JsonMediaTypeFormatter
+            {
+                SerializerSettings = Constants.JsonSerializerSettings
+            });
         }
     }
 }

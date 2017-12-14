@@ -79,5 +79,19 @@ namespace SimpleUptime.Domain.Models
             if (ReferenceEquals(null, other)) return 1;
             return Value.CompareTo(other.Value);
         }
+
+        public static bool TryParse(string value, out HttpMonitorId httpMonitorId)
+        {
+            try
+            {
+                httpMonitorId = new HttpMonitorId(Guid.Parse(value));
+                return true;
+            }
+            catch (Exception)
+            {
+                httpMonitorId = null;
+                return false;
+            }
+        }
     }
 }

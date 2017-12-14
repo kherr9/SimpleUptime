@@ -148,8 +148,8 @@ class AddCheckViewModel {
         var html = $(self.template).html();
 
         $(self.target)
-        .html(html)
-        .find('*').filter(':input:visible:first').focus();
+            .html(html)
+            .find('*').filter(':input:visible:first').focus();
     }
 
     onAddCheck(e) {
@@ -157,7 +157,7 @@ class AddCheckViewModel {
         e.preventDefault();
 
         var request = $(self.target).find('form').serializeFormJSON();
-        
+
         var check = {
             request: request
         };
@@ -169,8 +169,14 @@ class AddCheckViewModel {
     }
 }
 
-//var checkService = new CheckMockService();
-var checkService = new CheckService('http://localhost:24600');
+var checkService = null;
+console.log(window.location.hostname);
+if (window.location.hostname === 'localhost') {
+    //var checkService = new CheckMockService();
+    checkService = new CheckService('http://localhost:8010');
+} else {
+    checkService = new CheckService('');
+}
 
 $(function () {
 

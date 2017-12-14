@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.FuncApp", "Sim
 EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "SimpleUptime.ResourceGroup", "SimpleUptime.ResourceGroup\SimpleUptime.ResourceGroup.deployproj", "{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleUptime.SpaHost", "SimpleUptime.SpaHost\SimpleUptime.SpaHost.csproj", "{002F97D1-47CC-4D6E-B26B-185F632B6D20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}.Release|Any CPU.Build.0 = Release|Any CPU
+		{002F97D1-47CC-4D6E-B26B-185F632B6D20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{002F97D1-47CC-4D6E-B26B-185F632B6D20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{002F97D1-47CC-4D6E-B26B-185F632B6D20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{002F97D1-47CC-4D6E-B26B-185F632B6D20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
