@@ -13,6 +13,9 @@ task Clean {
     exec {
         dotnet clean .\src\SimpleUptime.sln -c $configuration
     }
+
+    Remove-Item "$artifactDir\SimpleUptime.*" -Force -Recurse -ErrorAction Ignore
+    Remove-Item "$artifactDir\WebApp" -Force -Recurse -ErrorAction Ignore
 }
 
 task Compile {
