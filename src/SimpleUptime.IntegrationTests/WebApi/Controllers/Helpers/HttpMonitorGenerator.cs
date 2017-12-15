@@ -10,11 +10,7 @@ namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Helpers
         {
             return new HttpMonitor(
                 HttpMonitorId.Create(),
-                new HttpRequest()
-                {
-                    Method = HttpMethod.Get,
-                    Url = new Uri($"https://{DateTime.UtcNow.Ticks}.example.com/")
-                });
+                new HttpRequest(HttpMethod.Get, new Uri($"https://{DateTime.UtcNow.Ticks}.example.com/")));
         }
     }
 }
