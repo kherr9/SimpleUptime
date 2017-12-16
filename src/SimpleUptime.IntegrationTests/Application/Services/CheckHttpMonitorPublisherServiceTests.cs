@@ -76,15 +76,7 @@ namespace SimpleUptime.IntegrationTests.Application.Services
 
         private Task GenerateAsync()
         {
-            var httpMonitor = new HttpMonitor()
-            {
-                Id = HttpMonitorId.Create(),
-                Request = new HttpRequest()
-                {
-                    Method = HttpMethod.Get,
-                    Url = new Uri("http://example.com/sdfsd/sdfsdfsd/sdffsd")
-                }
-            };
+            var httpMonitor = new HttpMonitor(HttpMonitorId.Create(), new HttpRequest(HttpMethod.Get, new Uri("http://example.com/sdfsd/sdfsdfsd/sdffsd")));
 
             return _repository.PutAsync(httpMonitor);
         }

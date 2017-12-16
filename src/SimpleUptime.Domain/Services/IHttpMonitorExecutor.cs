@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using SimpleUptime.Domain.Commands;
-using SimpleUptime.Domain.Events;
+using SimpleUptime.Domain.Models;
 
 namespace SimpleUptime.Domain.Services
 {
     public interface IHttpMonitorExecutor
     {
-        Task<HttpEndpointChecked> CheckHttpEndpointAsync(CheckHttpEndpoint command);
+        Task<HttpMonitorCheck> CheckHttpEndpointAsync(CheckHttpEndpoint command);
     }
 }

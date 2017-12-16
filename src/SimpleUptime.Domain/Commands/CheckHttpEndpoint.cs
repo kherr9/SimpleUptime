@@ -1,11 +1,29 @@
-﻿using SimpleUptime.Domain.Models;
+﻿using System;
+using SimpleUptime.Domain.Models;
 
 namespace SimpleUptime.Domain.Commands
 {
     public class CheckHttpEndpoint
     {
-        public HttpMonitorId HttpMonitorId { get; set; }
+        public CheckHttpEndpoint(
+            HttpMonitorCheckId httpMonitorCheckId,
+            HttpMonitorId httpMonitorId,
+            HttpRequest request)
+        {
+            HttpMonitorCheckId = httpMonitorCheckId ?? throw new ArgumentNullException(nameof(httpMonitorCheckId));
+            HttpMonitorId = httpMonitorId ?? throw new ArgumentNullException(nameof(httpMonitorId));
+            Request = request ?? throw new ArgumentNullException(nameof(request));
+        }
 
-        public HttpRequest Request { get; set; }
+        public HttpMonitorCheckId HttpMonitorCheckId { get; }
+
+        public HttpMonitorId HttpMonitorId { get; }
+
+        public HttpRequest Request { get; }
+
+        public HttpMonitorCheck CreateHttpMonitorCheck(HttpRequestTiming requestTiming, HttpResponse response = null, string errorMessage = null)
+        {
+            return new HttpMonitorCheck(HttpMonitorCheckId, HttpMonitorId, Request, requestTiming, response, errorMessage);
+        }
     }
 }

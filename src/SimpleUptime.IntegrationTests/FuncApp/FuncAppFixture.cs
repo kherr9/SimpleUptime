@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.WindowsAzure.Storage;
@@ -60,29 +61,57 @@ namespace SimpleUptime.IntegrationTests.FuncApp
             {
                 StartInfo =
                 {
-                    UseShellExecute = true,
+                    UseShellExecute = false,
                     FileName = fileName,
                     Arguments = args,
-                    WorkingDirectory = @"C:\git\SimpleUptime\src\SimpleUptime.FuncApp\bin\"+ workingDirectory + @"\net461"
+                    WorkingDirectory = @"C:\git\SimpleUptime\src\SimpleUptime.FuncApp\bin\"+ workingDirectory + @"\net461",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
                 }
             };
+
+            var tcs = new TaskCompletionSource<object>();
+
+            var output = new StringBuilder();
+            void Handler(object s, DataReceivedEventArgs e)
+            {
+                var line = e?.Data ?? string.Empty;
+
+                output.AppendLine(line);
+
+                if (line.Contains("Job host started"))
+                {
+                    tcs.SetResult(true);
+                    _process.OutputDataReceived -= Handler;
+                }
+            }
+
+            _process.OutputDataReceived += Handler;
+            _process.ErrorDataReceived += Handler;
 
             if (!_process.Start())
             {
                 throw new Exception("Start process returned error");
             }
+            _process.BeginOutputReadLine();
+            _process.BeginErrorReadLine();
 
-            await Task.Delay(2000);
+            await Task.WhenAny(
+                tcs.Task,
+                Task.Delay(TimeSpan.FromSeconds(20)));
         }
 
         public void Dispose()
         {
-            _process?.CloseMainWindow();
-            _process?.Close();
-            _process?.Dispose();
+            TryKillProcess();
             _documentDbFixture?.Dispose();
             _httpServer?.Dispose();
             _httpClient?.Dispose();
+        }
+
+        private void TryKillProcess()
+        {
+            _process?.Kill();
         }
 
         private async Task ClearWebJobDataAsync()

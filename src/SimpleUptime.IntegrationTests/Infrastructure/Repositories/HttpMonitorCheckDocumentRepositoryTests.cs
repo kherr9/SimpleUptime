@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
@@ -47,8 +48,7 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
         {
             // Arrange
             var existingEntityId = (await GenerateAndPersistHttpMonitorCheck()).Id;
-            var entity = GenerateHttpMonitorCheck();
-            entity.Id = existingEntityId;
+            var entity = GenerateHttpMonitorCheck(existingEntityId);
 
             // Act
             var ex = await Assert.ThrowsAsync<DocumentClientException>(() => _repository.CreateAsync(entity));
@@ -90,12 +90,17 @@ namespace SimpleUptime.IntegrationTests.Infrastructure.Repositories
 
         private HttpMonitorCheck GenerateHttpMonitorCheck()
         {
-            return new HttpMonitorCheck()
-            {
-                Id = HttpMonitorCheckId.Create(),
-                HttpMonitorId = HttpMonitorId.Create(),
-                Request = new HttpRequest() { Method = HttpMethod.Delete, Url = new Uri("http://yahoo.com") }
-            };
+            return GenerateHttpMonitorCheck(HttpMonitorCheckId.Create());
+        }
+
+        private HttpMonitorCheck GenerateHttpMonitorCheck(HttpMonitorCheckId id)
+        {
+            return new HttpMonitorCheck(
+                id,
+                HttpMonitorId.Create(),
+                new HttpRequest(HttpMethod.Delete, new Uri("http://yahoo.com")),
+                new HttpRequestTiming(DateTime.UtcNow, DateTime.UtcNow.AddSeconds(1)),
+                new HttpResponse(HttpStatusCode.Accepted));
         }
 
         private async Task<HttpMonitorCheck> GenerateAndPersistHttpMonitorCheck()

@@ -1,7 +1,5 @@
 using System.Threading.Tasks;
 using SimpleUptime.Application.Exceptions;
-using SimpleUptime.Domain.Commands;
-using SimpleUptime.Domain.Events;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Domain.Services;
@@ -19,7 +17,7 @@ namespace SimpleUptime.Application.Services
             _executor = executor;
         }
 
-        public async Task<HttpEndpointChecked> ExecuteAsync(HttpMonitorId httpMonitorId)
+        public async Task<HttpMonitorCheck> ExecuteAsync(HttpMonitorId httpMonitorId)
         {
             var httpMonitor = await _repository.GetByIdAsync(httpMonitorId);
 
@@ -28,11 +26,7 @@ namespace SimpleUptime.Application.Services
                 throw new EntityNotFoundException(httpMonitorId);
             }
 
-            var cmd = new CheckHttpEndpoint()
-            {
-                HttpMonitorId = httpMonitorId,
-                Request = httpMonitor.Request
-            };
+            var cmd = httpMonitor.CreateCheckHttpEndpoint(HttpMonitorCheckId.Create());
 
             return await _executor.CheckHttpEndpointAsync(cmd);
         }

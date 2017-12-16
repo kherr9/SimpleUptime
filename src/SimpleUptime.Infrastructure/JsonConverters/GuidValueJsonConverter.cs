@@ -15,7 +15,7 @@ namespace SimpleUptime.Infrastructure.JsonConverters
         {
             if (value is IGuidValue id)
             {
-                var token = JToken.FromObject(id.Value);
+                var token = JToken.FromObject(id.Value, serializer);
                 token.WriteTo(writer);
             }
             else

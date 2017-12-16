@@ -1,21 +1,21 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SimpleUptime.Domain.Models
 {
-    [DebuggerDisplay("{StatusCode}")]
+    [DebuggerDisplay("{" + nameof(StatusCode) + "}")]
     public class HttpResponse
     {
-        public HttpResponse()
+        public HttpResponse(HttpStatusCode statusCode)
         {
+            if (!Enum.IsDefined(typeof(HttpStatusCode), statusCode))
+                throw new InvalidEnumArgumentException(nameof(statusCode), (int)statusCode, typeof(HttpStatusCode));
 
-        }
-
-        public HttpResponse(HttpResponseMessage responseMessage)
-        {
-            StatusCode = responseMessage.StatusCode;
+            StatusCode = statusCode;
         }
 
         public HttpStatusCode StatusCode { get; set; }
@@ -29,6 +29,13 @@ namespace SimpleUptime.Domain.Models
         public override int GetHashCode()
         {
             return -763886418 + StatusCode.GetHashCode();
+        }
+
+        public static HttpResponse Create(HttpResponseMessage responseMessage)
+        {
+            if (responseMessage == null) throw new ArgumentNullException(nameof(responseMessage));
+
+            return new HttpResponse(responseMessage.StatusCode);
         }
     }
 }

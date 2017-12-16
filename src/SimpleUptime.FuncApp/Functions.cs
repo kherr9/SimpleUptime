@@ -4,7 +4,7 @@ using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using SimpleUptime.Application.Services;
 using SimpleUptime.Domain.Commands;
-using SimpleUptime.Domain.Models;
+using SimpleUptime.Domain.Events;
 using SimpleUptime.Domain.Repositories;
 using SimpleUptime.Domain.Services;
 using SimpleUptime.FuncApp.Infrastructure;
@@ -31,23 +31,33 @@ namespace SimpleUptime.FuncApp
             [QueueTrigger("commands")] string json,
             TraceWriter log,
             [Inject] IHttpMonitorExecutor executor,
-            [Inject] IHttpMonitorCheckRepository repository)
+            [Inject] IHttpMonitorCheckRepository repository,
+            [Inject] IHttpMonitorCheckedPublisher publisher)
         {
             var check = JsonConvert.DeserializeObject<CheckHttpEndpoint>(json, Constants.JsonSerializerSettings);
 
-            var @event = await executor.CheckHttpEndpointAsync(check);
+            var httpMonitorCheck = await executor.CheckHttpEndpointAsync(check);
 
-            log.Info($"{nameof(HandleCheckHttpEndpointAsync)} {JsonConvert.SerializeObject(@event, Constants.JsonSerializerSettings)}");
+            await repository.CreateAsync(httpMonitorCheck);
 
-            await repository.CreateAsync(new HttpMonitorCheck()
-            {
-                Id = HttpMonitorCheckId.Create(),
-                HttpMonitorId = @event.HttpMonitorId,
-                Request = @event.Request,
-                Response = @event.Response,
-                RequestTiming = @event.RequestTiming,
-                ErrorMessage = @event.ErrorMessage
-            });
+            var @event = httpMonitorCheck.CreateHttpMonitorChecked();
+
+            await publisher.PublishAsync(@event);
+        }
+
+        [FunctionName("HttpMonitorHandlesHttpMonitorChecked")]
+        public static async Task HttpMonitorHandlesHttpMonitorChecked(
+            [QueueTrigger("events-httpmonitorchecked-httpmonitor")] string json,
+            TraceWriter log,
+            [Inject] IHttpMonitorRepository repository)
+        {
+            var @event = JsonConvert.DeserializeObject<HttpMonitorChecked>(json, Constants.JsonSerializerSettings);
+
+            var monitor = await repository.GetByIdAsync(@event.HttpMonitorCheck.HttpMonitorId);
+
+            monitor?.Handle(@event);
+
+            await repository.PutAsync(monitor);
         }
     }
-}
+};

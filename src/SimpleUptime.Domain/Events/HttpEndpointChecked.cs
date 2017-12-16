@@ -1,7 +1,9 @@
-﻿using SimpleUptime.Domain.Models;
+﻿using System;
+using SimpleUptime.Domain.Models;
 
 namespace SimpleUptime.Domain.Events
 {
+    [Obsolete("not currently used")]
     public class HttpEndpointChecked
     {
         public HttpMonitorId HttpMonitorId { get; set; }

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents.Client;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using SimpleUptime.Infrastructure.JsonConverters;
 
 namespace SimpleUptime.Infrastructure.Repositories
 {
@@ -33,12 +29,13 @@ namespace SimpleUptime.Infrastructure.Repositories
             if (serviceEndpoint == null) throw new ArgumentNullException(nameof(serviceEndpoint));
             if (authKey == null) throw new ArgumentNullException(nameof(authKey));
 
-            var settings = new JsonSerializerSettings()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
-            settings.Converters.Add(new GuidValueJsonConverter());
-            settings.Converters.Add(new HttpMethodJsonConverter());
+            ////var settings = new JsonSerializerSettings()
+            ////{
+            ////    ContractResolver = new CamelCasePropertyNamesContractResolver()
+            ////};
+            ////settings.Converters.Add(new GuidValueJsonConverter());
+            ////settings.Converters.Add(new HttpMethodJsonConverter());
+            ////settings.Converters.Add(new AlertContactConverter());
 
             var connectionPolicy = new ConnectionPolicy()
             {
@@ -47,7 +44,7 @@ namespace SimpleUptime.Infrastructure.Repositories
                 ConnectionProtocol = Protocol.Tcp
             };
 
-            var client = new DocumentClient(serviceEndpoint, authKey, settings, connectionPolicy);
+            var client = new DocumentClient(serviceEndpoint, authKey, Services.Constants.JsonSerializerSettings, connectionPolicy);
 
             await client.OpenAsync();
 
@@ -77,16 +74,15 @@ namespace SimpleUptime.Infrastructure.Repositories
         /// Tokenizes input and stores name value pairs.
         /// </summary>
         /// <param name="connectionString">The string to parse.</param>
-        /// <param name="error">Error reporting delegate.</param>
         /// <returns>Tokenized collection.</returns>
         private static IDictionary<string, string> ParseStringIntoSettings(string connectionString)
         {
             IDictionary<string, string> settings = new Dictionary<string, string>();
-            string[] splitted = connectionString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splitted = connectionString.Split(new [] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (string nameValue in splitted)
             {
-                string[] splittedNameValue = nameValue.Split(new char[] { '=' }, 2);
+                string[] splittedNameValue = nameValue.Split(new [] { '=' }, 2);
 
                 if (splittedNameValue.Length != 2)
                 {

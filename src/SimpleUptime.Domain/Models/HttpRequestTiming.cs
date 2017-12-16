@@ -11,31 +11,25 @@ namespace SimpleUptime.Domain.Models
     [DebuggerDisplay("{StartTime} {EndTime} {TotalMilliseconds}")]
     public class HttpRequestTiming
     {
-        public DateTime StartTime { get; set; }
-
-        public DateTime EndTime { get; set; }
-
-        public void SetStartTime()
+        public HttpRequestTiming(DateTime startTime, DateTime endTime)
         {
-            if (!StartTime.IsEmpty())
+            ThrowIfInvalid(startTime, nameof(startTime));
+            ThrowIfInvalid(endTime, nameof(endTime));
+
+            if (startTime > endTime)
             {
-                throw new InvalidOperationException($"Property {nameof(StartTime)} already set.");
+                throw new ArgumentException($"StartTime '{startTime}' can not be greater than EndTime '{endTime}'.");
             }
 
-            StartTime = DateTime.UtcNow;
+            StartTime = startTime;
+            EndTime = endTime;
         }
 
-        public void SetEndTime()
-        {
-            if (!EndTime.IsEmpty())
-            {
-                throw new InvalidOperationException($"Property {nameof(EndTime)} already set.");
-            }
+        public DateTime StartTime { get; }
 
-            EndTime = DateTime.UtcNow;
-        }
+        public DateTime EndTime { get; }
 
-        public double TotalMilliseconds => !StartTime.IsEmpty() && !EndTime.IsEmpty() ? EndTime.Subtract(StartTime).TotalMilliseconds : 0d;
+        public double TotalMilliseconds => EndTime.Subtract(StartTime).TotalMilliseconds;
 
         public override bool Equals(object obj)
         {
@@ -50,6 +44,11 @@ namespace SimpleUptime.Domain.Models
             hashCode = hashCode * -1521134295 + StartTime.GetHashCode();
             hashCode = hashCode * -1521134295 + EndTime.GetHashCode();
             return hashCode;
+        }
+
+        private void ThrowIfInvalid(DateTime value, string paramName)
+        {
+            if (value.IsEmpty() || value == DateTime.MaxValue || value == DateTime.MinValue) throw new ArgumentException($"Invalid value of {value}", paramName);
         }
     }
 }
