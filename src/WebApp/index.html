@@ -25,7 +25,7 @@
         </nav>
 
         <br/>
-        <main/>
+        <main id="main"/>
     </div>
 
     <!-- Optional JavaScript -->
@@ -36,7 +36,7 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js" integrity="sha256-iaqfO5ue0VbSGcEiQn+OeXxnxAMK2+QgHXIDA5bWtGI="
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js" integrity="sha256-+JMHsXRyeTsws/tzbIh5YHQxRdKCuNjmvNcTFtY6DLc="
         crossorigin="anonymous"></script>
     <script src="https://unpkg.com/navigo@6.0.1/lib/navigo.min.js"></script>
     <script src="/static/app/app.js"></script>
@@ -50,6 +50,13 @@
             <ul class="list-group list-group-flush">
                 {{#checks}}
                 <li class="list-group-item">
+                    {{#if isUp }}
+                    <span class="badge badge-success" style="width:20px">&#x25B2;</span>
+                    {{else if isDown }}
+                    <span class="badge badge-danger" style="width:20px">&#x25BC;</span>
+                    {{else}}
+                    <span class="badge badge-secondary" style="width:20px">?</span>
+                    {{/if}}
                     <span>{{request.url}}</span>
                     <div style="float:right">
                         <button data-id="{{id}}" class="btn btn btn-outline-secondary btn-sm delete" style="cursor:pointer">Remove</button>

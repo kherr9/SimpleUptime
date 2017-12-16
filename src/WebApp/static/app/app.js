@@ -65,21 +65,22 @@ class CheckListViewModel {
     constructor(checkService) {
         this.checkService = checkService;
         this.checks = [];
-        this.template = '#check-template';
-        this.target = 'main'
+        this.$target = $('#main');
+        this.template = Handlebars.compile($('#check-template').html())
     }
 
     init() {
         var self = this;
 
+        // fetch checks, then update
         self.checkService
             .getChecks()
             .then(function (checks) {
-                console.log('got checks');
                 self.updateChecks(checks);
             });
 
-        $(self.target).on('click', '.delete', function (e) {
+        // set click handler for delete
+        self.$target.on('click', '.delete', function (e) {
             var checkId = $(this).data('id');
             var check = self.checks.find(c => c.id == checkId);
 
@@ -90,22 +91,36 @@ class CheckListViewModel {
     }
 
     dispose() {
-        $(this.target).off();
+        var self = this;
+
+        self.$target.off();
     }
 
     updateChecks(checks) {
         var self = this;
+
+        // sort checks by url
         checks.sort(function (a, b) {
             return a.request.url.localeCompare(b.request.url);
         });
+
+        // update models with state
+        for (var i = 0; i < checks.length; i++) {
+            var check = checks[i];
+            if (check.status === 'Up') {
+                check.isUp = true;
+            } else if (check.status === 'Down') {
+                check.isDown = true;
+            }
+        }
+
+        // save checks locally
         self.checks = checks;
-        var model = {
+
+        // write run tempalte and write to body
+        self.$target.html(self.template({
             checks: checks
-        };
-        var html = Mustache.render(
-            $(self.template).html(),
-            model);
-        $(self.target).html(html);
+        }));
     }
 
     removeCheck(check) {
@@ -125,21 +140,23 @@ class AddCheckViewModel {
         this.checkService = checkService;
         this.template = '#addcheck-template';
         this.target = 'main'
-
-        console.log('check server', this.checkService);
+        this.$target = $('#main');
     }
 
     init() {
-        self = this;
+        var self = this;
+
         self.renderHtml();
 
-        $(this.target).on('submit', 'form', function (e) {
+        self.$target.on('submit', 'form', function (e) {
             self.onAddCheck(e);
         });
     }
 
     dispose() {
-        $(this.target).off();
+        var self = this;
+
+        self.$target.off();
     }
 
     renderHtml() {
@@ -147,16 +164,18 @@ class AddCheckViewModel {
 
         var html = $(self.template).html();
 
-        $(self.target)
+        self.$target
             .html(html)
-            .find('*').filter(':input:visible:first').focus();
+            .find('*')
+            .filter(':input:visible:first')
+            .focus();
     }
 
     onAddCheck(e) {
         var self = this;
         e.preventDefault();
 
-        var request = $(self.target).find('form').serializeFormJSON();
+        var request = self.$target.find('form').serializeFormJSON();
 
         var check = {
             request: request
