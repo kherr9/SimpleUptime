@@ -117,6 +117,22 @@ class CheckListViewModel {
         // save checks locally
         self.checks = checks;
 
+        self.checks = checks.map(x => {
+            if (x.recentHttpMonitorChecks !== null
+                && x.recentHttpMonitorChecks[0] !== null
+                && x.recentHttpMonitorChecks[0].requestTiming != null
+                && x.recentHttpMonitorChecks[0].requestTiming.endTime !== null) {
+
+                // make the most recent check time easily accessible.
+                x.lastChecked = x.recentHttpMonitorChecks[0].requestTiming.endTime;
+                x.lastCheckedDisplayText = self.timeSince(x.lastChecked);
+            } else {
+                x.lastChecked = null;
+                x.lastCheckedDisplayText = "never checked"
+            }
+            return x;
+        });
+
         // write run tempalte and write to body
         self.$target.html(self.template({
             checks: checks
@@ -132,6 +148,38 @@ class CheckListViewModel {
                     self.updateChecks(modifiedChecks)
                 });
         }
+    }
+
+    timeSince(date) {
+        var date = new Date(Date.parse(date + "Z"));
+
+        var now = new Date();
+        var currentDate = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
+            now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+        
+        var seconds = Math.abs(Math.floor((now - date) / 1000));
+        var interval = Math.floor(seconds / 31536000);
+
+        if (interval > 1) {
+            return interval + " years";
+        }
+        interval = Math.floor(seconds / 2592000);
+        if (interval > 1) {
+            return interval + " months";
+        }
+        interval = Math.floor(seconds / 86400);
+        if (interval > 1) {
+            return interval + " days";
+        }
+        interval = Math.floor(seconds / 3600);
+        if (interval > 1) {
+            return interval + " hours";
+        }
+        interval = Math.floor(seconds / 60);
+        if (interval > 1) {
+            return interval + " minutes";
+        }
+        return Math.floor(seconds) + " seconds";
     }
 }
 
