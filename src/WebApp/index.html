@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 
 <head>
@@ -57,9 +57,14 @@
                     {{else}}
                     <span class="badge badge-secondary" style="width:20px">?</span>
                     {{/if}}
-                    <span>{{request.url}}</span>
+                    <span>
+                        {{request.url}}
+                        {{#if lastChecked }}
+                        <small>({{lastCheckedDisplayText}} ago)</small>
+                        {{/if}}
+                    </span>
                     <div style="float:right">
-                        <button data-id="{{id}}" class="btn btn btn-outline-secondary btn-sm delete" style="cursor:pointer">Remove</button>
+                        <button data-id="{{id}}" class="btn btn-outline-secondary btn-sm delete" style="cursor:pointer">Remove</button>
                     </div>
                 </li>
                 {{/checks}}
