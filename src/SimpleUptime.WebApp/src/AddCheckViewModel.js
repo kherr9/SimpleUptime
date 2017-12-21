@@ -1,11 +1,10 @@
 import $ from 'jquery-slim';
+import checkAddTemplate from './check-add.handlebars';
 
 export default class AddCheckViewModel {
     constructor(checkService) {
         this.checkService = checkService;
-        this.template = '#addcheck-template';
-        this.target = 'main'
-        this.$target = $('#main');
+        this.$target = $('body');
     }
 
     init() {
@@ -27,7 +26,7 @@ export default class AddCheckViewModel {
     renderHtml() {
         var self = this;
 
-        var html = $(self.template).html();
+        var html = checkAddTemplate({});
 
         self.$target
             .html(html)

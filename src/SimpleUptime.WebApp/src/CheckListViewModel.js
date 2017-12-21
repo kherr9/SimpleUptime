@@ -1,12 +1,11 @@
 import $ from 'jquery-slim';
-import Handlebars from 'handlebars';
+import checkListTemplate from './check-list.handlebars';
 
 export default class CheckListViewModel {
     constructor(checkService) {
         this.checkService = checkService;
         this.checks = [];
-        this.$target = $('#main');
-        this.template = Handlebars.compile($('#check-template').html())
+        this.$target = $('body');
     }
 
     init() {
@@ -57,10 +56,13 @@ export default class CheckListViewModel {
         // save checks locally
         self.checks = checks;
 
-        // write run tempalte and write to body
-        self.$target.html(self.template({
+        // generate html from template
+        var html = checkListTemplate({
             checks: checks
-        }));
+        });
+
+        // write html
+        self.$target.html(html);
     }
 
     removeCheck(check) {

@@ -17,6 +17,11 @@ module.exports = {
             handlebars: 'handlebars/dist/handlebars.min.js'
         }
     },
+    module:{
+        rules:[
+            { test: /\.handlebars$/, loader: "handlebars-loader" }
+        ]
+    },
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist')

@@ -1,0 +1,22 @@
+<div class="text-right" style="margin-bottom:6px;">
+    <a href="/#add" class="btn btn-outline-primary btn-sm">Add</a>
+</div>
+<div class="card">
+    <ul class="list-group list-group-flush">
+        {{#checks}}
+        <li class="list-group-item">
+            {{#if isUp }}
+            <span class="badge badge-success" style="width:20px">&#x25B2;</span>
+            {{else if isDown }}
+            <span class="badge badge-danger" style="width:20px">&#x25BC;</span>
+            {{else}}
+            <span class="badge badge-secondary" style="width:20px">?</span>
+            {{/if}}
+            <span>{{request.url}}</span>
+            <div style="float:right">
+                <button data-id="{{id}}" class="btn btn btn-outline-secondary btn-sm delete" style="cursor:pointer">Remove</button>
+            </div>
+        </li>
+        {{/checks}}
+    </ul>
+</div>
