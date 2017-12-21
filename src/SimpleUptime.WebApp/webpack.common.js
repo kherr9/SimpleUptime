@@ -12,6 +12,11 @@ module.exports = {
             title: 'Output Management'
         })
     ],
+    resolve: {
+        alias: {
+            handlebars: 'handlebars/dist/handlebars.min.js'
+        }
+    },
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist')
