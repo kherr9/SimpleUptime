@@ -11,7 +11,8 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Simple Uptime',
             hash: true,
-            template: 'template.html'
+            template: 'template.html',
+            favicon: 'Elegantthemes-Beautiful-Flat-Bolt.ico'
         })
     ],
     resolve: {
