@@ -1,8 +1,6 @@
 import _ from 'lodash';
 import $ from 'jquery-slim';
 import Navigo from 'navigo'; 
-import printMe from './print.js';
-import { cube } from './math.js';
 import CheckService from './CheckService';
 import AddCheckViewModel from './AddCheckViewModel';
 import CheckListViewModel from './CheckListViewModel';
@@ -37,7 +35,7 @@ $(function () {
   router
     .on(function () {
       // display all the products
-      viewModel = new CheckListViewModel(checkService);
+      viewModel = new CheckListViewModel(checkService, 90000);
       viewModel.init();
     })
     .on('add', function () {
