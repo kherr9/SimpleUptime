@@ -5,7 +5,7 @@ export default class CheckListViewModel {
     constructor(checkService) {
         this.checkService = checkService;
         this.checks = [];
-        this.$target = $('body');
+        this.$target = $('#main');
     }
 
     init() {

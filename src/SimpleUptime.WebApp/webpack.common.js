@@ -9,7 +9,9 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
-            title: 'Output Management'
+            title: 'Simple Uptime',
+            hash: true,
+            template: 'template.html'
         })
     ],
     resolve: {

@@ -4,7 +4,7 @@ import checkAddTemplate from './check-add.handlebars';
 export default class AddCheckViewModel {
     constructor(checkService) {
         this.checkService = checkService;
-        this.$target = $('body');
+        this.$target = $('#main');
     }
 
     init() {
