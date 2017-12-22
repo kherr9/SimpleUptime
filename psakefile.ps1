@@ -3,7 +3,7 @@ properties {
     $artifactDir = '.\artifacts'
 }
 
-task default -depends Build
+task default -depends Clean, Restore, Build
 
 task Complete -depends Clean, Restore, Build, Test, Pack, Publish
 
