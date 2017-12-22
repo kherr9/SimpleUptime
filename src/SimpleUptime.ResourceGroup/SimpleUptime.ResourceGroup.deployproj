@@ -29,8 +29,8 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
-    <Content Include="DocumentDB.json" />
-    <Content Include="DocumentDB.parameters.json" />
+    <Content Include="arm-template.json" />
+    <Content Include="arm-template.parameters.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

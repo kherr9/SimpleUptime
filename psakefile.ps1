@@ -147,8 +147,8 @@ Task Publish-WebApp -depends Authenticate {
 Task Publish-ResourceGroup -depends Authenticate {
     $resourceGroupLocation = "northcentralus"
     $resourceGroupName = "simpleuptime-uat-rg"
-    $templateFile = "DocumentDB.json"
-    $templateParametersFile = "DocumentDB.parameters.json"
+    $templateFile = "arm-template.json"
+    $templateParametersFile = "arm-template.parameters.json"
 
     .\artifacts\SimpleUptime.ResourceGroup\Deploy-AzureResourceGroup.ps1 `
         -ResourceGroupLocation $resourceGroupLocation `
