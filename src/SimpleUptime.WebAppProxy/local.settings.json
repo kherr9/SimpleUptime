@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
+    "API_HOST": "localhost:8080",
+    "STORAGE_HOST": "simpleuptimeuatdata001.blob.core.windows.net"
+  }
+}
