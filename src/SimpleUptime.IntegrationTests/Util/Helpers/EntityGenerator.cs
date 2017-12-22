@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Helpers
+namespace SimpleUptime.IntegrationTests.Util.Helpers
 {
     public static class EntityGenerator
     {

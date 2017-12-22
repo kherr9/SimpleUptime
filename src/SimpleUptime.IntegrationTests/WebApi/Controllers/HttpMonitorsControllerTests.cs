@@ -5,8 +5,8 @@ using System.Net;
 using System.Threading.Tasks;
 using SimpleUptime.Domain.Models;
 using SimpleUptime.IntegrationTests.Fixtures;
-using SimpleUptime.IntegrationTests.WebApi.Controllers.Client;
-using SimpleUptime.IntegrationTests.WebApi.Controllers.Helpers;
+using SimpleUptime.IntegrationTests.Util.Client;
+using SimpleUptime.IntegrationTests.Util.Helpers;
 using Xunit;
 
 namespace SimpleUptime.IntegrationTests.WebApi.Controllers

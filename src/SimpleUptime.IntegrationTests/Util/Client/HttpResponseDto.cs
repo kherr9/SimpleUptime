@@ -1,6 +1,6 @@
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
-namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
+namespace SimpleUptime.IntegrationTests.Util.Client
 {
     public class HttpResponseDto
     {
