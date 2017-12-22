@@ -48,4 +48,4 @@ npm run build
 > Single page web app. Uses npm and webpack. Not part of visual studio solution.
 
 ### SimpleUptime.WebAppProxy
-> Azure function app that proxies SimpleUptime.WebApp resources and proxies rest api calls to SimpleUptime.FuncApp
+> Azure function app that proxies SimpleUptime.WebApp resources and proxies rest api calls to SimpleUptime.FuncApp. The proxy logic could be moved into SimpleUptime.FuncApp, but there's an open bug that requires us to keep it seperate for now.
