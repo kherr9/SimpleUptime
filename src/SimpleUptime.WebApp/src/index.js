@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import $ from 'jquery-slim';
 import Navigo from 'navigo'; 
 import CheckService from './CheckService';
@@ -6,7 +5,7 @@ import AddCheckViewModel from './AddCheckViewModel';
 import CheckListViewModel from './CheckListViewModel';
 
 var checkService = null;
-console.log(window.location.hostname);
+
 if (window.location.hostname === 'localhost') {
   //var checkService = new CheckMockService();
   checkService = new CheckService('http://localhost:8010');
