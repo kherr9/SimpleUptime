@@ -9,14 +9,20 @@ task Complete -depends Clean, Compile, UnitTests, IntegrationTests, Pack, Publis
 
 Task Publish -depends Publish-ResourceGroup, Publish-Function, Publish-WebAppProxy, Publish-WebApp
 
-task Clean {
+task Clean -depends Clean-Artifacts, Clean-WebApp, Clean-Dotnet
+
+task Clean-Dotnet {
     exec {
         dotnet clean .\src\SimpleUptime.sln -c $configuration
     }
+}
 
-    Remove-Item .\src\SimpleUptime.WebApp\dist -Force -Recurse -ErrorAction Ignore
-
+task Clean-Artifacts {
     Remove-Item "$artifactDir\SimpleUptime.*" -Force -Recurse -ErrorAction Ignore
+}
+
+task Clean-WebApp {
+    Remove-Item .\src\SimpleUptime.WebApp\dist -Force -Recurse -ErrorAction Ignore
 }
 
 task Compile {
