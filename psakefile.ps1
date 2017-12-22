@@ -71,6 +71,13 @@ Task Pack {
 
     Remove-Item $destination -Force -Recurse -ErrorAction Ignore
     Copy-Item -Path $source -Recurse -Destination $destination -Force -Container
+
+    $source = ".\src\SimpleUptime.WebApp\dist"
+    $destination = "$artifactDir\SimpleUptime.WebApp"
+    "copy $source to $destination"
+    
+    Remove-Item $destination -Force -Recurse -ErrorAction Ignore
+    Copy-Item -Path $source -Recurse -Destination $destination -Force -Container
 }
 
 Task Authenticate {
