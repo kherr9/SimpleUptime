@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Client
+namespace SimpleUptime.IntegrationTests.Util.Client
 {
     public class HttpMonitorClient
     {

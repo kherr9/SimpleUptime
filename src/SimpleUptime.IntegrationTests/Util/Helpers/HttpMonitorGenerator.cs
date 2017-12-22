@@ -2,7 +2,7 @@
 using System.Net.Http;
 using SimpleUptime.Domain.Models;
 
-namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Helpers
+namespace SimpleUptime.IntegrationTests.Util.Helpers
 {
     public static class HttpMonitorGenerator
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SimpleUptime.IntegrationTests.WebApi.Controllers.Helpers
+namespace SimpleUptime.IntegrationTests.Util.Helpers
 {
     public static class HttpMonitorIdHelper
     {

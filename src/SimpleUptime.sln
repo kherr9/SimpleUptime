@@ -18,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F453CCEA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.IntegrationTests", "SimpleUptime.IntegrationTests\SimpleUptime.IntegrationTests.csproj", "{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.WebApi", "SimpleUptime.WebApi\SimpleUptime.WebApi.csproj", "{8B1F6358-D4B2-4CB0-A412-563EDF683979}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.Application", "SimpleUptime.Application\SimpleUptime.Application.csproj", "{C2DC8963-3FAC-4FA2-97AD-28678562A32D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.FuncApp", "SimpleUptime.FuncApp\SimpleUptime.FuncApp.csproj", "{D870FB55-6828-4248-8063-A94D438BA6F9}"
@@ -50,10 +48,6 @@ Global
 		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B23B6747-6476-4EB4-AF71-FB55D28BA2AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8B1F6358-D4B2-4CB0-A412-563EDF683979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B1F6358-D4B2-4CB0-A412-563EDF683979}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B1F6358-D4B2-4CB0-A412-563EDF683979}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B1F6358-D4B2-4CB0-A412-563EDF683979}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2DC8963-3FAC-4FA2-97AD-28678562A32D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2DC8963-3FAC-4FA2-97AD-28678562A32D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2DC8963-3FAC-4FA2-97AD-28678562A32D}.Release|Any CPU.ActiveCfg = Release|Any CPU
