@@ -29,23 +29,31 @@ npm run build
 
 ## Projects
 
-### SimpleUptime.Application
-> Application layer
-
 ### Simple.Domain
 > Domain layer
-
-### SimpleUptime.FuncApp
-> Azure function app that is a rest api and message processor
 
 ### SimpleUptime.Infrastructure
 > Infrastructure layer
 
-### SimpleUptime.ResourceGroup
-> Azure arm templates, infrastructure as code
+### SimpleUptime.Application
+> Application layer
+
+### SimpleUptime.FuncApp
+> Azure function app that is a rest api and message processor.
+
+### SimpleUptime.WebAppProxy
+> Azure function app that proxies SimpleUptime.WebApp resources and proxies rest api calls to SimpleUptime.FuncApp. The proxy logic could be moved into SimpleUptime.FuncApp, but there's an open bug that requires us to keep it seperate for now.
 
 ### SimpleUptime.WebApp
 > Single page web app. Uses npm and webpack. Not part of visual studio solution.
 
-### SimpleUptime.WebAppProxy
-> Azure function app that proxies SimpleUptime.WebApp resources and proxies rest api calls to SimpleUptime.FuncApp. The proxy logic could be moved into SimpleUptime.FuncApp, but there's an open bug that requires us to keep it seperate for now.
+### SimpleUptime.ResourceGroup
+> Azure arm templates, infrastructure as code.
+
+## Test Projects
+
+### SimpleUptime.UnitTests
+> Unit tests for visual studio projects.
+
+### SimpleUptime.IntegrationTests
+> Integration tests for visual studio project. Requires azure storage emulator and azure cosmosdb emulator to be running.
