@@ -61,9 +61,7 @@ export default class CheckListViewModel {
         self.checks = checks.map(x => {
             // set last check info
             if (x.recentHttpMonitorChecks !== null
-                && x.recentHttpMonitorChecks[0] !== null
-                && x.recentHttpMonitorChecks[0].requestTiming != null
-                && x.recentHttpMonitorChecks[0].requestTiming.endTime !== null) {
+                && x.recentHttpMonitorChecks.length > 0) {
 
                 // make the most recent check time easily accessible.
                 x.lastChecked = x.recentHttpMonitorChecks[0].requestTiming.endTime;
