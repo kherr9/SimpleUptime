@@ -8,10 +8,17 @@
 - Low hosting cost
 - Automated tests, deployments, and alerting
 
+## Local development dependencies
+- [Visual Studio 2017](https://www.visualstudio.com/downloads/)
+- [Azure Functions and Web Jobs Tools](https://marketplace.visualstudio.com/items?itemName=VisualStudioWebandAzureTools.AzureFunctionsandWebJobsTools)
+- [Azure Cosmos DB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
+- [Azure Storage Emulator](https://go.microsoft.com/fwlink/?LinkId=717179&clcid=0x409)
+- [npm](https://www.npmjs.com/)
+
 ## How to run SimpleUptime.WebApp for local development
 
 - run Azure Storage Emulator
-- run Azure CosmosDb Emulator
+- run Azure Cosmos DB Emulator
 - run SimpleUptime.FuncApp
 
 ```powershell
@@ -56,4 +63,4 @@ npm run build
 > Unit tests for visual studio projects.
 
 ### SimpleUptime.IntegrationTests
-> Integration tests for visual studio project. Requires azure storage emulator and azure cosmosdb emulator to be running.
+> Integration tests for visual studio project. Requires azure storage emulator and azure cosmos db emulator to be running.
