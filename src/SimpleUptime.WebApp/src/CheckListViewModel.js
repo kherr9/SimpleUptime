@@ -100,7 +100,7 @@ export default class CheckListViewModel {
                 });
         }
     }
-    
+
     secondsSince(date) {
         var date = new Date(Date.parse(date + "Z"));
 
