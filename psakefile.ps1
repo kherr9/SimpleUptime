@@ -7,6 +7,8 @@ task default -depends Clean, Restore, Build
 
 task Complete -depends Clean, Restore, Build, Test, Pack, Publish
 
+task Complete-NoTest -depends Clean, Restore, Build, Pack, Publish
+
 task Clean -depends Clean-Artifacts, Clean-Dotnet, Clean-WebApp
 
 task Restore -depends Restore-Dotnet, Restore-WebApp
@@ -174,6 +176,10 @@ Task Publish-WebApp -depends Authenticate {
 
         $contentType = [System.Web.MimeMapping]::GetMimeMapping($targetPath)
         $blobProperties = @{"ContentType" = $contentType};
+
+        if ($contentType -eq "application/x-javascript") {
+            $blobProperties["CacheControl"] = "public, max-age=31536000"
+        }
 
         "Uploading $("\" + $x.fullname.Substring($dir.Length + 1)) to $($container.CloudBlobContainer.Uri.AbsoluteUri + "/" + $targetPath)"
         Set-AzureStorageBlobContent -File $x.fullname -Container $container.Name -Blob $targetPath -Context $ctx -Properties $blobProperties -Force:$Force | Out-Null
