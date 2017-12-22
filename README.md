@@ -8,7 +8,12 @@
 - Low hosting cost
 - Automated tests, deployments, and alerting
 
-## How to run SimpleUptime.WebApp
+## How to run SimpleUptime.WebApp for local development
+
+- run Azure Storage Emulator
+- run Azure CosmosDb Emulator
+- run SimpleUptime.FuncApp
+
 ```powershell
 cd src\SimpleUptime.WebApp
 
