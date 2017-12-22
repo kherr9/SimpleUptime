@@ -14,6 +14,8 @@ task Clean {
         dotnet clean .\src\SimpleUptime.sln -c $configuration
     }
 
+    Remove-Item .\src\SimpleUptime.WebApp\dist -Force -Recurse -ErrorAction Ignore
+
     Remove-Item "$artifactDir\SimpleUptime.*" -Force -Recurse -ErrorAction Ignore
     Remove-Item "$artifactDir\WebApp" -Force -Recurse -ErrorAction Ignore
 }
@@ -21,6 +23,10 @@ task Clean {
 task Compile {
     exec {
         dotnet build .\src\SimpleUptime.sln -c $configuration /m --no-restore
+    }
+
+    exec {
+        npm run build --prefix .\src\SimpleUptime.WebApp
     }
 }
 
