@@ -17,7 +17,6 @@ task Clean {
     Remove-Item .\src\SimpleUptime.WebApp\dist -Force -Recurse -ErrorAction Ignore
 
     Remove-Item "$artifactDir\SimpleUptime.*" -Force -Recurse -ErrorAction Ignore
-    Remove-Item "$artifactDir\WebApp" -Force -Recurse -ErrorAction Ignore
 }
 
 task Compile {
@@ -65,13 +64,6 @@ Task Pack {
     
     ZipAzureFunction C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost.zip
 
-    $source = ".\src\WebApp"
-    $destination = "$artifactDir\WebApp"
-    "copy $source to $destination"
-
-    Remove-Item $destination -Force -Recurse -ErrorAction Ignore
-    Copy-Item -Path $source -Recurse -Destination $destination -Force -Container
-
     $source = ".\src\SimpleUptime.WebApp\dist"
     $destination = "$artifactDir\SimpleUptime.WebApp"
     "copy $source to $destination"
@@ -118,38 +110,6 @@ Task Publish-SpaHost -depends Authenticate {
     $password = $creds.Properties.PublishingPassword
 
     DeployAzureFunction $username $password $functionAppName "C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost.zip"
-}
-
-Task Publish-Spa -depends Authenticate {
-    $resourceGroupName = "simpleuptime-uat-rg"
-    $storageAccountName = "simpleuptimeuatdata001"
-    $containerName = "www"
-
-    $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName
-
-    $ctx = $storageAccount.Context
-
-    # create container
-    $container = Get-AzureStorageContainer -Name $containerName -Context $ctx -ErrorAction Ignore
-    if ($container) {
-        "Container $containerName already exists"
-    }
-    else {
-        $container = New-AzureStorageContainer -Name $containerName -Context $ctx -Permission blob
-    }
-    
-    $dir = (Resolve-Path ".\artifacts\WebApp").ToString()
-
-    $files = Get-ChildItem $dir -Recurse -File
-    foreach ($x in $files) {
-        $targetPath = ($x.fullname.Substring($dir.Length + 1)).Replace("\", "/")
-
-        $contentType = [System.Web.MimeMapping]::GetMimeMapping($targetPath)
-        $blobProperties = @{"ContentType" = $contentType};
-
-        "Uploading $("\" + $x.fullname.Substring($dir.Length + 1)) to $($container.CloudBlobContainer.Uri.AbsoluteUri + "/" + $targetPath)"
-        Set-AzureStorageBlobContent -File $x.fullname -Container $container.Name -Blob $targetPath -Context $ctx -Properties $blobProperties -Force:$Force | Out-Null
-    }
 }
 
 Task Publish-WebApp -depends Authenticate {
