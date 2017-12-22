@@ -5,7 +5,7 @@ properties {
 
 task default -depends Build
 
-task Complete -depends Clean, Restore, Build, UnitTests, IntegrationTests, Pack, Publish
+task Complete -depends Clean, Restore, Build, Test, Pack, Publish
 
 task Clean -depends Clean-Artifacts, Clean-Dotnet, Clean-WebApp
 
@@ -13,7 +13,13 @@ task Restore -depends Restore-Dotnet, Restore-WebApp
 
 task Build -depends Build-Dotnet, Build-WebApp
 
-task Publish -depends Publish-ResourceGroup, Publish-Function, Publish-WebAppProxy, Publish-WebApp
+task Test -depends UnitTests, IntegrationTests
+
+task Pack -depends Pack-ResourceGroup, Pack-FuncApp, Pack-WebAppProxy,  Pack-WebApp
+
+task Publish -depends Publish-ResourceGroup, Publish-FuncApp, Publish-WebAppProxy, Publish-WebApp
+
+# Clean
 
 Task Clean-Dotnet {
     exec {
@@ -29,6 +35,7 @@ Task Clean-WebApp {
     Remove-Item .\src\SimpleUptime.WebApp\dist -Force -Recurse -ErrorAction Ignore
 }
 
+# Restore
 
 Task Restore-Dotnet {
     exec {
@@ -43,6 +50,8 @@ Task Restore-WebApp {
     }
 }
 
+# Build
+
 Task Build-Dotnet {
     exec {
         dotnet build .\src\SimpleUptime.sln -c $configuration /m --no-restore
@@ -54,6 +63,8 @@ Task Build-WebApp {
         npm run build --prefix .\src\SimpleUptime.WebApp
     }
 }
+
+# Test
 
 Task UnitTests {
     exec {
@@ -67,22 +78,27 @@ Task IntegrationTests {
     }
 }
 
-Task Pack {
+# Pack
+
+Task Pack-ResourceGroup {
     $source = ".\src\SimpleUptime.ResourceGroup\bin\$configuration"
     $destination = "$artifactDir\SimpleUptime.ResourceGroup"
-    
-    "copy $source to $destination"
 
     Remove-Item $destination -Force -Recurse -ErrorAction Ignore
     Copy-Item -Path $source -Recurse -Destination $destination -Force -Container
+}
 
-    "copy azure function - app"
+Task Pack-FuncApp {
     exec {
         dotnet publish .\src\SimpleUptime.FuncApp -o C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp --no-restore
     }
 
     ZipAzureFunction C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp.zip
 
+    Remove-Item C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp -Force -Recurse -ErrorAction Ignore
+}
+
+Task Pack-WebAppProxy {
     "copy azure function - WebAppProxy"
     exec {
         dotnet publish .\src\SimpleUptime.WebAppProxy -o C:\git\SimpleUptime\artifacts\SimpleUptime.WebAppProxy --no-restore
@@ -90,6 +106,10 @@ Task Pack {
     
     ZipAzureFunction C:\git\SimpleUptime\artifacts\SimpleUptime.WebAppProxy C:\git\SimpleUptime\artifacts\SimpleUptime.WebAppProxy.zip
 
+    Remove-Item C:\git\SimpleUptime\artifacts\SimpleUptime.WebAppProxy -Force -Recurse -ErrorAction Ignore
+}
+
+Task Pack-WebApp {
     $source = ".\src\SimpleUptime.WebApp\dist"
     $destination = "$artifactDir\SimpleUptime.WebApp"
     "copy $source to $destination"
@@ -98,19 +118,9 @@ Task Pack {
     Copy-Item -Path $source -Recurse -Destination $destination -Force -Container
 }
 
-Task Authenticate {
-    $profile = (Resolve-Path $artifactDir).ToString() + "\AzureRmProfile.json"
+# Publish
 
-    if (Test-Path $profile) {
-        Select-AzureRmProfile -Path $profile
-    }
-    else {
-        Login-AzureRmAccount
-        Save-AzureRmProfile -Path $profile
-    }
-}
-
-Task Publish-Function -depends Authenticate {
+Task Publish-FuncApp -depends Authenticate {
     # https://markheath.net/post/deploy-azure-functions-kudu-powershell
     # https://dscottraynsford.wordpress.com/2017/07/12/publish-an-azure-rm-web-app-using-a-service-principal-in-powershell/
     $resourceGroupName = "simpleuptime-uat-rg"
@@ -192,6 +202,20 @@ Task Publish-ResourceGroup -depends Authenticate {
         -HostNames @($fqdn, "$webappname.azurewebsites.net")
 }
 
+# Helpers
+
+Task Authenticate {
+    $profile = (Resolve-Path $artifactDir).ToString() + "\AzureRmProfile.json"
+
+    if (Test-Path $profile) {
+        Select-AzureRmProfile -Path $profile
+    }
+    else {
+        Login-AzureRmAccount
+        Save-AzureRmProfile -Path $profile
+    }
+}
+
 Function ZipAzureFunction(
     [Parameter(Mandatory = $true)]
     [String]$functionPath,
@@ -200,7 +224,7 @@ Function ZipAzureFunction(
 ) {
     $excluded = @(".vscode", ".gitignore", "appsettings.json", "secrets")
     $include = Get-ChildItem $functionPath -Exclude $excluded
-    Compress-Archive -Path $include -Update -DestinationPath $outputPath
+    Compress-Archive -Path $include -Update -DestinationPath $outputPath 
 }
 
 Function DeployAzureFunction(
