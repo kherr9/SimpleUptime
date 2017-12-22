@@ -7,7 +7,7 @@ task default -depends Compile
 
 task Complete -depends Clean, Compile, UnitTests, IntegrationTests, Pack, Publish
 
-Task Publish -depends Publish-ResourceGroup, Publish-Function, Publish-SpaHost, Publish-WebApp
+Task Publish -depends Publish-ResourceGroup, Publish-Function, Publish-WebAppProxy, Publish-WebApp
 
 task Clean {
     exec {
@@ -57,12 +57,12 @@ Task Pack {
 
     ZipAzureFunction C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp.zip
 
-    "copy azure function - spa host"
+    "copy azure function - WebAppProxy"
     exec {
-        dotnet publish .\src\SimpleUptime.SpaHost -o C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost --no-restore
+        dotnet publish .\src\SimpleUptime.WebAppProxy -o C:\git\SimpleUptime\artifacts\SimpleUptime.WebAppProxy --no-restore
     }
     
-    ZipAzureFunction C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost.zip
+    ZipAzureFunction C:\git\SimpleUptime\artifacts\SimpleUptime.WebAppProxy C:\git\SimpleUptime\artifacts\SimpleUptime.WebAppProxy.zip
 
     $source = ".\src\SimpleUptime.WebApp\dist"
     $destination = "$artifactDir\SimpleUptime.WebApp"
@@ -98,18 +98,18 @@ Task Publish-Function -depends Authenticate {
     DeployAzureFunction $username $password $functionAppName "C:\git\SimpleUptime\artifacts\SimpleUptime.FuncApp.zip"
 }
 
-Task Publish-SpaHost -depends Authenticate {
+Task Publish-WebAppProxy -depends Authenticate {
     # https://markheath.net/post/deploy-azure-functions-kudu-powershell
     # https://dscottraynsford.wordpress.com/2017/07/12/publish-an-azure-rm-web-app-using-a-service-principal-in-powershell/
     $resourceGroupName = "simpleuptime-uat-rg"
-    $functionAppName = "simpleuptime-uat-spahost"
+    $functionAppName = "simpleuptime-uat-webappproxy"
     $creds = Invoke-AzureRmResourceAction -ResourceGroupName $resourceGroupName -ResourceType Microsoft.Web/sites/config `
         -ResourceName $functionAppName/publishingcredentials -Action list -ApiVersion 2015-08-01 -Force
     
     $username = $creds.Properties.PublishingUserName
     $password = $creds.Properties.PublishingPassword
 
-    DeployAzureFunction $username $password $functionAppName "C:\git\SimpleUptime\artifacts\SimpleUptime.SpaHost.zip"
+    DeployAzureFunction $username $password $functionAppName "C:\git\SimpleUptime\artifacts\SimpleUptime.WebAppProxy.zip"
 }
 
 Task Publish-WebApp -depends Authenticate {
@@ -157,7 +157,7 @@ Task Publish-ResourceGroup -depends Authenticate {
         -TemplateParametersFile $templateParametersFile
     
     # set custom dns
-    $webAppName = "simpleuptime-uat-spahost"
+    $webAppName = "simpleuptime-uat-webappproxy"
     $fqdn = "app-uat.simpleuptime.io"
 
     Set-AzureRmWebApp `
