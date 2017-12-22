@@ -80,7 +80,7 @@
       "maxValue": 1536,
       "defaultValue": 128
     },
-    "spaHostAppName": {
+    "webAppProxyAppName": {
       "type": "string"
     }
   },
@@ -185,7 +185,7 @@
     {
       "apiVersion": "2016-08-01",
       "type": "Microsoft.Web/sites",
-      "name": "[parameters('spaHostAppName')]",
+      "name": "[parameters('webAppProxyAppName')]",
       "location": "[resourceGroup().location]",
       "kind": "functionapp",
       "properties": {
@@ -208,7 +208,7 @@
             },
             {
               "name": "WEBSITE_CONTENTSHARE",
-              "value": "[toLower(parameters('spaHostAppName'))]"
+              "value": "[toLower(parameters('webAppProxyAppName'))]"
             },
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",

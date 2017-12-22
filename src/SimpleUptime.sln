@@ -24,7 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.FuncApp", "Sim
 EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "SimpleUptime.ResourceGroup", "SimpleUptime.ResourceGroup\SimpleUptime.ResourceGroup.deployproj", "{7B25ACCB-F1D7-45D7-9DBE-AB2EADB60510}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.SpaHost", "SimpleUptime.SpaHost\SimpleUptime.SpaHost.csproj", "{002F97D1-47CC-4D6E-B26B-185F632B6D20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleUptime.WebAppProxy", "SimpleUptime.WebAppProxy\SimpleUptime.WebAppProxy.csproj", "{002F97D1-47CC-4D6E-B26B-185F632B6D20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
