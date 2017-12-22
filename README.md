@@ -26,3 +26,26 @@ npm run start
 # build webapp
 npm run build 
 ```
+
+## Projects
+
+### SimpleUptime.Application
+> Application layer
+
+### Simple.Domain
+> Domain layer
+
+### SimpleUptime.FuncApp
+> Azure function app that is a rest api and message processor
+
+### SimpleUptime.Infrastructure
+> Infrastructure layer
+
+### SimpleUptime.ResourceGroup
+> Azure arm templates, infrastructure as code
+
+### SimpleUptime.WebApp
+> Single page web app. Uses npm and webpack. Not part of visual studio solution.
+
+### SimpleUptime.WebAppProxy
+> Azure function app that proxies SimpleUptime.WebApp resources and proxies rest api calls to SimpleUptime.FuncApp
