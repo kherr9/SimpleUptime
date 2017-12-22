@@ -30,7 +30,7 @@ npm run build
 ## Projects
 
 ### Simple.Domain
-> Domain layer. Domain model, repository interfaces, and domain service interfaces.
+> Domain layer. Domain models, repository interfaces, and domain service interfaces.
 
 ### SimpleUptime.Infrastructure
 > Infrastructure layer. Implementation of domain repositories, and domain services.
