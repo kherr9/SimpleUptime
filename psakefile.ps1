@@ -3,33 +3,53 @@ properties {
     $artifactDir = '.\artifacts'
 }
 
-task default -depends Compile
+task default -depends Build
 
-task Complete -depends Clean, Compile, UnitTests, IntegrationTests, Pack, Publish
+task Complete -depends Clean, Restore, Build, UnitTests, IntegrationTests, Pack, Publish
 
-Task Publish -depends Publish-ResourceGroup, Publish-Function, Publish-WebAppProxy, Publish-WebApp
+task Clean -depends Clean-Artifacts, Clean-Dotnet, Clean-WebApp
 
-task Clean -depends Clean-Artifacts, Clean-WebApp, Clean-Dotnet
+task Restore -depends Restore-Dotnet, Restore-WebApp
 
-task Clean-Dotnet {
+task Build -depends Build-Dotnet, Build-WebApp
+
+task Publish -depends Publish-ResourceGroup, Publish-Function, Publish-WebAppProxy, Publish-WebApp
+
+Task Clean-Dotnet {
     exec {
         dotnet clean .\src\SimpleUptime.sln -c $configuration
     }
 }
 
-task Clean-Artifacts {
+Task Clean-Artifacts {
     Remove-Item "$artifactDir\SimpleUptime.*" -Force -Recurse -ErrorAction Ignore
 }
 
-task Clean-WebApp {
+Task Clean-WebApp {
     Remove-Item .\src\SimpleUptime.WebApp\dist -Force -Recurse -ErrorAction Ignore
 }
 
-task Compile {
+
+Task Restore-Dotnet {
+    exec {
+        dotnet restore .\src\SimpleUptime.sln
+    }
+}
+
+Task Restore-WebApp {
+    # https://nerdymishka.com/blog/run-npm-install-in-a-different-directory
+    exec {
+        powershell.exe -Command "cd .\src\SimpleUptime.WebApp `n npm install"
+    }
+}
+
+Task Build-Dotnet {
     exec {
         dotnet build .\src\SimpleUptime.sln -c $configuration /m --no-restore
     }
+}
 
+Task Build-WebApp {
     exec {
         npm run build --prefix .\src\SimpleUptime.WebApp
     }
