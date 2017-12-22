@@ -15,7 +15,7 @@ task Build -depends Build-Dotnet, Build-WebApp
 
 task Test -depends UnitTests, IntegrationTests
 
-task Pack -depends Pack-ResourceGroup, Pack-FuncApp, Pack-WebAppProxy,  Pack-WebApp
+task Pack -depends Pack-ResourceGroup, Pack-FuncApp, Pack-WebAppProxy, Pack-WebApp
 
 task Publish -depends Publish-ResourceGroup, Publish-FuncApp, Publish-WebAppProxy, Publish-WebApp
 
