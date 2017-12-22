@@ -14,7 +14,7 @@
     "functionAppName": {
       "value": "simpleuptime-uat-func"
     },
-    "spaHostAppName": {
+    "webAppProxyAppName": {
       "value": "simpleuptime-uat-spahost"
     }
   }
