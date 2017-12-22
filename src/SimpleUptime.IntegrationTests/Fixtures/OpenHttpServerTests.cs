@@ -57,7 +57,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
         [Theory]
         [MemberData(nameof(HttpStatusCodes))]
-        public async Task HttpStatusCodes(HttpStatusCode statusCode)
+        public async Task HttpStatusCodes_AreReturnable(HttpStatusCode statusCode)
         {
             // Arrange
             _httpServer.Handler = ctx =>
@@ -75,7 +75,7 @@ namespace SimpleUptime.IntegrationTests.Fixtures
 
         [Theory]
         [MemberData(nameof(HttpRequestMethods))]
-        public async Task HttpRequestMethods(string method)
+        public async Task HttpRequestMethods_AreCallable(string method)
         {
             // Arrange
             _httpServer.Handler = ctx => Task.CompletedTask;
