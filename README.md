@@ -30,13 +30,13 @@ npm run build
 ## Projects
 
 ### Simple.Domain
-> Domain layer
+> Domain layer. Domain model, repository interfaces, and domain service interfaces.
 
 ### SimpleUptime.Infrastructure
-> Infrastructure layer
+> Infrastructure layer. Implementation of domain repositories, and domain services.
 
 ### SimpleUptime.Application
-> Application layer
+> Application layer. Application services.
 
 ### SimpleUptime.FuncApp
 > Azure function app that is a rest api and message processor.
