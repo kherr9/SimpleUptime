@@ -7,7 +7,7 @@ task default -depends Compile
 
 task Complete -depends Clean, Compile, UnitTests, IntegrationTests, Pack, Publish
 
-Task Publish -depends Publish-ResourceGroup, Publish-Function, Publish-SpaHost, Publish-Spa
+Task Publish -depends Publish-ResourceGroup, Publish-Function, Publish-SpaHost, Publish-WebApp
 
 task Clean {
     exec {
@@ -139,6 +139,38 @@ Task Publish-Spa -depends Authenticate {
     }
     
     $dir = (Resolve-Path ".\artifacts\WebApp").ToString()
+
+    $files = Get-ChildItem $dir -Recurse -File
+    foreach ($x in $files) {
+        $targetPath = ($x.fullname.Substring($dir.Length + 1)).Replace("\", "/")
+
+        $contentType = [System.Web.MimeMapping]::GetMimeMapping($targetPath)
+        $blobProperties = @{"ContentType" = $contentType};
+
+        "Uploading $("\" + $x.fullname.Substring($dir.Length + 1)) to $($container.CloudBlobContainer.Uri.AbsoluteUri + "/" + $targetPath)"
+        Set-AzureStorageBlobContent -File $x.fullname -Container $container.Name -Blob $targetPath -Context $ctx -Properties $blobProperties -Force:$Force | Out-Null
+    }
+}
+
+Task Publish-WebApp -depends Authenticate {
+    $resourceGroupName = "simpleuptime-uat-rg"
+    $storageAccountName = "simpleuptimeuatdata001"
+    $containerName = "www"
+
+    $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName
+
+    $ctx = $storageAccount.Context
+
+    # create container
+    $container = Get-AzureStorageContainer -Name $containerName -Context $ctx -ErrorAction Ignore
+    if ($container) {
+        "Container $containerName already exists"
+    }
+    else {
+        $container = New-AzureStorageContainer -Name $containerName -Context $ctx -Permission blob
+    }
+    
+    $dir = (Resolve-Path ".\artifacts\SimpleUptime.WebApp").ToString()
 
     $files = Get-ChildItem $dir -Recurse -File
     foreach ($x in $files) {
