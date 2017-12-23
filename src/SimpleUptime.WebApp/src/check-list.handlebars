@@ -13,8 +13,12 @@
             <span class="badge badge-secondary" style="width:20px">?</span>
             {{/if}}
             <span>
-                {{request.url}} {{#if lastChecked }}
+                {{request.url}} 
+                {{#if lastChecked }}
                 <small>({{lastCheckedDisplayText}} ago)</small>
+                {{/if}}
+                {{#if responseTimeInfo }}
+                <small>({{responseTimeInfo}})</small>
                 {{/if}}
             </span>
             <div style="float:right">
