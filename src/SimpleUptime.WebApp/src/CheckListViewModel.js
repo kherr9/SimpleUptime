@@ -59,6 +59,7 @@ export default class CheckListViewModel {
 
         // modify checks and save locally
         self.checks = checks.map(x => {
+
             // set last check info
             if (x.recentHttpMonitorChecks !== null
                 && x.recentHttpMonitorChecks.length > 0) {
@@ -69,6 +70,37 @@ export default class CheckListViewModel {
             } else {
                 x.lastChecked = null;
                 x.lastCheckedDisplayText = "never checked"
+            }
+
+            // avg response time
+            var responseTimes = x.recentHttpMonitorChecks.filter(y => {
+                return x.status === 'Up'
+            }).map(y => {
+                return y.requestTiming.totalMilliseconds;
+            });
+
+            if (responseTimes.length > 0) {
+                var sumResponseTimes = responseTimes.reduce((a, b) => {
+                    return a + b;
+                });
+
+                var avgResponseTime = sumResponseTimes / responseTimes.length;
+
+                var min = responseTimes.reduce((a,b) => {
+                    return Math.min(a,b)
+                });
+                
+                var max = responseTimes.reduce((a,b) => {
+                    return Math.max(a,b)
+                });
+                
+                var formatNumber = num => {
+                    return parseInt(num).toLocaleString();
+                }
+
+                x.responseTimeInfo = `${formatNumber(min)}/${formatNumber(avgResponseTime)}/${formatNumber(max)} min/avg/max response time in ms`
+
+                x.avgResponseTimeDisplayText = formatNumber(avgResponseTime) + 'ms'
             }
 
             // set isUp/isDown info
