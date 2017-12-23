@@ -99,8 +99,6 @@ export default class CheckListViewModel {
                 }
 
                 x.responseTimeInfo = `${formatNumber(min)}/${formatNumber(avgResponseTime)}/${formatNumber(max)} min/avg/max response time in ms`
-
-                x.avgResponseTimeDisplayText = formatNumber(avgResponseTime) + 'ms'
             }
 
             // set isUp/isDown info
