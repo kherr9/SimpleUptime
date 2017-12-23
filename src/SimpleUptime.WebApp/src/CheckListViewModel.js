@@ -72,7 +72,7 @@ export default class CheckListViewModel {
                 x.lastCheckedDisplayText = "never checked"
             }
 
-            // avg response time
+            // response time info
             var responseTimes = x.recentHttpMonitorChecks.filter(y => {
                 return x.status === 'Up'
             }).map(y => {
